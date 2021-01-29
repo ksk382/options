@@ -3,7 +3,9 @@ from option_api import get_option_df
 import datetime as dt
 import os
 
-ticker_list = pd.read_csv('ticker_list.csv')
+#ticker_list = pd.read_csv('ticker_list.csv')
+ticker_df = pd.read_csv('IWV_holdings.csv')
+ticker_list = ticker_df['Ticker'].unique()
 now = dt.datetime.now()
 print (now)
 
@@ -33,7 +35,7 @@ error_list = []
 now_str = dt.datetime.strftime(now, "%Y-%m-%d %H.%M")
 err_output_file = '../logs/' + now_str + '_error_list.txt'
 count = 0
-for ticker in ticker_list['Ticker'].unique():
+for ticker in ticker_list:
     count +=1
     if ticker not in done_tickers:
         now = dt.datetime.now()
