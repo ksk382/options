@@ -4,10 +4,8 @@ import datetime as dt
 import os
 
 ticker_list = pd.read_csv('ticker_list.csv')
-print (ticker_list)
 now = dt.datetime.now()
 print (now)
-print(dt.datetime.strftime(now, "%Y-%m-%d %H.%M"))
 
 today = str(now)[:10]
 dir_name = '../option_dataframes/'+today + '/'
@@ -23,19 +21,17 @@ for i in existing_files:
     d = i.replace('.csv','')
     d = d[-len('2021-01-29 14.13'):]
     done_ticker = i.replace(d,'').replace('_','').replace('.csv','')
-    print (done_ticker)
-    print (d)
     prev_call_time = dt.datetime.strptime(d, "%Y-%m-%d %H.%M")
-    print (prev_call_time)
     hour_ago = now - dt.timedelta(hours=1)
     if prev_call_time > hour_ago:
         done_tickers.append(done_ticker)
 
+print ('Already done: ')
 print (done_tickers)
 
 error_list = []
 now_str = dt.datetime.strftime(now, "%Y-%m-%d %H.%M")
-err_output_file = dir_name + now_str + '_error_list.txt'
+err_output_file = '../logs/' + now_str + '_error_list.txt'
 count = 0
 for ticker in ticker_list['Ticker'].unique():
     count +=1
