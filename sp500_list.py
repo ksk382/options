@@ -21,6 +21,6 @@ for items in soup.find('table', class_='wikitable').find_all('tr')[1::1]:
     except IndexError:pass
 
 print (df)
-df.to_csv('ticker_list.csv', index=False)
+df.to_csv('sp500_ticker_list.csv', index=False)
 
     #print("{}|{}|{}".format(country,title,name))

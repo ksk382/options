@@ -5,6 +5,7 @@ from io import StringIO
 import xml.etree.ElementTree as ET
 import pandas as pd
 import datetime as dt
+from cred_file import oauth_hdr
 
 
 def get_option_df(ticker):
@@ -27,6 +28,24 @@ def get_option_df(ticker):
     df = pd.DataFrame(data)
     df = df.apply(pd.to_numeric, errors='ignore')
 
+    return df
+
+
+def get_stock_df(ticker):
+    target_url = 'https://devapi.invest.ally.com/v1/market/ext/quotes.xml?symbols=' + ticker
+    r = requests.get(url=target_url, auth=oauth_hdr)
+    tree = ET.parse(StringIO(r.text))
+    root = tree.getroot()
+    data = []
+    inner = {}
+    for child in root.find('.//quotes'):
+        if child.tag == 'quote':
+            for dild in child:
+                inner[dild.tag] = dild.text
+            data.append(inner)
+            inner = {}
+    df = pd.DataFrame(data)
+    df = df.apply(pd.to_numeric, errors='ignore')
     return df
 
 if __name__ == "__main__":
