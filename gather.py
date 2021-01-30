@@ -2,6 +2,7 @@ import pandas as pd
 from api_calls import get_option_df, get_stock_df
 import datetime as dt
 import os
+import time
 
 
 def gather_option_data():
@@ -55,6 +56,8 @@ def gather_option_data():
                 error_list.append([ticker, str(e)])
                 with open(err_output_file, 'a') as f:
                     f.write("%s\n" % [ticker, str(e)])
+            # throttle API calls to 60 per minute
+            time.sleep(1)
         else:
             print (f'{count} - {ticker} already done in last hour')
 
@@ -112,6 +115,8 @@ def gather_stock_data():
                 error_list.append([ticker, str(e)])
                 with open(err_output_file, 'a') as f:
                     f.write("%s\n" % [ticker, str(e)])
+            # throttle API calls to 60 per minute
+            time.sleep(1)
         else:
             print (f'{count} - {ticker} already done in last hour')
 
