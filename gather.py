@@ -129,6 +129,6 @@ def gather_etf_data():
     print ('-----done gathering etf data')
 
 if __name__ == "__main__":
-    #gather_option_data()
+    gather_option_data()
     gather_stock_data()
     #gather_etf_data()
