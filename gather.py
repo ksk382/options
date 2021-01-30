@@ -122,12 +122,6 @@ def gather_stock_data():
 
     print ('-----done gathering stock data')
 
-def gather_etf_data():
-    print ('-----gathering etf data')
-
-
-    print ('-----done gathering etf data')
-
 if __name__ == "__main__":
     gather_option_data()
     gather_stock_data()
