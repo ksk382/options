@@ -1,5 +1,5 @@
 import pandas as pd
-from ally_api import get_option_df, get_stock_df
+from api_calls import get_option_df, get_stock_df
 import datetime as dt
 import os
 
@@ -57,7 +57,6 @@ def gather_option_data():
                     f.write("%s\n" % [ticker, str(e)])
         else:
             print (f'{count} - {ticker} already done in last hour')
-
 
     for i in error_list:
         print (i)

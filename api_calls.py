@@ -5,16 +5,16 @@ from io import StringIO
 import xml.etree.ElementTree as ET
 import pandas as pd
 import datetime as dt
-from cred_file import oauth_hdr
+from cred_file import oauth_hdr, stock_endpoint, option_endpoint
+
 
 
 def get_option_df(ticker):
-
     now = dt.datetime.now()
     year = str(now.year)
     month = str(now.month)
     q = f'&query=xyear-eq%3A{year}' #%20AND%20xmonth-eq%3A{month}'
-    target_url = 'https://devapi.invest.ally.com/v1/market/options/search.xml?symbol=' + ticker + q
+    target_url = option_endpoint + ticker + q
     r = requests.get(url=target_url, auth=oauth_hdr)
     tree = ET.parse(StringIO(r.text))
     root = tree.getroot()
@@ -32,7 +32,7 @@ def get_option_df(ticker):
 
 
 def get_stock_df(ticker):
-    target_url = 'https://devapi.invest.ally.com/v1/market/ext/quotes.xml?symbols=' + ticker
+    target_url = stock_endpoint + ticker
     r = requests.get(url=target_url, auth=oauth_hdr)
     tree = ET.parse(StringIO(r.text))
     root = tree.getroot()
@@ -51,5 +51,5 @@ def get_stock_df(ticker):
 if __name__ == "__main__":
     pd.set_option('display.max_rows', 500)
     print ('starting')
-    df = get_option_df('AAPL')
+    df = get_stock_df('AAPL')
     print (df)
