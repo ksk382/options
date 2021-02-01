@@ -9,7 +9,10 @@ def gather_option_data():
     print ('-----gathering option data')
     #ticker_list = pd.read_csv('ticker_list.csv')
     ticker_df = pd.read_csv('IWV_holdings.csv')
-    ticker_list = ticker_df['Ticker'].unique()
+    ticker_list = list(ticker_df['Ticker'].unique())
+    etf_df = pd.read_csv('etf_ticker_list.csv')
+    ticker_list = ticker_list + list(etf_df['Ticker'].unique())
+    print (ticker_list)
     now = dt.datetime.now()
     print (now)
 
@@ -70,7 +73,9 @@ def gather_stock_data():
     print ('-----gathering stock data')
     #ticker_list_df = pd.read_csv('sp500_ticker_list.csv')
     ticker_df = pd.read_csv('IWV_holdings.csv')
-    ticker_list = ticker_df['Ticker'].unique()
+    ticker_list = list(ticker_df['Ticker'].unique())
+    etf_df = pd.read_csv('etf_ticker_list.csv')
+    ticker_list = ticker_list + list(etf_df['Ticker'].unique())
     print (ticker_list)
     now = dt.datetime.now()
     print (now)
@@ -111,53 +116,6 @@ def gather_stock_data():
 
     print ('-----done gathering stock data')
 
-def gather_etf_data():
-    print ('-----gathering etf data')
-    #ticker_list_df = pd.read_csv('sp500_ticker_list.csv')
-    ticker_df = pd.read_csv('etf_ticker_list.csv')
-    ticker_list = ticker_df['Ticker'].unique()
-    print (ticker_list)
-    now = dt.datetime.now()
-    print (now)
-
-    today = str(now)[:10]
-    dir_name = '../etf_dataframes/' + today + '/'
-    if not os.path.exists('../etf_dataframes/'):
-        os.mkdir('../etf_dataframes/')
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-
-    error_list = []
-    now_str = dt.datetime.strftime(now, "%Y-%m-%d %H.%M")
-    err_output_file = '../logs/' + now_str + '_stock_error_list.txt'
-    count = 0
-    all_df = pd.DataFrame()
-    fname = dt.datetime.strftime(now, "%Y-%m-%d %H.%M") + '.csv'
-    filename = dir_name + fname
-
-    for ticker in ticker_list:
-        count += 1
-        try:
-            df = get_stock_df(ticker)
-            all_df = all_df.append(df, ignore_index=True)
-            print (f'{count} retrieved {ticker}')
-            if count % 50 == 0:
-                print (f'{count} writing to {filename}')
-                all_df.to_csv(filename, compression='gzip', index=False)
-        except Exception as e:
-            print (ticker, str(e))
-            error_list.append([ticker, str(e)])
-            with open(err_output_file, 'a') as f:
-                f.write("%s\n" % [ticker, str(e)])
-        # throttle API calls to 60 per minute
-        time.sleep(1)
-
-    all_df.to_csv(filename, compression='gzip', index=False)
-
-    print ('-----done gathering etf data')
-
-
 if __name__ == "__main__":
     gather_option_data()
     gather_stock_data()
-    gather_etf_data()
