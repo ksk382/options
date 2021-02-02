@@ -55,8 +55,6 @@ def gather_stock_and_option_data():
             print (f'{count} retrieved {ticker} option chain')
 
             all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
-            m = all_stock_df['symbol'].unique()
-            print (f'num stocks in all_stock_df: {len(m)}')
 
             # save every 100 tickers
             if count % 100 == 0:
@@ -72,8 +70,9 @@ def gather_stock_and_option_data():
             q = s[s['call_time'] > y]
             breaker = 0
             while len(q) > 58 or breaker > 60:
-                print (f'number of calls in last minute: {len(q)} ---- sleeping 1 second')
-                time.sleep(1)
+                sleep_time = (len(q) - 58)
+                print (f'number of calls in last minute: {len(q)} ---- sleeping {sleep_time} seconds')
+                time.sleep(sleep_time)
                 y = time.time()
                 q = s[s['call_time'] > y]
                 breaker +=1
