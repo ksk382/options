@@ -31,6 +31,7 @@ def run_nope():
     print (latest, i)
     fname_root = dt.datetime.strftime(latest, "%Y-%m-%d_%H.%M")
 
+    latest_i = '2021-02-02_14.30'
     stock_df_name = stock_dir_name + latest_i
     stock_df = pd.read_csv(stock_df_name, compression='gzip')
 
