@@ -42,23 +42,25 @@ def run_nope():
     for ticker in stock_df['symbol'].unique():
         count +=1
         print (f'{count} -- {ticker}')
-        volume = stock_df[stock_df['symbol'] == ticker]['vl'].item()
-        adv_21 = stock_df[stock_df['symbol'] == ticker]['adv_21'].item()
+
         # just find the latest dated option df.
         # later, replace this with something that gets close to the stock timestamp
         try:
+            volume = stock_df[stock_df['symbol'] == ticker]['vl'].item()
+            adv_21 = stock_df[stock_df['symbol'] == ticker]['adv_21'].item()
             option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
-        except:
+            option_df = pd.read_csv(option_df_name, compression='gzip')
+            option_df['weighted'] = option_df['vl'] * option_df['idelta']
+            nope_metric = option_df['weighted'].sum() / volume
+            nope_21 = option_df['weighted'].sum() / adv_21
+            a = {'Date': fname_root,
+                 'Ticker': ticker,
+                 'Nope': nope_metric,
+                 'Nope_adv_21': nope_21}
+            nope_df = nope_df.append(a, ignore_index=True)
+        except Exception as e:
+            print (str(e))
             continue
-        option_df = pd.read_csv(option_df_name, compression = 'gzip')
-        option_df['weighted'] = option_df['vl'] * option_df['idelta']
-        nope_metric = option_df['weighted'].sum() / volume
-        nope_21 = option_df['weighted'].sum() / adv_21
-        a = {'Date': fname_root,
-             'Ticker': ticker,
-             'Nope': nope_metric,
-             'Nope_adv_21': nope_21}
-        nope_df = nope_df.append(a, ignore_index=True)
 
     print (nope_df)
 
