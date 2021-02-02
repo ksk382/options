@@ -8,7 +8,8 @@ import datetime as dt
 import os
 import time
 
-start_time = time.time()
+df = pd.read_csv('../stock_dataframes/2021-02-01_21.21.csv', compression = 'gzip')
+print (df)
 
-
-print("--- %s seconds ---" % (time.time() - start_time))
+a = len(df['symbol'].unique())
+print (a)

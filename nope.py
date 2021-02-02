@@ -68,6 +68,11 @@ def run_nope():
             continue
 
     print (nope_df)
+    j = [i for i in option_df_list if i.endswith('.csv')]
+    k = stock_df['symbol'].unique()
+    print (f'total unique stocks:       {len(k)}')
+    print (f'total unique option_dfs:   {len(j)}')
+
 
     nope_df_name = nope_dir_name + fname_root + '_nope.csv'
     nope_df.to_csv(nope_df_name, compression = 'gzip', index = False)
