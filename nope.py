@@ -36,7 +36,7 @@ def run_nope():
 
     print (stock_df['symbol'].unique())
 
-    option_dir = '../option_dataframes/' + latest_i + '/'
+    option_dir = '../option_dataframes/' + latest_i[:-4] + '/'
     option_df_list = os.listdir(option_dir)
 
     nope_df = pd.DataFrame()
