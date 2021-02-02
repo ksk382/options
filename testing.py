@@ -7,17 +7,15 @@ import pandas as pd
 import datetime as dt
 import os
 import time
+import numpy as np
 
+df = pd.read_csv('../nope_dataframes/2021-02-02_17.30_nope.csv', compression = 'gzip')
+pd.set_option('display.max_rows', 200)
+pd.set_option('display.min_rows', None)
 
-s = pd.DataFrame([])
-for i in range(0,13):
-    time.sleep(.1)
-    s = s.append({'call_time':time.time()}, ignore_index= True)
+df = df.round(5)
+df = df[~df.isin([np.nan, np.inf, -np.inf]).any(1)]
+print (df)
 
-print (s)
-y = time.time() - 1
-print (y)
-q = s[s['call_time']>y]
-print (q)
-print (len(s))
-print (len(q))
+df = df.sort_values(by='Nope_adv_21', ascending = False)
+print (df)
