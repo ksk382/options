@@ -40,7 +40,6 @@ def gather_stock_and_option_data():
     error_list = []
 
     count = 0
-    start_time = time.time()
     # set up a rate limiter
     s = pd.DataFrame([])
     exception_count = 0
@@ -69,7 +68,7 @@ def gather_stock_and_option_data():
             option_df.to_csv(option_save_name, compression='gzip', index=False)
 
             # rate limiting
-            y = time.time()
+            y = time.time() - 60
             q = s[s['call_time'] > y]
             breaker = 0
             while len(q) > 58 or breaker > 60:
