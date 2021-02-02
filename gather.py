@@ -66,13 +66,16 @@ def gather_stock_and_option_data():
             with open(err_output_file, 'a') as f:
                 f.write("%s\n" % [ticker, str(e)])
 
+        time.sleep(1)
+
+        ''' this rate limiter does not work
         elapsed_time = (time.time() - start_time) * 60
         rate = (count / elapsed_time)
         while rate >= 60:
             elapsed_time = (time.time() - start_time) * 60
             rate = (count / elapsed_time)
             print (f'sleeping...count: {count} elapsed_time: {round(elapsed_time,2)} rate: {round(rate,2)}')
-            time.sleep(1)
+            time.sleep(1)'''
 
     print (f'{count} writing to {stock_save_name}')
     all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
