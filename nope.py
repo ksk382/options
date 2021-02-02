@@ -21,7 +21,7 @@ def run_nope():
     for i in stock_df_list:
         if i.endswith('.csv'):
             j = i.replace('.csv', '')
-            csv_time = dt.datetime.strptime(j, "%Y-%m-%d %H.%M")
+            csv_time = dt.datetime.strptime(j, "%Y-%m-%d_%H.%M")
             if csv_time > latest:
                 latest = csv_time
                 latest_i = i
@@ -33,7 +33,7 @@ def run_nope():
 
     print (stock_df['symbol'].unique())
 
-    option_dir = '../option_dataframes/' + latest_i[:10] + '/'
+    option_dir = '../option_dataframes/' + latest_i + '/'
     option_df_list = os.listdir(option_dir)
 
     nope_df = pd.DataFrame()

@@ -6,5 +6,9 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import datetime as dt
 import os
+import time
 
-df = pd.read_csv('2021-02-01 21.57_nope.csv', compression = 'gzip')
+start_time = time.time()
+
+
+print("--- %s seconds ---" % (time.time() - start_time))

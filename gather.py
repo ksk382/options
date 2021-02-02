@@ -6,116 +6,87 @@ import time
 from nope import run_nope
 
 
-def gather_option_data():
-    print ('-----gathering option data')
-    #ticker_list = pd.read_csv('ticker_list.csv')
+def gather_stock_and_option_data():
+    print ('\n\n\n\n&&&&&----- gathering stock and option data\n\n')
+
+    # gather the tickers to use
     ticker_df = pd.read_csv('IWV_holdings.csv')
     ticker_list = list(ticker_df['Ticker'].unique())
     etf_df = pd.read_csv('etf_ticker_list.csv')
     ticker_list = ticker_list + list(etf_df['Ticker'].unique())
+    print ('ticker list:')
     print (ticker_list)
+
+    # initialize stock dataframe
+    stock_dir_name = '../stock_dataframes/'
     now = dt.datetime.now()
     print (now)
+    if not os.path.exists(stock_dir_name):
+        os.mkdir(stock_dir_name)
+    all_stock_df = pd.DataFrame()
+    fname = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M") + '.csv'
+    stock_save_name = stock_dir_name + fname
 
-    today = str(now)[:10]
-    dir_name = '../option_dataframes/'+today + '/'
+    # initialize option save folder
+    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
+    option_dir_name = '../option_dataframes/' + now_str + '/'
     if not os.path.exists('../option_dataframes/'):
         os.mkdir('../option_dataframes/')
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
+    if not os.path.exists(option_dir_name):
+        os.mkdir(option_dir_name)
 
-    existing_files = os.listdir(dir_name)
-    existing_files = [i for i in existing_files if i.endswith('.csv')]
-
-    done_tickers = []
-    now = dt.datetime.now()
-    for i in existing_files:
-        d = i.replace('.csv','')
-        d = d[-len('2021-01-29 14.13'):]
-        done_ticker = i.replace(d,'').replace('_','').replace('.csv','')
-        prev_call_time = dt.datetime.strptime(d, "%Y-%m-%d_%H.%M")
-        hour_ago = now - dt.timedelta(hours=1)
-        if prev_call_time > hour_ago:
-            done_tickers.append(done_ticker)
-
-    print ('Already done: ')
-    print (done_tickers)
-
-    error_list = []
-    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
-    err_output_file = '../logs/' + now_str + '_option_error_list.txt'
-    count = 0
-    for ticker in ticker_list:
-        count +=1
-        if ticker not in done_tickers:
-            now = dt.datetime.now()
-            try:
-                df = get_option_df(ticker)
-                fname = ticker + '_' + dt.datetime.strftime(now, "%Y-%m-%d_%H.%M") + '.csv'
-                filename = dir_name + fname
-                print (f'{count} writing {filename}')
-                df.to_csv(filename, compression='gzip', index=False)
-            except Exception as e:
-                print (ticker, str(e))
-                error_list.append([ticker, str(e)])
-                with open(err_output_file, 'a') as f:
-                    f.write("%s\n" % [ticker, str(e)])
-            # throttle API calls to 60 per minute
-            time.sleep(1)
-        else:
-            print (f'{count} - {ticker} already done in last hour')
-
-    for i in error_list:
-        print (i)
-    print (len(error_list))
-    print ('-----done gathering option data')
-
-def gather_stock_data():
-    print ('-----gathering stock data')
-    #ticker_list_df = pd.read_csv('sp500_ticker_list.csv')
-    ticker_df = pd.read_csv('IWV_holdings.csv')
-    ticker_list = list(ticker_df['Ticker'].unique())
-    etf_df = pd.read_csv('etf_ticker_list.csv')
-    ticker_list = ticker_list + list(etf_df['Ticker'].unique())
-    print (ticker_list)
-    now = dt.datetime.now()
-    print (now)
-
-    today = str(now)[:10]
-    dir_name = '../stock_dataframes/'
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-
-    error_list = []
-    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
+    # initialize error logging
     err_output_file = '../logs/' + now_str + '_stock_error_list.txt'
-    count = 0
-    all_df = pd.DataFrame()
-    fname = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M") + '.csv'
-    filename = dir_name + fname
+    error_list = []
 
+    count = 0
+    start_time = time.time()
     for ticker in ticker_list:
-        count += 1
         try:
-            df = get_stock_df(ticker)
-            all_df = all_df.append(df, ignore_index = True)
-            print (f'{count} retrieved {ticker}')
-            if count % 50 == 0:
-                print (f'{count} writing to {filename}')
-                all_df.to_csv(filename, compression='gzip', index=False)
+            stock_df = get_stock_df(ticker)
+            count += 1
+            print (f'{count} retrieved {ticker} stock')
+            option_df = get_option_df(ticker)
+            count += 1
+            print (f'{count} retrieved {ticker} option chain')
+
+            all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
+            # save every 100 calls
+            if count % 100 == 0:
+                print (f'{count} writing to {stock_save_name}')
+                all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
+
+            option_save_name = option_dir_name + ticker
+            print (f'{count} writing {option_save_name}')
+            option_df.to_csv(option_save_name, compression='gzip', index=False)
+
         except Exception as e:
             print (ticker, str(e))
             error_list.append([ticker, str(e)])
             with open(err_output_file, 'a') as f:
                 f.write("%s\n" % [ticker, str(e)])
-        # throttle API calls to 60 per minute
-        time.sleep(1)
 
-    all_df.to_csv(filename, compression='gzip', index=False)
+        elapsed_time = (time.time() - start_time) * 60
+        rate = (count / elapsed_time)
+        while rate >= 60:
+            elapsed_time = (time.time() - start_time) * 60
+            rate = (count / elapsed_time)
+            print (f'sleeping...count: {count} elapsed_time: {round(elapsed_time,2)} rate: {round(rate,2)}')
+            time.sleep(1)
 
-    print ('-----done gathering stock data')
+    print (f'{count} writing to {stock_save_name}')
+    all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
+
+    print ('error_list: ')
+    for i in error_list:
+        print (i)
+    print (f'{len(error_list)} errors')
+
+    print ('\n\n\n\n&&&&&----- done gathering stock and option data\n\n')
+
+    return
 
 if __name__ == "__main__":
-    gather_option_data()
-    gather_stock_data()
+
+    gather_stock_and_option_data()
     run_nope()
