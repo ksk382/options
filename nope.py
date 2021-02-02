@@ -29,9 +29,10 @@ def run_nope():
                 latest = csv_time
                 latest_i = i
     print (latest, i)
-    fname_root = dt.datetime.strftime(latest, "%Y-%m-%d_%H.%M")
 
     latest_i = '2021-02-02_14.30.csv'
+    fname_root = latest_i.replace('.csv', '')
+
     stock_df_name = stock_dir_name + latest_i
     stock_df = pd.read_csv(stock_df_name, compression='gzip')
 
@@ -73,6 +74,8 @@ def run_nope():
     k = stock_df['symbol'].unique()
     print (f'total unique stocks:       {len(k)}')
     print (f'total unique option_dfs:   {len(j)}')
+    print ('stock name: ', stock_df_name)
+    print ('option_dir_name: ', option_dir)
 
 
     nope_df_name = nope_dir_name + fname_root + '_nope.csv'
