@@ -50,9 +50,9 @@ def gather_stock_and_option_data():
             s = s.append({'call_time': time.time()}, ignore_index=True)
             print (f'{count} retrieved {ticker} stock')
 
-            #option_df = get_option_df(ticker)
-            #s = s.append({'call_time': time.time()}, ignore_index=True)
-            #print (f'{count} retrieved {ticker} option chain')
+            option_df = get_option_df(ticker)
+            s = s.append({'call_time': time.time()}, ignore_index=True)
+            print (f'{count} retrieved {ticker} option chain')
 
             all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
             m = all_stock_df['symbol'].unique()
@@ -63,9 +63,9 @@ def gather_stock_and_option_data():
                 print (f'{count} writing to {stock_save_name}')
                 all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
 
-            #option_save_name = option_dir_name + ticker + '_.csv'
-            #print (f'{count} writing to {option_save_name}')
-            #option_df.to_csv(option_save_name, compression='gzip', index=False)
+            option_save_name = option_dir_name + ticker + '_.csv'
+            print (f'{count} writing to {option_save_name}')
+            option_df.to_csv(option_save_name, compression='gzip', index=False)
 
             # rate limiting
             y = time.time()
@@ -83,16 +83,6 @@ def gather_stock_and_option_data():
             error_list.append([ticker, str(e)])
             with open(err_output_file, 'a') as f:
                 f.write("%s\n" % [ticker, str(e)])
-
-
-        ''' this rate limiter does not work
-        elapsed_time = (time.time() - start_time) * 60
-        rate = (count / elapsed_time)
-        while rate >= 60:
-            elapsed_time = (time.time() - start_time) * 60
-            rate = (count / elapsed_time)
-            print (f'sleeping...count: {count} elapsed_time: {round(elapsed_time,2)} rate: {round(rate,2)}')
-            time.sleep(1)'''
 
     print (f'{count} writing to {stock_save_name}')
     all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)

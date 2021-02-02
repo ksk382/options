@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 import requests
 from cred_file import *
 from io import StringIO
@@ -8,14 +11,42 @@ import datetime as dt
 import os
 import time
 import numpy as np
+import seaborn as sns
 
-df = pd.read_csv('../nope_dataframes/2021-02-02_17.30_nope.csv', compression = 'gzip')
-pd.set_option('display.max_rows', 200)
-pd.set_option('display.min_rows', None)
 
-df = df.round(5)
-df = df[~df.isin([np.nan, np.inf, -np.inf]).any(1)]
-print (df)
+pd.set_option('display.max_rows', 800)
 
-df = df.sort_values(by='Nope_adv_21', ascending = False)
-print (df)
+morning_nope_file = '../nope_dataframes/2021-02-02_14.30_nope.csv'
+nope_df = pd.read_csv(morning_nope_file, compression = 'gzip')
+nope_df['symbol'] = nope_df['Ticker']
+print (nope_df)
+
+morning_stock_file = '../stock_dataframes/2021-02-02_14.30.csv'
+morning_stock_df = pd.read_csv(morning_stock_file, compression = 'gzip')
+
+later_stock_file = '../stock_dataframes/2021-02-02_17.30.csv'
+stock_df = pd.read_csv(later_stock_file, compression = 'gzip')
+
+morning_stock_df['morning'] = morning_stock_df['last']
+morning_lasts = morning_stock_df[['symbol', 'morning']]
+stock_df = pd.merge(stock_df, morning_lasts, on=['symbol'])
+stock_df['change_from_morning'] = (stock_df['last'] - stock_df['morning']) / stock_df['morning']
+df1 = pd.merge(stock_df, nope_df, on=['symbol'])
+df1 = df1.dropna()
+df1 = df1.round(3)
+df1 = df1[df1['Nope'] >.05]
+df1['100_bucks'] = 100 + 100 * df1['change_from_morning']
+df1 = df1.sort_values(by='Nope', ascending = False)
+df1 = df1[~df1.isin([np.nan, np.inf, -np.inf]).any(1)]
+cols = ['symbol', 'last', 'morning', 'change_from_morning', 'Nope_adv_21', 'Nope','100_bucks']
+print (df1[cols])
+print (df1['100_bucks'].sum())
+print (len(df1.index) * 100)
+roi = (df1['100_bucks'].sum() - (len(df1.index) * 100)) / (len(df1.index) * 100)
+print (roi)
+#df1.plot(x='Nope', y='change_from_morning', style='o')
+#sns.regplot(df1['Nope_adv_21'],df1['change_from_morning'])
+#sns.regplot(df1['Nope'],df1['change_from_morning'])
+#plt.show()
+
+
