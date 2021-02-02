@@ -30,11 +30,12 @@ def run_nope():
                 latest_i = i
     print (latest, latest_i)
 
-    latest_i = '2021-02-02_09.30.csv'
+    latest_i = '2021-02-02_12.30.csv'
     fname_root = latest_i.replace('.csv', '')
     print (fname_root)
 
     stock_df_name = stock_dir_name + latest_i
+    print (f'stock_df_name: {stock_df_name}')
     stock_df = pd.read_csv(stock_df_name, compression='gzip')
 
     print (stock_df['symbol'].unique())
