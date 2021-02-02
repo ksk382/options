@@ -30,7 +30,7 @@ def run_nope():
                 latest_i = i
     print (latest, latest_i)
 
-    #latest_i = '2021-02-02_05.37.csv'
+    latest_i = '2021-02-02_09.30.csv'
     fname_root = latest_i.replace('.csv', '')
     print (fname_root)
 

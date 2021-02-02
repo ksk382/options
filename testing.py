@@ -16,15 +16,15 @@ import seaborn as sns
 
 pd.set_option('display.max_rows', 800)
 
-morning_nope_file = '../nope_dataframes/2021-02-02_14.30_nope.csv'
+morning_nope_file = '../nope_dataframes/2021-02-02_09.30_nope.csv'
 nope_df = pd.read_csv(morning_nope_file, compression = 'gzip')
 nope_df['symbol'] = nope_df['Ticker']
 print (nope_df)
 
-morning_stock_file = '../stock_dataframes/2021-02-02_14.30.csv'
+morning_stock_file = '../stock_dataframes/2021-02-02_09.30.csv'
 morning_stock_df = pd.read_csv(morning_stock_file, compression = 'gzip')
 
-later_stock_file = '../stock_dataframes/2021-02-02_17.30.csv'
+later_stock_file = '../stock_dataframes/2021-02-02_16.19.csv'
 stock_df = pd.read_csv(later_stock_file, compression = 'gzip')
 
 morning_stock_df['morning'] = morning_stock_df['last']
@@ -40,11 +40,13 @@ df1 = df1.sort_values(by='Nope', ascending = False)
 df1 = df1[~df1.isin([np.nan, np.inf, -np.inf]).any(1)]
 cols = ['symbol', 'last', 'morning', 'change_from_morning', 'Nope_adv_21', 'Nope','100_bucks']
 print (df1[cols])
-print (df1['100_bucks'].sum())
-print (len(df1.index) * 100)
-roi = (df1['100_bucks'].sum() - (len(df1.index) * 100)) / (len(df1.index) * 100)
-print (roi)
-#df1.plot(x='Nope', y='change_from_morning', style='o')
+
+#print (df1['100_bucks'].sum())
+#print (len(df1.index) * 100)
+#roi = (df1['100_bucks'].sum() - (len(df1.index) * 100)) / (len(df1.index) * 100)
+#print (roi)
+
+df1.plot(x='Nope', y='change_from_morning', style='o')
 #sns.regplot(df1['Nope_adv_21'],df1['change_from_morning'])
 #sns.regplot(df1['Nope'],df1['change_from_morning'])
 #plt.show()
