@@ -38,6 +38,7 @@ def run_nope():
     stock_df = pd.read_csv(stock_df_name, compression='gzip')
 
     print (stock_df['symbol'].unique())
+    print (len(stock_df['symbol'].unique()))
 
     option_dir = '../option_dataframes/' + latest_i[:-4] + '/'
     option_df_list = os.listdir(option_dir)
@@ -58,13 +59,29 @@ def run_nope():
             adv_21 = stock_df[stock_df['symbol'] == ticker]['adv_21'].item()
             option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
             option_df = pd.read_csv(option_df_name, compression='gzip')
-            option_df['weighted'] = option_df['vl'] * option_df['idelta']
-            nope_metric = option_df['weighted'].sum() / volume
-            nope_21 = option_df['weighted'].sum() / adv_21
-            a = {'Date': fname_root,
-                 'Ticker': ticker,
-                 'Nope': nope_metric,
-                 'Nope_adv_21': nope_21}
+
+            # find weighted delta
+            option_df['weighted_delta'] = option_df['vl'] * option_df['idelta']
+            net_delta = option_df['weighted_delta'].sum()
+
+            nope_metric = net_delta / volume
+            nope_21 = net_delta / adv_21
+
+            option_df['weighted_gamma'] = option_df['vl'] * option_df['igamma']
+            net_gamma = option_df['weighted_gamma'].sum()
+
+            noge = net_gamma / volume
+            noge_21 = net_gamma / adv_21
+
+            a = {'date': fname_root,
+                 'ticker': ticker,
+                 'nope_metric': nope_metric,
+                 'nope_adv_21': nope_21,
+                 'net_delta': net_delta,
+                 'net_gamma': net_gamma,
+                 'noge': noge,
+                 'noge_21': noge_21}
+
             nope_df = nope_df.append(a, ignore_index=True)
         except Exception as e:
             print (str(e))
