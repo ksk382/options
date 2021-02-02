@@ -8,8 +8,16 @@ import datetime as dt
 import os
 import time
 
-df = pd.read_csv('../stock_dataframes/2021-02-01_21.21.csv', compression = 'gzip')
-print (df)
 
-a = len(df['symbol'].unique())
-print (a)
+s = pd.DataFrame([])
+for i in range(0,13):
+    time.sleep(.1)
+    s = s.append({'call_time':time.time()}, ignore_index= True)
+
+print (s)
+y = time.time() - 1
+print (y)
+q = s[s['call_time']>y]
+print (q)
+print (len(s))
+print (len(q))

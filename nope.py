@@ -31,7 +31,7 @@ def run_nope():
     print (latest, i)
     fname_root = dt.datetime.strftime(latest, "%Y-%m-%d_%H.%M")
 
-    stock_df_name = stock_dir_name + i
+    stock_df_name = stock_dir_name + latest_i
     stock_df = pd.read_csv(stock_df_name, compression='gzip')
 
     print (stock_df['symbol'].unique())
@@ -75,7 +75,10 @@ def run_nope():
 
 
     nope_df_name = nope_dir_name + fname_root + '_nope.csv'
+    print (f'writing to {nope_df_name}')
     nope_df.to_csv(nope_df_name, compression = 'gzip', index = False)
+
+    return
 
 if __name__ == '__main__':
     run_nope()
