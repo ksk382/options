@@ -28,10 +28,11 @@ def run_nope():
             if csv_time > latest:
                 latest = csv_time
                 latest_i = i
-    print (latest, i)
+    print (latest, latest_i)
 
-    latest_i = '2021-02-02_14.30.csv'
+    #latest_i = '2021-02-02_14.30.csv'
     fname_root = latest_i.replace('.csv', '')
+    print (fname_root)
 
     stock_df_name = stock_dir_name + latest_i
     stock_df = pd.read_csv(stock_df_name, compression='gzip')
