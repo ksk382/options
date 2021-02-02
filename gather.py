@@ -3,6 +3,7 @@ from api_calls import get_option_df, get_stock_df
 import datetime as dt
 import os
 import time
+from nope import run_nope
 
 
 def gather_option_data():
@@ -81,9 +82,7 @@ def gather_stock_data():
     print (now)
 
     today = str(now)[:10]
-    dir_name = '../stock_dataframes/' + today + '/'
-    if not os.path.exists('../stock_dataframes/'):
-        os.mkdir('../stock_dataframes/')
+    dir_name = '../stock_dataframes/'
     if not os.path.exists(dir_name):
         os.mkdir(dir_name)
 
@@ -119,3 +118,4 @@ def gather_stock_data():
 if __name__ == "__main__":
     gather_option_data()
     gather_stock_data()
+    run_nope()
