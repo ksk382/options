@@ -43,6 +43,7 @@ def gather_stock_and_option_data():
     start_time = time.time()
     # set up a rate limiter
     s = pd.DataFrame([])
+    exception_count = 0
     for ticker in ticker_list:
         try:
             count += 1
@@ -71,18 +72,22 @@ def gather_stock_and_option_data():
             y = time.time()
             q = s[s['call_time'] > y]
             breaker = 0
-            while len(q) > 59 or breaker > 60:
+            while len(q) > 58 or breaker > 60:
                 print (f'number of calls in last minute: {len(q)} ---- sleeping 1 second')
                 time.sleep(1)
                 y = time.time()
                 q = s[s['call_time'] > y]
                 breaker +=1
+            exception_count = 0
 
         except Exception as e:
+            exception_count += 1
             print (ticker, str(e))
             error_list.append([ticker, str(e)])
             with open(err_output_file, 'a') as f:
                 f.write("%s\n" % [ticker, str(e)])
+            if exception_count > 2:
+                time.sleep(2)
 
     print (f'{count} writing to {stock_save_name}')
     all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
