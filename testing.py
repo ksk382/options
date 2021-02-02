@@ -7,8 +7,4 @@ import pandas as pd
 import datetime as dt
 import os
 
-ticker_df = pd.read_csv('IWV_holdings.csv')
-ticker_list = list(ticker_df['Ticker'].unique())
-etf_df = pd.read_csv('etf_ticker_list.csv')
-ticker_list = ticker_list + list(etf_df['Ticker'].unique())
-print (ticker_list)
+df = pd.read_csv('2021-02-01 21.57_nope.csv', compression = 'gzip')

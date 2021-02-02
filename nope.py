@@ -26,7 +26,7 @@ def run_nope():
                 latest = csv_time
                 latest_i = i
     print (latest, i)
-    fname_root = dt.datetime.strftime(latest, "%Y-%m-%d %H.%M")
+    fname_root = dt.datetime.strftime(latest, "%Y-%m-%d_%H.%M")
 
     stock_df_name = stock_dir_name + i
     stock_df = pd.read_csv(stock_df_name, compression='gzip')

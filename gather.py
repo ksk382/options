@@ -33,7 +33,7 @@ def gather_option_data():
         d = i.replace('.csv','')
         d = d[-len('2021-01-29 14.13'):]
         done_ticker = i.replace(d,'').replace('_','').replace('.csv','')
-        prev_call_time = dt.datetime.strptime(d, "%Y-%m-%d %H.%M")
+        prev_call_time = dt.datetime.strptime(d, "%Y-%m-%d_%H.%M")
         hour_ago = now - dt.timedelta(hours=1)
         if prev_call_time > hour_ago:
             done_tickers.append(done_ticker)
@@ -42,7 +42,7 @@ def gather_option_data():
     print (done_tickers)
 
     error_list = []
-    now_str = dt.datetime.strftime(now, "%Y-%m-%d %H.%M")
+    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
     err_output_file = '../logs/' + now_str + '_option_error_list.txt'
     count = 0
     for ticker in ticker_list:
@@ -51,7 +51,7 @@ def gather_option_data():
             now = dt.datetime.now()
             try:
                 df = get_option_df(ticker)
-                fname = ticker + '_' + dt.datetime.strftime(now, "%Y-%m-%d %H.%M") + '.csv'
+                fname = ticker + '_' + dt.datetime.strftime(now, "%Y-%m-%d_%H.%M") + '.csv'
                 filename = dir_name + fname
                 print (f'{count} writing {filename}')
                 df.to_csv(filename, compression='gzip', index=False)
@@ -87,11 +87,11 @@ def gather_stock_data():
         os.mkdir(dir_name)
 
     error_list = []
-    now_str = dt.datetime.strftime(now, "%Y-%m-%d %H.%M")
+    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
     err_output_file = '../logs/' + now_str + '_stock_error_list.txt'
     count = 0
     all_df = pd.DataFrame()
-    fname = dt.datetime.strftime(now, "%Y-%m-%d %H.%M") + '.csv'
+    fname = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M") + '.csv'
     filename = dir_name + fname
 
     for ticker in ticker_list:
