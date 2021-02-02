@@ -69,7 +69,7 @@ def gather_stock_and_option_data():
             y = time.time() - 60
             q = s[s['call_time'] > y]
             breaker = 0
-            while len(q) > 58 or breaker > 60:
+            while len(q) > 58 or breaker > 10:
                 sleep_time = (len(q) - 58)
                 print (f'number of calls in last minute: {len(q)} ---- sleeping {sleep_time} seconds')
                 time.sleep(sleep_time)
