@@ -21,7 +21,10 @@ def run_nope():
     for i in stock_df_list:
         if i.endswith('.csv'):
             j = i.replace('.csv', '')
-            csv_time = dt.datetime.strptime(j, "%Y-%m-%d_%H.%M")
+            try:
+                csv_time = dt.datetime.strptime(j, "%Y-%m-%d_%H.%M")
+            except:
+                csv_time = dt.datetime.strptime(j, "%Y-%m-%d %H.%M")
             if csv_time > latest:
                 latest = csv_time
                 latest_i = i
