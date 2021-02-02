@@ -24,11 +24,11 @@ def gather_stock_and_option_data():
     if not os.path.exists(stock_dir_name):
         os.mkdir(stock_dir_name)
     all_stock_df = pd.DataFrame()
-    fname = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M") + '.csv'
+    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
+    fname = now_str + '.csv'
     stock_save_name = stock_dir_name + fname
 
     # initialize option save folder
-    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
     option_dir_name = '../option_dataframes/' + now_str + '/'
     if not os.path.exists('../option_dataframes/'):
         os.mkdir('../option_dataframes/')
@@ -56,7 +56,7 @@ def gather_stock_and_option_data():
                 print (f'{count} writing to {stock_save_name}')
                 all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
 
-            option_save_name = option_dir_name + ticker
+            option_save_name = option_dir_name + ticker + '_.csv'
             print (f'{count} writing {option_save_name}')
             option_df.to_csv(option_save_name, compression='gzip', index=False)
 

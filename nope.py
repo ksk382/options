@@ -38,6 +38,8 @@ def run_nope():
 
     option_dir = '../option_dataframes/' + latest_i[:-4] + '/'
     option_df_list = os.listdir(option_dir)
+    print (option_dir)
+    print (option_df_list)
 
     nope_df = pd.DataFrame()
 
