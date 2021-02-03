@@ -24,7 +24,6 @@ def gather_stock_and_option_data(**kwargs):
         now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
         print (now_str)
 
-
     print ('&&&&&----- beginning loop')
 
     error_list = run_loop(ticker_list, now_str)
