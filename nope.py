@@ -5,7 +5,8 @@ import sys
 import datetime as dt
 
 
-def run_nope():
+def run_nope(**kwargs):
+
     nope_dir_name = '../nope_dataframes/'
     if not os.path.exists(nope_dir_name):
         os.mkdir(nope_dir_name)
@@ -17,18 +18,21 @@ def run_nope():
     stock_dir_name = '../stock_dataframes/'
     stock_df_list = os.listdir(stock_dir_name)
     print (stock_df_list)
-    latest = dt.datetime.now() - dt.timedelta(days=5)
-    for i in stock_df_list:
-        if i.endswith('.csv'):
-            j = i.replace('.csv', '')
-            try:
-                csv_time = dt.datetime.strptime(j, "%Y-%m-%d_%H.%M")
-            except:
-                csv_time = dt.datetime.strptime(j, "%Y-%m-%d %H.%M")
-            if csv_time > latest:
-                latest = csv_time
-                latest_i = i
-    print (latest, latest_i)
+    if 'date_to_run' in kwargs.keys():
+        latest_i = kwargs['date_to_run'] + '.csv'
+    else:
+        latest = dt.datetime.now() - dt.timedelta(days=5)
+        for i in stock_df_list:
+            if i.endswith('.csv'):
+                j = i.replace('.csv', '')
+                try:
+                    csv_time = dt.datetime.strptime(j, "%Y-%m-%d_%H.%M")
+                except:
+                    csv_time = dt.datetime.strptime(j, "%Y-%m-%d %H.%M")
+                if csv_time > latest:
+                    latest = csv_time
+                    latest_i = i
+        print (latest, latest_i)
 
     #latest_i = '2021-02-01 21.57.csv'
     fname_root = latest_i.replace('.csv', '')
@@ -104,7 +108,8 @@ def run_nope():
     return
 
 if __name__ == '__main__':
-    run_nope()
+    date_to_run = input("enter date to run:\n")
+    run_nope(date_to_run = date_to_run)
 
 
 
