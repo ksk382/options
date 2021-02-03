@@ -76,7 +76,10 @@ def gather_stock_and_option_data():
                 option_df.to_csv(option_save_name, compression='gzip', index=False)
 
                 # rate limiting
-                rate_remaining = min(stock_rate_remaining, option_rate_remaining)
+                try:
+                    rate_remaining = int(min(stock_rate_remaining, option_rate_remaining))
+                except:
+                    rate_remaining = 20
                 if rate_remaining < 10:
                     sleep_time = -(10 - rate_remaining)
                     print (f'{count} of {len(ticker_list)} rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
