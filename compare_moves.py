@@ -12,7 +12,7 @@ import seaborn as sns
 
 pd.set_option('display.max_rows', 800)
 
-before = '2021-02-02_16.19'
+before = '2021-02-02_15.30'
 after = '2021-02-03_09.30'
 
 before_nope_file = f'../nope_dataframes/{before}_nope.csv'
@@ -35,7 +35,7 @@ df1 = pd.merge(after_stock_df, nope_df, on=['symbol'])
 df1 = df1.dropna()
 df1 = df1[~df1.isin([np.nan, np.inf, -np.inf]).any(1)]
 #df1 = df1.round(4)
-#df1 = df1[df1['nope_metric'].abs() >.02]
+df1 = df1[df1['nope_metric'].abs() >.02]
 df1['100_bucks'] = 100 + (100 * df1['change_from_before'] * np.sign(df1['nope_metric']))
 
 var = 'nope_metric'

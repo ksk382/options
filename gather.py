@@ -81,7 +81,7 @@ def gather_stock_and_option_data():
                 except:
                     rate_remaining = 20
                 if rate_remaining < 10:
-                    sleep_time = -(10 - rate_remaining)
+                    sleep_time = (10 - rate_remaining)
                     print (f'{count} of {len(ticker_list)} rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
                     time.sleep(sleep_time)
 
