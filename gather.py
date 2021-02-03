@@ -17,7 +17,7 @@ def gather_stock_and_option_data(**kwargs):
     print ('ticker list:')
     print (ticker_list)
 
-    if 'kow_str' in kwargs.keys:
+    if 'kow_str' in kwargs.keys():
         now_str = kwargs['kow_str']
     else:
         now = dt.datetime.now()
