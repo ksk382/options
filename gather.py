@@ -56,11 +56,11 @@ def gather_stock_and_option_data():
             print (f'Already have {ticker}')
         else:
             try:
-                stock_df = get_stock_df(ticker)
+                stock_df, stock_rate_remaining = get_stock_df(ticker)
                 s = s.append({'call_time': time.time()}, ignore_index=True)
                 print (f'{count} retrieved {ticker} stock')
 
-                option_df = get_option_df(ticker)
+                option_df, option_rate_remaining = get_option_df(ticker)
                 s = s.append({'call_time': time.time()}, ignore_index=True)
                 print (f'{count} retrieved {ticker} option chain')
 
@@ -76,6 +76,14 @@ def gather_stock_and_option_data():
                 option_df.to_csv(option_save_name, compression='gzip', index=False)
 
                 # rate limiting
+                rate_remaining = min(stock_rate_remaining, option_rate_remaining)
+                if rate_remaining < 10:
+                    sleep_time = -(10 - rate_remaining)
+                    print (f'rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
+                    time.sleep(sleep_time)
+
+                '''
+                # alternate rate limiting code
                 y = time.time() - 60
                 q = s[s['call_time'] > y]
                 breaker = 0
@@ -87,6 +95,7 @@ def gather_stock_and_option_data():
                     q = s[s['call_time'] > y]
                     breaker +=1
                 exception_count = 0
+                '''
 
             except Exception as e:
                 exception_count += 1
