@@ -71,7 +71,6 @@ def run_loop(ticker_list, now_str):
         else:
             try:
                 stock_df, stock_rate_remaining = get_stock_df(ticker)
-                s = s.append({'call_time': time.time()}, ignore_index=True)
                 print (f'{count} of {len(ticker_list)} retrieved {ticker} stock')
 
                 option_df, option_rate_remaining = get_option_df(ticker)
