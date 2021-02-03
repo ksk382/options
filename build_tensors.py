@@ -31,12 +31,12 @@ pd.set_option('display.max_rows', 800)
 pd.set_option('display.min_rows', 200)
 
 
-before = '2021-02-01_21.57'
-before_stock_file = f'../stock_dataframes/{before}.csv'
-df1 = pd.read_csv(before_stock_file, compression = 'gzip')
+two_days_ago = '2021-02-01_21.57'
+two_days_ago_file = f'../stock_dataframes/{two_days_ago}.csv'
+df1 = pd.read_csv(two_days_ago_file, compression = 'gzip')
 
-before = '2021-02-02_16.19'
-after = '2021-02-03_09.30'
+before = '2021-02-02_15.30'
+after = '2021-02-03_12.30'
 before_stock_file = f'../stock_dataframes/{before}.csv'
 df2 = pd.read_csv(before_stock_file, compression = 'gzip')
 
