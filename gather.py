@@ -58,11 +58,11 @@ def gather_stock_and_option_data():
             try:
                 stock_df, stock_rate_remaining = get_stock_df(ticker)
                 s = s.append({'call_time': time.time()}, ignore_index=True)
-                print (f'{count} retrieved {ticker} stock')
+                print (f'{count} of {len(ticker_list)} retrieved {ticker} stock')
 
                 option_df, option_rate_remaining = get_option_df(ticker)
                 s = s.append({'call_time': time.time()}, ignore_index=True)
-                print (f'{count} retrieved {ticker} option chain')
+                print (f'{count} of {len(ticker_list)} retrieved {ticker} option chain')
 
                 all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
 
@@ -72,14 +72,14 @@ def gather_stock_and_option_data():
                     all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
 
                 option_save_name = option_dir_name + ticker + '_.csv'
-                print (f'{count} writing to {option_save_name}')
+                print (f'{count} of {len(ticker_list)} writing to {option_save_name}')
                 option_df.to_csv(option_save_name, compression='gzip', index=False)
 
                 # rate limiting
                 rate_remaining = min(stock_rate_remaining, option_rate_remaining)
                 if rate_remaining < 10:
                     sleep_time = -(10 - rate_remaining)
-                    print (f'rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
+                    print (f'{count} of {len(ticker_list)} rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
                     time.sleep(sleep_time)
 
                 '''
