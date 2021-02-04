@@ -166,8 +166,8 @@ def run_nope(**kwargs):
 
 if __name__ == '__main__':
     #date_to_run = input("enter date to run:\n")
-    #run_nope(date_to_run = date_to_run)
-    nope_one_off('AAPL', '2021-02-03_15.30')
+    run_nope(date_to_run = '2021-02-03_15.30')
+    #nope_one_off('AAPL', '2021-02-03_15.30')
 
 
 
