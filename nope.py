@@ -5,7 +5,7 @@ import sys
 import datetime as dt
 
 
-def nope_one_off(ticker, now_str):
+def nope_one_off(ticker, stock_df, option_df, now_str):
     nope_dir_name = '../nope_dataframes/'
     if not os.path.exists(nope_dir_name):
         os.mkdir(nope_dir_name)
@@ -17,17 +17,8 @@ def nope_one_off(ticker, now_str):
     else:
         nope_df = pd.DataFrame([])
 
-    option_dir = '../option_dataframes/' + now_str + '/'
-    option_df_list = os.listdir(option_dir)
-
-    stock_dir_name = '../stock_dataframes/'
-    stock_df_name = stock_dir_name + now_str + '.csv'
-    stock_df = pd.read_csv(stock_df_name, compression = 'gzip')
-
     volume = stock_df[stock_df['symbol'] == ticker]['vl'].item()
     adv_21 = stock_df[stock_df['symbol'] == ticker]['adv_21'].item()
-    option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
-    option_df = pd.read_csv(option_df_name, compression='gzip')
 
     # find weighted delta
     option_df['weighted_delta'] = option_df['vl'] * option_df['idelta']
@@ -167,7 +158,18 @@ def run_nope(**kwargs):
 if __name__ == '__main__':
     #date_to_run = input("enter date to run:\n")
     #run_nope(date_to_run = '2021-02-03_15.30')
-    nope_one_off('AAPL', '2021-02-04_15.30')
+    now_str = '2021-02-04_15.30'
+    ticker = 'AAPL'
+    stock_dir_name = '../stock_dataframes/'
+    stock_df_name = stock_dir_name + now_str + '.csv'
+    stock_df = pd.read_csv(stock_df_name, compression = 'gzip')
+    option_dir = '../option_dataframes/' + now_str + '/'
+    option_df_list = os.listdir(option_dir)
+    option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
+    option_df = pd.read_csv(option_df_name, compression='gzip')
+
+    print (stock_df)
+    nope_one_off(ticker, stock_df, now_str)
 
 
 
