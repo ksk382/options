@@ -17,6 +17,9 @@ def nope_one_off(ticker, now_str):
     else:
         nope_df = pd.DataFrame([])
 
+    option_dir = '../option_dataframes/' + now_str + '/'
+    option_df_list = os.listdir(option_dir)
+
     stock_dir_name = '../stock_dataframes/'
     stock_df_name = stock_dir_name + now_str + '.csv'
     stock_df = pd.read_csv(stock_df_name, compression = 'gzip')
