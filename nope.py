@@ -14,6 +14,9 @@ def nope_one_off(ticker, stock_df, option_df, now_str):
     print (nope_df_name)
     if os.path.exists(nope_df_name):
         nope_df = pd.read_csv(nope_df_name, compression = 'gzip')
+        if len(nope_df[nope_df['ticker'] == ticker].index) != 0:
+            print (f'already have {ticker}')
+            return
     else:
         nope_df = pd.DataFrame([])
 
@@ -42,12 +45,9 @@ def nope_one_off(ticker, stock_df, option_df, now_str):
          'noge': noge,
          'noge_21': noge_21}
 
-    if len(nope_df[nope_df['ticker'] == ticker].index) == 0:
-        nope_df = nope_df.append(a, ignore_index=True)
-        print(f'writing to {nope_df_name}')
-        nope_df.to_csv(nope_df_name, compression='gzip', index=False)
-    else:
-        print ('already in nope_df')
+    nope_df = nope_df.append(a, ignore_index=True)
+    print(f'writing to {nope_df_name}')
+    nope_df.to_csv(nope_df_name, compression='gzip', index=False)
 
     pd.set_option('display.max_rows', 800)
 
