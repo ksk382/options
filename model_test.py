@@ -67,4 +67,4 @@ test_dataset['true_label'] = true_label
 test_dataset['profit'] = test_dataset['test_pred'] * test_dataset['true_label']
 cols = ['test_pred', 'true_label']
 print (test_dataset[cols])
-print (round(test_dataset['profit'].mean(),2))
+print (round(test_dataset['profit'].mean(),4))
