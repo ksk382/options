@@ -19,7 +19,7 @@ log_dir = '../ML_logs/'
 if not os.path.exists(log_dir):
     os.mkdir(log_dir)
 
-df_file = '../nope_dataframes/tensor_df_2021-02-02_15.30.csv'
+df_file = '../nope_dataframes/combined_tensor_df.csv'
 df = pd.read_csv(df_file, compression = 'gzip')
 
 df = df.apply(pd.to_numeric, errors='coerce')
@@ -28,8 +28,6 @@ df = df.dropna(axis=1, how='all')
 df['buy'] = (df['label'] > .02) * 1
 raw_count = df['buy'].sum()
 total_population = df.shape[0]
-df.pop('label')
-#df.pop('nope_metric')
 
 print (df.head())
 print (df.shape)
@@ -38,6 +36,10 @@ label = 'buy'
 
 train_dataset = df.sample(frac=0.8,random_state=0)
 test_dataset = df.drop(train_dataset.index)
+test_dataset.to_csv('../ML_logs/test_dataset.csv', compression = 'gzip', index = False)
+
+train_dataset.pop('label')
+test_dataset.pop('label')
 
 #sns.pairplot(train_dataset[['days_before_dividend',
 #            'delta_open', 'delta_close', 'delta_high', 'delta_low',
@@ -48,12 +50,11 @@ test_labels = test_dataset.pop(label)
 #plt.show()
 train_stats = train_dataset.describe()
 train_stats = train_stats.transpose()
-print (train_stats)
+train_stats.to_csv('../ML_logs/train_stats.csv', compression = 'gzip', index = True)
 
 print (train_dataset.tail())
 print (train_dataset.columns)
 print ('Final train_dataset shape: ', train_dataset.shape)
-
 
 def norm(x):
     return (x - train_stats['mean']) / train_stats['std']
@@ -65,20 +66,20 @@ normed_train_data.fillna(0, inplace=True)
 normed_test_data = norm(test_dataset)
 normed_test_data.fillna(0, inplace=True)
 print (normed_train_data.tail())
-learning_rate = .00001
+learning_rate = .000001
 clipnorm = 1.
 
 def build_model():
     model = keras.Sequential([
         layers.Dense(128, activation=tf.nn.tanh, input_shape=[len(train_dataset.keys())]),
         layers.Dense(128, activation=tf.nn.tanh),
-        #layers.Dropout(.1, noise_shape=None, seed=1),
+        layers.Dropout(.1, noise_shape=None, seed=1),
         layers.Dense(64, activation=tf.nn.tanh),
         layers.Dense(64, activation=tf.nn.tanh),
-        #layers.Dropout(.1, noise_shape=None, seed=1),
+        layers.Dropout(.1, noise_shape=None, seed=1),
         layers.Dense(64, activation=tf.nn.tanh),
         layers.Dense(64, activation=tf.nn.tanh),
-        #layers.Dense(64, activation=tf.nn.tanh),
+        layers.Dense(64, activation=tf.nn.tanh),
         layers.Dense(1)
     ])
 
@@ -102,7 +103,7 @@ class PrintDot(keras.callbacks.Callback):
         if epoch % 100 == 0: print('')
         print('.', end='')
 
-EPOCHS = 100
+EPOCHS = 500
 
 #checkpoint_path = "database/cp.ckpt"
 #checkpoint_dir = os.path.dirname(checkpoint_path)
@@ -126,7 +127,17 @@ print ('mad: {0}'.format(df[label].mad()))
 pct_count = raw_count / total_population
 print (f'raw_count: {raw_count} of {total_population} ({pct_count}')
 
-
+print('\n\n\n')
+print ('test predictions:')
+test_predictions = model.predict(normed_test_data)
+test_predictions = (test_predictions > .5)
+print ('confusion matrix:')
+conf_matrix = tf.math.confusion_matrix(test_labels, test_predictions)
+print (conf_matrix)
+try:
+    print (conf_matrix[:][1])
+except Exception as e:
+    print (str(e))
 
 now_str = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d_%H.%M")
 log_file = f'{log_dir}/log_{now_str} - {round(history.history["val_mse"][-1],2)}.txt'

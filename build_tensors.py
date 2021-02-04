@@ -33,17 +33,27 @@ def make_tensors(two_days_ago, one_day_ago, result_today):
 
        result_today_stock_file = f'../stock_dataframes/{result_today}.csv'
        mvmnt_df =  pd.read_csv(result_today_stock_file, compression = 'gzip')
-       mvmnt_df['tmmrw_last'] = mvmnt_df['last']
-       mvmnt_df = mvmnt_df[['symbol', 'tmmrw_last']]
+       mvmnt_df['opn_z'] = mvmnt_df['opn']
+       mvmnt_df = mvmnt_df[['symbol', 'opn_z']]
 
        df3 = pd.merge(df1, df2, on=['symbol'])
        df3 = pd.merge(df3, mvmnt_df, on='symbol')
-       df3['label'] = (df3['tmmrw_last'] - df3['cl_y']) / df3['cl_y']
+       df3['label'] = (df3['opn_z'] - df3['cl_y']) / df3['cl_y']
 
        sp_500_df = pd.read_csv('sp500_ticker_list.csv')
 
        df3['sp'] = df3['symbol'].isin(sp_500_df['Ticker']) * 1
-       print (df3[['symbol', 'sp']])
+
+       # convert dates to datetime format
+       df3['date_x'] = pd.to_datetime(df3['date_x'])
+       df3['date_y'] = pd.to_datetime(df3['date_y'])
+
+       # adding weekday
+       df3['weekday_x'] = df3['date_x'].dt.dayofweek
+       df3['weekday_y'] = df3['date_y'].dt.dayofweek
+
+       print (df3)
+       print (df3.loc[0])
 
        show_cols = []
        show_cols.append('label')
@@ -97,11 +107,25 @@ def make_tensors(two_days_ago, one_day_ago, result_today):
        df5.to_csv(out_name, compression = 'gzip', index = False)
        print ('done')
 
-
+def merge_tensors():
+       dir_name = '../nope_dataframes/'
+       x = os.listdir(dir_name)
+       combined_tensor_df = pd.DataFrame([])
+       for i in x:
+              if i.startswith('tensor_df'):
+                     j = dir_name + i
+                     print (f'reading {j}')
+                     df1 = pd.read_csv(j, compression = 'gzip')
+                     print (df1.shape)
+                     combined_tensor_df = combined_tensor_df.append(df1)
+       print (f'final shape: {combined_tensor_df.shape}')
+       out_name = dir_name + 'combined_tensor_df.csv'
+       combined_tensor_df.to_csv(out_name, compression = 'gzip', index = False)
 
 
 if __name__ == '__main__':
-       two_days_ago = '2021-02-01_21.57'
-       one_day_ago = '2021-02-02_15.30'
-       result_today = '2021-02-03_09.30'
-       make_tensors(two_days_ago, one_day_ago, result_today)
+       x = '2021-02-02_15.30' # two evenings ago
+       y = '2021-02-03_15.30' # one evening ago
+       z = '2021-02-04_12.30' # anytime today that includes open price
+       #make_tensors(x, y, z)
+       merge_tensors()
