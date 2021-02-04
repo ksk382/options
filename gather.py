@@ -92,6 +92,7 @@ def run_loop(ticker_list, now_str):
                     rate_remaining = int(min(stock_rate_remaining, option_rate_remaining))
                 except:
                     rate_remaining = 20
+                print (f'measured rate_remaining: {rate_remaining}')
                 if rate_remaining < 10:
                     sleep_time = (15 - rate_remaining)
                     print (f'{count} of {len(ticker_list)} rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
