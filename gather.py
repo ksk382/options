@@ -71,10 +71,10 @@ def run_loop(ticker_list, now_str):
         else:
             try:
                 stock_df, stock_rate_remaining = get_stock_df(ticker)
-                print (f'{count} of {len(ticker_list)} retrieved {ticker} stock')
+                print (f'{count} of {len(ticker_list)} retrieved {ticker} stock. Rate remaining: {stock_rate_remaining}')
 
                 option_df, option_rate_remaining = get_option_df(ticker)
-                print (f'{count} of {len(ticker_list)} retrieved {ticker} option chain')
+                print (f'{count} of {len(ticker_list)} retrieved {ticker} option chain. Rate remaining: {stock_rate_remaining}')
 
                 all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
 
