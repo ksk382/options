@@ -56,7 +56,7 @@ def nope_one_off(ticker, now_str):
         print(f'writing to {nope_df_name}')
         nope_df.to_csv(nope_df_name, compression='gzip', index=False)
     else:
-        print ('alread in nope_df')
+        print ('already in nope_df')
 
     pd.set_option('display.max_rows', 800)
 
