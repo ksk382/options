@@ -51,7 +51,7 @@ def nope_one_off(ticker, now_str):
          'noge': noge,
          'noge_21': noge_21}
 
-    if a not in nope_df:
+    if nope_df[nope_df['ticker'] == ticker] == None:
         nope_df = nope_df.append(a, ignore_index=True)
         print(f'writing to {nope_df_name}')
         nope_df.to_csv(nope_df_name, compression='gzip', index=False)
