@@ -12,6 +12,7 @@ def get_stock_df(ticker):
     #print(json.dumps(d, indent = 4, sort_keys=True))
     d = r.json()['response']['quotes']['quote']
     df = pd.DataFrame([d])
+    # pass a rate limiter
     try:
         e = int(r.headers['X-RateLimit-Remaining'])
     except:
@@ -28,6 +29,7 @@ def get_option_df(ticker):
     #print(json.dumps(d, indent = 4, sort_keys=True))
     d = r.json()['response']['quotes']['quote']
     df = pd.DataFrame(d)
+    # pass a rate limiter
     try:
         e = int(r.headers['X-RateLimit-Remaining'])
     except:
