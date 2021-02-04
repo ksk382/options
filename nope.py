@@ -42,7 +42,7 @@ def nope_one_off(ticker, now_str):
     noge = net_gamma / volume
     noge_21 = net_gamma / adv_21
 
-    a = {'date': fname_root,
+    a = {'date': now_str,
          'ticker': ticker,
          'nope_metric': nope_metric,
          'nope_adv_21': nope_21,
