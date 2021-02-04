@@ -116,4 +116,3 @@ if __name__ == "__main__":
     #now_str = '2021-02-03_15.30'
     #gather_stock_and_option_data(kow_str = now_str)
     gather_stock_and_option_data()
-    run_nope()

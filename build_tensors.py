@@ -40,8 +40,14 @@ def make_tensors(two_days_ago, one_day_ago, result_today):
        df3 = pd.merge(df3, mvmnt_df, on='symbol')
        df3['label'] = (df3['tmmrw_last'] - df3['cl_y']) / df3['cl_y']
 
+       sp_500_df = pd.read_csv('sp500_ticker_list.csv')
+
+       df3['sp'] = df3['symbol'].isin(sp_500_df['Ticker']) * 1
+       print (df3[['symbol', 'sp']])
+
        show_cols = []
        show_cols.append('label')
+       show_cols.append('sp')
 
        day_chgs = ['opn','hi','lo','cl', 'vl', 'vwap']
        for i in day_chgs:
@@ -90,6 +96,9 @@ def make_tensors(two_days_ago, one_day_ago, result_today):
        out_name = f'../nope_dataframes/tensor_df_{one_day_ago}.csv'
        df5.to_csv(out_name, compression = 'gzip', index = False)
        print ('done')
+
+
+
 
 if __name__ == '__main__':
        two_days_ago = '2021-02-01_21.57'

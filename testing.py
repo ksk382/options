@@ -19,31 +19,9 @@ import json
 import pprint
 
 
-def get_stock_df(ticker):
-    target_url = stock_endpoint + ticker
-    r = requests.get(url=target_url, auth=oauth_hdr)
-    d = json.loads(r.text)
-    #print(json.dumps(d, indent = 4, sort_keys=True))
-    d = d['response']['quotes']['quote']
-    df = pd.DataFrame([d])
-    e = r.headers['X-RateLimit-Remaining']
-    return df, e
-
-def get_option_df(ticker):
-    now = dt.datetime.now()
-    year = str(now.year)
-    #month = str(now.month)
-    q = f'&query=xyear-eq%3A{year}' #%20AND%20xmonth-eq%3A{month}'
-    target_url = option_endpoint + ticker + q
-    r = requests.get(url=target_url, auth=oauth_hdr)
-    d = json.loads(r.text)
-    #print(json.dumps(d, indent = 4, sort_keys=True))
-    d = d['response']['quotes']['quote']
-    df = pd.DataFrame(d)
-    e = r.headers['X-RateLimit-Remaining']
-    return df, e
-
-
-df, rate_remaining = get_option_df('AAPL')
+df = pd.read_csv('sp500_ticker_list.csv')
 print (df)
-print (rate_remaining)
+
+before_stock_file = f'../nope_dataframes/2021-02-03_15.30_nope.csv'
+df2 = pd.read_csv(before_stock_file, compression = 'gzip')
+print (df2.columns)
