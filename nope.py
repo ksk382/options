@@ -169,7 +169,7 @@ if __name__ == '__main__':
     option_df = pd.read_csv(option_df_name, compression='gzip')
 
     print (stock_df)
-    nope_one_off(ticker, stock_df, now_str)
+    nope_one_off(ticker, stock_df, option_df, now_str)
 
 
 
