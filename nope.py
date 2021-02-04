@@ -51,10 +51,7 @@ def nope_one_off(ticker, now_str):
          'noge': noge,
          'noge_21': noge_21}
 
-    print (nope_df[nope_df['ticker'] == ticker])
-    print (len(nope_df[nope_df['ticker'] == ticker].index))
-
-    if nope_df[nope_df['ticker'] == ticker] == []:
+    if len(nope_df[nope_df['ticker'] == ticker].index) == 0:
         nope_df = nope_df.append(a, ignore_index=True)
         print(f'writing to {nope_df_name}')
         nope_df.to_csv(nope_df_name, compression='gzip', index=False)
