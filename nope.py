@@ -51,9 +51,12 @@ def nope_one_off(ticker, now_str):
          'noge': noge,
          'noge_21': noge_21}
 
-    nope_df = nope_df.append(a, ignore_index=True)
-    print(f'writing to {nope_df_name}')
-    nope_df.to_csv(nope_df_name, compression='gzip', index=False)
+    if a not in nope_df:
+        nope_df = nope_df.append(a, ignore_index=True)
+        print(f'writing to {nope_df_name}')
+        nope_df.to_csv(nope_df_name, compression='gzip', index=False)
+    else:
+        print ('alread in nope_df')
 
     pd.set_option('display.max_rows', 800)
 
