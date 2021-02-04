@@ -12,7 +12,10 @@ def get_stock_df(ticker):
     #print(json.dumps(d, indent = 4, sort_keys=True))
     d = r.json()['response']['quotes']['quote']
     df = pd.DataFrame([d])
-    e = r.headers['X-RateLimit-Remaining']
+    try:
+        e = int(r.headers['X-RateLimit-Remaining'])
+    except:
+        e = 1
     return df, e
 
 def get_option_df(ticker):
@@ -25,7 +28,10 @@ def get_option_df(ticker):
     #print(json.dumps(d, indent = 4, sort_keys=True))
     d = r.json()['response']['quotes']['quote']
     df = pd.DataFrame(d)
-    e = r.headers['X-RateLimit-Remaining']
+    try:
+        e = int(r.headers['X-RateLimit-Remaining'])
+    except:
+        e = 1
     return df, e
 
 if __name__ == "__main__":

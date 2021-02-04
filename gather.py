@@ -74,7 +74,7 @@ def run_loop(ticker_list, now_str):
                 print (f'{count} of {len(ticker_list)} retrieved {ticker} stock. Rate remaining: {stock_rate_remaining}')
 
                 option_df, option_rate_remaining = get_option_df(ticker)
-                print (f'{count} of {len(ticker_list)} retrieved {ticker} option chain. Rate remaining: {stock_rate_remaining}')
+                print (f'{count} of {len(ticker_list)} retrieved {ticker} option chain. Rate remaining: {option_rate_remaining}')
 
                 all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
 
@@ -93,10 +93,12 @@ def run_loop(ticker_list, now_str):
                 except:
                     rate_remaining = 20
                 print (f'measured rate_remaining: {rate_remaining}')
-                if rate_remaining < 10:
+
+                if stock_rate_remaining < 10:
                     sleep_time = (15 - rate_remaining)
                     print (f'{count} of {len(ticker_list)} rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
                     time.sleep(sleep_time)
+
 
             except Exception as e:
                 exception_count += 1
