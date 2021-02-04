@@ -11,7 +11,8 @@ def nope_one_off(ticker, now_str):
         os.mkdir(nope_dir_name)
 
     nope_df_name = nope_dir_name + now_str + '_nope.csv'
-    if os.path.exist(nope_df_name):
+    print (nope_df_name)
+    if os.path.exists(nope_df_name):
         nope_df = pd.read_csv(nope_df_name, compression = 'gzip')
     else:
         nope_df = pd.DataFrame([])
