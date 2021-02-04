@@ -51,6 +51,9 @@ def nope_one_off(ticker, now_str):
          'noge': noge,
          'noge_21': noge_21}
 
+    print (nope_df[nope_df['ticker'] == ticker])
+    print (nope_df[nope_df['ticker'] == ticker].count())
+
     if nope_df[nope_df['ticker'] == ticker] == []:
         nope_df = nope_df.append(a, ignore_index=True)
         print(f'writing to {nope_df_name}')
