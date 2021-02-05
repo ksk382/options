@@ -10,7 +10,7 @@ def yf_ohlcv(ticker_list):
 
     today = dt.datetime.now()
     # 253 trading days in a year
-    days_back = 3 * 253
+    days_back = 20
     DD = dt.timedelta(days=days_back)
     earlier = today - DD
     earlier_str = earlier.strftime("%Y-%m-%d")
