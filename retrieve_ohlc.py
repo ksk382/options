@@ -30,8 +30,12 @@ def yf_ohlcv(ticker_list):
             print (f'{count} - {ticker} -- exists')
         else:
             print (f'{count} out of {len(ticker_list)} - {ticker}')
-            y = yf.download(ticker, start=earlier_str, end=today_str,
-                            group_by="ticker")
+            try:
+                y = yf.download(ticker, start=earlier_str, end=today_str,
+                                group_by="ticker")
+            except Exception as e:
+                print (str(e))
+                continue
             x = pd.DataFrame(y)
             x['Date'] = x.index
             x.to_csv(f_name, compression='gzip', index=False)
@@ -45,4 +49,7 @@ def yf_ohlcv(ticker_list):
 
 if __name__ == "__main__":
     ticker_list = load_ticker_list()
-    yf_ohlcv(ticker_list)
+    #yf_ohlcv(ticker_list)
+    pd.set_option('display.max_rows', 3000)
+    pd.set_option('display.min_rows', 1100)
+    #print (ticker_list[2856:2861])
