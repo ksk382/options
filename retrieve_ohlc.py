@@ -49,7 +49,4 @@ def yf_ohlcv(ticker_list):
 
 if __name__ == "__main__":
     ticker_list = load_ticker_list()
-    #yf_ohlcv(ticker_list)
-    pd.set_option('display.max_rows', 3000)
-    pd.set_option('display.min_rows', 1100)
-    #print (ticker_list[2856:2861])
+    yf_ohlcv(ticker_list)
