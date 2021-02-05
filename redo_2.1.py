@@ -14,7 +14,7 @@ if not os.path.exists(option_dir_name):
     os.mkdir(option_dir_name)
 
 for ticker in ticker_list:
-    files = [('../option_dataframes/2021-02-01/' + i) for i in x if i.startswith(ticker)]
+    files = [(option_dir_name + i) for i in x if i.startswith(ticker)]
     latest_file = max(files, key=os.path.getctime)
     new_name = option_dir_name + ticker + '_.csv'
     os.rename(latest_file, new_name)
