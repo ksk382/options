@@ -68,6 +68,7 @@ def run_nope(**kwargs):
     print (stock_df_list)
     if 'date_to_run' in kwargs.keys():
         latest_i = kwargs['date_to_run'] + '.csv'
+        input(f'latest_i is: {latest_i}')
     else:
         latest = dt.datetime.now() - dt.timedelta(days=5)
         for i in stock_df_list:
