@@ -157,8 +157,8 @@ def run_nope(**kwargs):
 
 if __name__ == '__main__':
     date_to_run = input("enter date to run:\n")
-    run_nope(date_to_run = '2021-02-03_15.30')
-    
+    run_nope(date_to_run = date_to_run)
+
     '''
     now_str = '2021-02-04_15.30'
     ticker = 'NVDA'
