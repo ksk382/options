@@ -41,7 +41,7 @@ def load_ticker_list():
     ticker_df = pd.read_csv('IWV_holdings.csv').dropna()
     ticker_df = ticker_df[ticker_df['Ticker'] != '-']
     ticker_list = list(ticker_df['Ticker'].unique())
-    etf_df = pd.read_csv('etf_ticker_list.csv')
+    etf_df = pd.read_csv('etf_ticker_list.csv', compression = 'gzip')
     ticker_list = ticker_list + list(etf_df['Ticker'].unique())
     return ticker_list
 
