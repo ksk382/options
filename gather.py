@@ -43,11 +43,6 @@ def load_ticker_list():
     ticker_list = list(ticker_df['Ticker'].unique())
     etf_df = pd.read_csv('etf_ticker_list.csv')
     ticker_list = ticker_list + list(etf_df['Ticker'].unique())
-    pd.set_option('display.min_rows', 1100)
-    pd.set_option('display.max_rows', 3000)
-    print('ticker list:')
-    print(ticker_list)
-    print (ticker_df)
     return ticker_list
 
 def gather_stock_data(**kwargs):
