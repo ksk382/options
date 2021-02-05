@@ -24,10 +24,14 @@ print (s_list)
 odf_all = pd.DataFrame([])
 for ticker in ticker_list:
     o_name = o_dir + ticker + '_' + today_str + '.csv'
-    odf = pd.read_csv(o_name, compression = 'gzip')
-    odf['ticker'] = ticker
-    #print (odf.tail())
-    odf_all = odf_all.append(odf, ignore_index=True)
+    try:
+        odf = pd.read_csv(o_name, compression = 'gzip')
+        odf['ticker'] = ticker
+        #print (odf.tail())
+        odf_all = odf_all.append(odf, ignore_index=True)
+    except:
+        continue
+
 
 odf_all.columns = ['opn_s','hi_s','lo_s','cl_s','adj_cl_s', 'vl_s','date_s','symbol']
 print ('loaded ohlcv')
