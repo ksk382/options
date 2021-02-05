@@ -156,8 +156,10 @@ def run_nope(**kwargs):
     return
 
 if __name__ == '__main__':
-    #date_to_run = input("enter date to run:\n")
-    #run_nope(date_to_run = '2021-02-03_15.30')
+    date_to_run = input("enter date to run:\n")
+    run_nope(date_to_run = '2021-02-03_15.30')
+    
+    '''
     now_str = '2021-02-04_15.30'
     ticker = 'NVDA'
     stock_dir_name = '../stock_dataframes/'
@@ -169,7 +171,7 @@ if __name__ == '__main__':
     option_df = pd.read_csv(option_df_name, compression='gzip')
 
     print (stock_df)
-    nope_one_off(ticker, stock_df, option_df, now_str)
+    nope_one_off(ticker, stock_df, option_df, now_str)'''
 
 
 

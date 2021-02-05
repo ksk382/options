@@ -55,14 +55,9 @@ def munge(df1, df2, nope_df, sp_500_df):
        df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
        df3['sho_y'] = pd.to_numeric(df3['sho_y'])
        df4 = pd.merge(df3, nope_df, on='symbol')
+       df4.pop('ticker')
        df4['delta_over_sho'] = df4['net_delta'] / df4['sho_y']
        df4['gamma_over_sho'] = df4['net_gamma'] / df4['sho_y']
-
-       #shrinking down and merging dataframes
-       df4 = pd.merge(df3, nope_df, on='symbol')
-       df4['delta_over_sho'] = df4['net_delta'] / df4['sho_y']
-       df4['gamma_over_sho'] = df4['net_gamma'] / df4['sho_y']
-
        df4.pop('net_delta')
        df4.pop('net_gamma')
 

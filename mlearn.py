@@ -23,19 +23,18 @@ df_file = '../nope_dataframes/combined_tensor_df.csv'
 df = pd.read_csv(df_file, compression = 'gzip')
 
 df.pop('symbol')
-df.pop('ticker')
 df.pop('date')
 df = df.apply(pd.to_numeric, errors='coerce')
 df = df.dropna(axis=1, how='all')
 
-df['buy'] = (df['mvmnt'] > .01) * 1
+df['buy'] = (df['mvmnt'] > .005) * 1
+label = 'buy'
 raw_count = df['buy'].sum()
 total_population = df.shape[0]
 
 print (df.head())
 print (df.shape)
 
-label = 'buy'
 
 train_dataset = df.sample(frac=0.8,random_state=0)
 test_dataset = df.drop(train_dataset.index)
