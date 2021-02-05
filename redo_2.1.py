@@ -18,10 +18,13 @@ y_list = [j.replace('_.csv','') for j in y if j.endswith('.csv')]
 
 for ticker in ticker_list:
     if ticker not in y_list:
-        files = [(odir + i) for i in x if i.startswith(ticker)]
-        latest_file = max(files, key=os.path.getctime)
-        new_name = option_dir_name + ticker + '_.csv'
-        os.rename(latest_file, new_name)
-        print (new_name)
+        try:
+            files = [(odir + i) for i in x if i.startswith(ticker)]
+            latest_file = max(files, key=os.path.getctime)
+            new_name = option_dir_name + ticker + '_.csv'
+            os.rename(latest_file, new_name)
+            print (new_name)
+        except:
+            pass
     else:
         print ('already have')
