@@ -22,10 +22,18 @@ def yf_ohlcv(ticker_list):
     else:
         os.mkdir(save_path)
 
+    contents = os.listdir(save_path)
+    s = today_str + '.csv'
+    for i in contents:
+        if not i.endswith(s):
+            j = save_path + i
+            print (f'removing {j}')
+            os.remove(j)
+
     count = 0
     for ticker in ticker_list:
         count +=1
-        f_name = f'{save_path}{ticker}.csv'
+        f_name = f'{save_path}{ticker}_{today_str}.csv'
         if os.path.isfile(f_name):
             print (f'{count} - {ticker} -- exists')
         else:
