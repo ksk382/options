@@ -9,10 +9,11 @@ import time
 import numpy as np
 import seaborn as sns
 
-def munge(df1, df2, nope_df, sp_500_df):
+def munge(df1, df2, nope_df, sp_500_df, etf_df):
 
        df3 = pd.merge(df1, df2, on=['symbol'])
        df3['sp'] = df3['symbol'].isin(sp_500_df['Ticker']) * 1
+       df3['etf'] = df3['symbol'].isin(etf_df['Ticker'])*1
 
        # convert dates to datetime format
        df3['date_x'] = pd.to_datetime(df3['date_x'])
@@ -26,7 +27,7 @@ def munge(df1, df2, nope_df, sp_500_df):
        show_cols.append('weekday_x')
        show_cols.append('weekday_y')
 
-       day_chgs = ['opn','hi','lo', 'last', 'vl', 'vwap']
+       day_chgs = ['opn_s','hi_s','lo_s', 'cl_s', 'vl_s', 'vwap']
        for i in day_chgs:
               x = i + '_x'
               y = i + '_y'
@@ -39,7 +40,7 @@ def munge(df1, df2, nope_df, sp_500_df):
               y = i + '_y'
               j = i + '_stretch'
               show_cols.append(j)
-              df3[j] = (df3['last_y'] - df3[y]) / df3[y]
+              df3[j] = (df3['cl_s_y'] - df3[y]) / df3[y]
 
        volume_stretch = ['adv_21','adv_30','adv_90']
        for i in volume_stretch:
@@ -50,7 +51,7 @@ def munge(df1, df2, nope_df, sp_500_df):
 
        show_cols = show_cols + ['sho_y']
        show_cols.append('symbol')
-       show_cols.append('last_y')
+       show_cols.append('cl_s_y')
 
        # shrinking down and merging dataframes
        df3 = df3[show_cols]
@@ -65,15 +66,15 @@ def munge(df1, df2, nope_df, sp_500_df):
 
        return df4
 
-def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df):
+def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df):
 
        mvmnt_df = df_future
        mvmnt_df['opn_z'] = mvmnt_df['opn']
        mvmnt_df = mvmnt_df[['symbol', 'opn_z']]
 
-       df4 = munge(df1,df2,nope_df,sp_500_df)
+       df4 = munge(df1,df2,nope_df,sp_500_df, etf_df)
        df5 = pd.merge(df4, mvmnt_df, on='symbol')
-       df5['mvmnt'] = (df5['opn_z'] - df5['last_y']) / df5['last_y']
+       df5['mvmnt'] = (df5['opn_z'] - df5['cl_s_y']) / df5['cl_s_y']
        df5.pop('opn_z')
        df5 = df5[~df5.isin([np.nan, np.inf, -np.inf]).any(1)]
 
@@ -99,7 +100,7 @@ def merge_tensors():
        combined_tensor_df.to_csv(out_name, compression = 'gzip', index = False)
        return
 
-def make_rec_tensors(df1, df2, nope_df, sp_500_df):
+def make_rec_tensors(df1, df2, nope_df, sp_500_df, etf_df):
 
        df3 = munge(df1,df2,nope_df,sp_500_df)
        df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
@@ -130,10 +131,10 @@ def produce_training_data():
               print(y)
               print(z)
 
-              two_days_ago_file = f'../stock_dataframes/{x}.csv'
+              two_days_ago_file = f'../stock_dataframes/{x}_synth.csv'
               df1 = pd.read_csv(two_days_ago_file, compression='gzip')
 
-              before_stock_file = f'../stock_dataframes/{y}.csv'
+              before_stock_file = f'../stock_dataframes/{y}_synth.csv'
               df2 = pd.read_csv(before_stock_file, compression='gzip')
 
               result_today_stock_file = f'../stock_dataframes/{z}.csv'
@@ -144,8 +145,9 @@ def produce_training_data():
               nope_df['symbol'] = nope_df['ticker']
 
               sp_500_df = pd.read_csv('sp500_ticker_list.csv', compression='gzip')
+              etf_df = pd.read_csv('etf_ticker_list.csv', compression = 'gzip')
 
-              make_training_tensors(df1, df2, df_future, nope_df, sp_500_df)
+              make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df)
               print('\n\n')
 
        return

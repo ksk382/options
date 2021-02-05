@@ -20,4 +20,4 @@ for items in soup.find('table'):
             print (str(e))
 
 print (df)
-df.to_csv('etf_ticker_list.csv', index=False)
+df.to_csv('etf_ticker_list.csv', compression='gzip', index=False)
