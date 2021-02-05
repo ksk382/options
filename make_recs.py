@@ -27,8 +27,27 @@ def make_recs(now_str):
     rec_df = get_rec(df)
     print(rec_df)
     rec_df.to_csv(f'../nope_dataframes/recs_{now_str}.csv', compression='gzip', index=False)
-    return
+    return rec_df
+
+def check_results():
+    pd.set_option('display.max_rows', 800)
+    pd.set_option('display.min_rows', 200)
+
+    rec_file = '../nope_dataframes/recs_2021-02-04_15.30.csv'
+    today_file = '../stock_dataframes/2021-02-05_09.30.csv'
+    a = pd.read_csv(rec_file, compression = 'gzip')
+    b = pd.read_csv(today_file, compression= 'gzip')
+    x = pd.merge(a, b, on='symbol')
+    cols = ['symbol','last_y','pred','buy','opn','last']
+    x = x[cols]
+    x = x[x['buy']==1]
+    x['result1'] = (x['last_y'] - x['opn']) * x['buy']
+    print (x)
+    r = x['result1'].sum() / x['buy'].sum()
+    print (r)
 
 if __name__ == "__main__":
     now_str = '2021-02-04_15.30'
-    make_recs(now_str)
+    #df = make_recs(now_str)
+    check_results()
+

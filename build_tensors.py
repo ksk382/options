@@ -23,6 +23,8 @@ def munge(df1, df2, nope_df, sp_500_df):
        df3['weekday_y'] = df3['date_y'].dt.dayofweek
        show_cols = []
        show_cols.append('sp')
+       show_cols.append('weekday_x')
+       show_cols.append('weekday_y')
 
        day_chgs = ['opn','hi','lo', 'last', 'vl', 'vwap']
        for i in day_chgs:
@@ -112,26 +114,39 @@ def make_rec_tensors(df1, df2, nope_df, sp_500_df):
        return df5
 
 def produce_training_data():
-       x = '2021-02-02_15.30'  # two evenings ago
-       y = '2021-02-03_15.30'  # one evening ago
-       z = '2021-02-04_15.30'  # anytime today that includes open price
+       all_dates = [
+              '2021-02-01_15.30',
+              '2021-02-02_15.30',
+              '2021-02-03_15.30',
+              '2021-02-04_15.30',
+              '2021-02-05_09.30'
+       ]
 
-       two_days_ago_file = f'../stock_dataframes/{x}.csv'
-       df1 = pd.read_csv(two_days_ago_file, compression='gzip')
+       for d in range(0, len(all_dates[:-2])):
+              x = all_dates[d]
+              y = all_dates[d + 1]
+              z = all_dates[d + 2]
+              print(x)
+              print(y)
+              print(z)
 
-       before_stock_file = f'../stock_dataframes/{y}.csv'
-       df2 = pd.read_csv(before_stock_file, compression='gzip')
+              two_days_ago_file = f'../stock_dataframes/{x}.csv'
+              df1 = pd.read_csv(two_days_ago_file, compression='gzip')
 
-       result_today_stock_file = f'../stock_dataframes/{z}.csv'
-       df_future = pd.read_csv(result_today_stock_file, compression='gzip')
+              before_stock_file = f'../stock_dataframes/{y}.csv'
+              df2 = pd.read_csv(before_stock_file, compression='gzip')
 
-       one_day_ago_nope_file = f'../nope_dataframes/{y}_nope.csv'
-       nope_df = pd.read_csv(one_day_ago_nope_file, compression='gzip')
-       nope_df['symbol'] = nope_df['ticker']
+              result_today_stock_file = f'../stock_dataframes/{z}.csv'
+              df_future = pd.read_csv(result_today_stock_file, compression='gzip')
 
-       sp_500_df = pd.read_csv('sp500_ticker_list.csv', compression='gzip')
+              one_day_ago_nope_file = f'../nope_dataframes/{y}_nope.csv'
+              nope_df = pd.read_csv(one_day_ago_nope_file, compression='gzip')
+              nope_df['symbol'] = nope_df['ticker']
 
-       make_training_tensors(df1, df2, df_future, nope_df, sp_500_df)
+              sp_500_df = pd.read_csv('sp500_ticker_list.csv', compression='gzip')
+
+              make_training_tensors(df1, df2, df_future, nope_df, sp_500_df)
+              print('\n\n')
 
        return
 

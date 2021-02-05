@@ -22,19 +22,16 @@ if not os.path.exists(log_dir):
 df_file = '../nope_dataframes/combined_tensor_df.csv'
 df = pd.read_csv(df_file, compression = 'gzip')
 
-df.pop('symbol')
-df.pop('date')
 df = df.apply(pd.to_numeric, errors='coerce')
 df = df.dropna(axis=1, how='all')
 
-df['buy'] = (df['mvmnt'] > .005) * 1
+df['buy'] = (df['mvmnt'] > .01) * 1
 label = 'buy'
 raw_count = df['buy'].sum()
 total_population = df.shape[0]
 
 print (df.head())
 print (df.shape)
-
 
 train_dataset = df.sample(frac=0.8,random_state=0)
 test_dataset = df.drop(train_dataset.index)
@@ -59,7 +56,6 @@ print (train_dataset.columns)
 final_cols = pd.DataFrame(train_dataset.columns)
 final_cols.to_csv('../ML_logs/final_cols.csv', compression = 'gzip', index = False)
 print ('Final train_dataset shape: ', train_dataset.shape)
-input('enter')
 
 def norm(x):
     return (x - train_stats['mean']) / train_stats['std']
@@ -71,7 +67,7 @@ normed_train_data.fillna(0, inplace=True)
 normed_test_data = norm(test_dataset)
 normed_test_data.fillna(0, inplace=True)
 print (normed_train_data.tail())
-learning_rate = .000001
+learning_rate = .00001
 clipnorm = 1.
 
 def build_model():
@@ -108,7 +104,7 @@ class PrintDot(keras.callbacks.Callback):
         if epoch % 100 == 0: print('')
         print('.', end='')
 
-EPOCHS = 300
+EPOCHS = 100
 
 #checkpoint_path = "database/cp.ckpt"
 #checkpoint_dir = os.path.dirname(checkpoint_path)
@@ -138,11 +134,14 @@ test_predictions = model.predict(normed_test_data)
 test_predictions = (test_predictions > .5)
 print ('confusion matrix:')
 conf_matrix = tf.math.confusion_matrix(test_labels, test_predictions)
-print (conf_matrix)
-try:
-    print (conf_matrix[:][1])
-except Exception as e:
-    print (str(e))
+
+pos = conf_matrix.numpy()
+print (pos)
+print (pos[:,1])
+print (pos[:,1].sum())
+pos_rate = pos[0][1] / (pos[:,1].sum())
+print (f'rate of false positives / total positives: {pos_rate}')
+
 
 now_str = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d_%H.%M")
 log_file = f'{log_dir}/log_{now_str} - {round(history.history["val_mse"][-1],2)}.txt'

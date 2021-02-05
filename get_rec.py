@@ -29,7 +29,7 @@ def get_rec(tensor_df):
     x.fillna(0, inplace=True)
     test_predictions = model.predict(x)
     print (test_predictions)
-    rec = tensor_df[['symbol','cl_y']]
+    rec = tensor_df[['symbol','last_y']]
     rec['pred'] = test_predictions
     rec['buy'] = (rec['pred'] > .5) * 1
     return rec
