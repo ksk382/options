@@ -159,7 +159,7 @@ if __name__ == '__main__':
     #date_to_run = input("enter date to run:\n")
     #run_nope(date_to_run = '2021-02-03_15.30')
     now_str = '2021-02-04_15.30'
-    ticker = 'NFLX'
+    ticker = 'NVDA'
     stock_dir_name = '../stock_dataframes/'
     stock_df_name = stock_dir_name + now_str + '.csv'
     stock_df = pd.read_csv(stock_df_name, compression = 'gzip')

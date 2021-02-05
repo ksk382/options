@@ -22,10 +22,13 @@ if not os.path.exists(log_dir):
 df_file = '../nope_dataframes/combined_tensor_df.csv'
 df = pd.read_csv(df_file, compression = 'gzip')
 
+df.pop('symbol')
+df.pop('ticker')
+df.pop('date')
 df = df.apply(pd.to_numeric, errors='coerce')
 df = df.dropna(axis=1, how='all')
 
-df['buy'] = (df['label'] > .02) * 1
+df['buy'] = (df['mvmnt'] > .01) * 1
 raw_count = df['buy'].sum()
 total_population = df.shape[0]
 
@@ -38,8 +41,8 @@ train_dataset = df.sample(frac=0.8,random_state=0)
 test_dataset = df.drop(train_dataset.index)
 test_dataset.to_csv('../ML_logs/test_dataset.csv', compression = 'gzip', index = False)
 
-train_dataset.pop('label')
-test_dataset.pop('label')
+train_dataset.pop('mvmnt')
+test_dataset.pop('mvmnt')
 
 #sns.pairplot(train_dataset[['days_before_dividend',
 #            'delta_open', 'delta_close', 'delta_high', 'delta_low',
@@ -54,7 +57,10 @@ train_stats.to_csv('../ML_logs/train_stats.csv', compression = 'gzip', index = T
 
 print (train_dataset.tail())
 print (train_dataset.columns)
+final_cols = pd.DataFrame(train_dataset.columns)
+final_cols.to_csv('../ML_logs/final_cols.csv', compression = 'gzip', index = False)
 print ('Final train_dataset shape: ', train_dataset.shape)
+input('enter')
 
 def norm(x):
     return (x - train_stats['mean']) / train_stats['std']
@@ -103,7 +109,7 @@ class PrintDot(keras.callbacks.Callback):
         if epoch % 100 == 0: print('')
         print('.', end='')
 
-EPOCHS = 500
+EPOCHS = 300
 
 #checkpoint_path = "database/cp.ckpt"
 #checkpoint_dir = os.path.dirname(checkpoint_path)
@@ -125,7 +131,7 @@ print ('std: {0}'.format(df[label].std()))
 print ('std sqd: {0}'.format(var))
 print ('mad: {0}'.format(df[label].mad()))
 pct_count = raw_count / total_population
-print (f'raw_count: {raw_count} of {total_population} ({pct_count}')
+print (f'raw_count: {raw_count} of {total_population} ({pct_count})')
 
 print('\n\n\n')
 print ('test predictions:')

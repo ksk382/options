@@ -45,7 +45,7 @@ test_dataset = pd.read_csv('../ML_logs/test_dataset.csv', compression = 'gzip')
 def norm(x):
     return (x - train_stats['mean']) / train_stats['std']
 
-true_label = test_dataset.pop('label')
+true_label = test_dataset.pop('mvmnt')
 test_dataset.pop('buy')
 
 print (test_dataset.tail())

@@ -3,7 +3,7 @@ from api_calls import get_option_df, get_stock_df
 import datetime as dt
 import os
 import time
-from nope import run_nope
+from nope import nope_one_off
 
 
 def gather_stock_and_option_data(**kwargs):
@@ -87,6 +87,9 @@ def run_loop(ticker_list, now_str):
                 print (f'{count} of {len(ticker_list)} writing to {option_save_name}')
                 option_df.to_csv(option_save_name, compression='gzip', index=False)
 
+                nope_one_off(ticker, stock_df, option_df)
+                # also put a tensor_one_off here
+
                 # rate limiting
                 try:
                     rate_remaining = int(min(stock_rate_remaining, option_rate_remaining))
@@ -98,6 +101,7 @@ def run_loop(ticker_list, now_str):
                     print (f'{count} of {len(ticker_list)} rate_remaining: {rate_remaining} ---- sleeping {sleep_time} seconds')
                     time.sleep(sleep_time)
 
+                exception_count = 0
 
             except Exception as e:
                 exception_count += 1
