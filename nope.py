@@ -144,6 +144,8 @@ def run_nope(**kwargs):
              'noge': noge,
              'noge_21': noge_21}
 
+        print (a.items())
+        print (a.keys())
         temp_df = pd.DataFrame(a.items(), columns = a.keys())
         for g in greeks:
             o_name = f'mw_{g}'
@@ -170,6 +172,7 @@ def run_nope(**kwargs):
 
 if __name__ == '__main__':
     date_to_run = input("enter date to run:\n")
+    date_to_run = '2021-02-04_15.30'
     run_nope(date_to_run = date_to_run)
 
     '''
