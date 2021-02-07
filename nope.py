@@ -146,7 +146,7 @@ def run_nope(**kwargs):
 
         print (a.items())
         print (a.keys())
-        temp_df = pd.DataFrame(a, columns = a.keys())
+        temp_df = pd.DataFrame(a, columns = a.keys(), ignore_index=True)
         for g in greeks:
             o_name = f'mw_{g}'
             temp_df[o_name] = option_df[o_name].mean()
