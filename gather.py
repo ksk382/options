@@ -23,15 +23,17 @@ def gather_stock_and_option_data(**kwargs):
 
     error_list = run_loop(ticker_list, now_str)
 
-    retry_list = []
-    for i in error_list:
-        retry_list.append(i[0])
-    error_list_2 = run_loop(retry_list, now_str)
+    if len(error_list) > 0:
+        retry_list = []
+        for i in error_list:
+            retry_list.append(i[0])
+        error_list_2 = run_loop(retry_list, now_str)
 
-    print ('error_list: ')
-    for i in error_list_2:
-        print (i)
-    print (f'{len(error_list)} errors')
+        print ('error_list: ')
+
+        for i in error_list_2:
+            print (i)
+        print (f'{len(error_list)} errors')
 
     print ('\n\n\n\n&&&&&----- done gathering stock and option data\n\n')
 

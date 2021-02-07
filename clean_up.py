@@ -16,6 +16,7 @@ ticker_list = load_ticker_list()
 o_dir = '../ohlcv/'
 s_dir = '../stock_dataframes/'
 s_list = [i for i in os.listdir(s_dir) if i.endswith('15.30.csv')]
+s_list.append('2021-02-05_13.00.csv')
 today = dt.datetime.now()
 today_str = today.strftime("%Y-%m-%d")
 

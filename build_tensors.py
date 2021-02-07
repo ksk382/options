@@ -52,6 +52,10 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
        show_cols = show_cols + ['sho_y']
        show_cols.append('symbol')
        show_cols.append('cl_s_y')
+       show_cols.append('date_y')
+       show_cols.append('beta_y')
+       show_cols.append('volatility12_y')
+       show_cols.append('yield_y')
 
        # shrinking down and merging dataframes
        df3 = df3[show_cols]
@@ -61,8 +65,8 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
        df4.pop('ticker')
        df4['delta_over_sho'] = df4['net_delta'] / df4['sho_y']
        df4['gamma_over_sho'] = df4['net_gamma'] / df4['sho_y']
-       df4.pop('net_delta')
-       df4.pop('net_gamma')
+       #df4.pop('net_delta')
+       #df4.pop('net_gamma')
 
        return df4
 
@@ -137,7 +141,7 @@ def produce_training_data():
               before_stock_file = f'../stock_dataframes/{y}_synth.csv'
               df2 = pd.read_csv(before_stock_file, compression='gzip')
 
-              result_today_stock_file = f'../stock_dataframes/{z}.csv'
+              result_today_stock_file = f'../stock_dataframes/{z}_synth.csv'
               df_future = pd.read_csv(result_today_stock_file, compression='gzip')
 
               one_day_ago_nope_file = f'../nope_dataframes/{y}_nope.csv'
@@ -152,8 +156,33 @@ def produce_training_data():
 
        return
 
+def check_mvmnt_dist():
+       pd.set_option('display.max_rows', 2000)
+       pd.set_option('display.min_rows', 200)
+
+       np.set_printoptions(precision=3, suppress=True)
+
+       log_dir = '../ML_logs/'
+       if not os.path.exists(log_dir):
+              os.mkdir(log_dir)
+
+       df_file = '../nope_dataframes/combined_tensor_df.csv'
+       df = pd.read_csv(df_file, compression='gzip')
+
+       df = df.apply(pd.to_numeric, errors='coerce')
+       df = df.dropna(axis=1, how='all')
+
+       sns.distplot(df[['mvmnt']], hist=False, rug=True)
+
+       df = df.sort_values(by='mvmnt')
+       print(df)
+
+       x = input('Show plot? (y)\n')
+       if x == 'y':
+              plt.show()
 
 if __name__ == '__main__':
 
        produce_training_data()
        merge_tensors()
+       check_mvmnt_dist()

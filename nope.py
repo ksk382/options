@@ -115,14 +115,22 @@ def run_nope(**kwargs):
             option_df = pd.read_csv(option_df_name, compression='gzip')
 
             # find weighted delta
-            option_df['weighted_delta'] = option_df['vl'] * option_df['idelta']
-            net_delta = option_df['weighted_delta'].sum()
+            greeks = ['idelta',
+                      'igamma',
+                      'itheta',
+                      'ivega']
+            f = {}
+            for g in greeks:
+                o_name = f'weighted_{g}'
+                option_df[o_name] = option_df['vl'] * option_df[g]
+
+            net_delta = option_df['weighted_idelta'].sum()
 
             nope_metric = net_delta / volume
             nope_21 = net_delta / adv_21
 
-            option_df['weighted_gamma'] = option_df['vl'] * option_df['igamma']
-            net_gamma = option_df['weighted_gamma'].sum()
+            option_df['weighted_igamma'] = option_df['vl'] * option_df['igamma']
+            net_gamma = option_df['weighted_igamma'].sum()
 
             noge = net_gamma / volume
             noge_21 = net_gamma / adv_21
@@ -131,12 +139,16 @@ def run_nope(**kwargs):
                  'ticker': ticker,
                  'nope_metric': nope_metric,
                  'nope_adv_21': nope_21,
-                 'net_delta': net_delta,
-                 'net_gamma': net_gamma,
+                 'net_idelta': net_delta,
+                 'net_igamma': net_gamma,
                  'noge': noge,
                  'noge_21': noge_21}
 
-            nope_df = nope_df.append(a, ignore_index=True)
+            temp_df = pd.DataFrame(a.items(), columns = a.keys())
+            for g in greeks:
+                o_name = f'mw_{g}'
+                temp_df[o_name] = option_df[o_name].mean()
+            nope_df = nope_df.append(temp_df, ignore_index=True)
         except Exception as e:
             print (str(e))
             continue
