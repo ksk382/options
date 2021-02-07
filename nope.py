@@ -169,8 +169,14 @@ def run_nope(**kwargs):
 
 if __name__ == '__main__':
     date_to_run = input("enter date to run:\n")
-    date_to_run = '2021-02-04_15.30'
-    run_nope(date_to_run = date_to_run)
+
+    all_dates = [
+        '2021-02-01_15.30',
+        '2021-02-02_15.30',
+        '2021-02-03_15.30'
+    ]
+    for i in all_dates:
+        run_nope(date_to_run = i)
 
     '''
     now_str = '2021-02-04_15.30'
