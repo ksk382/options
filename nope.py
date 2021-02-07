@@ -148,7 +148,8 @@ def run_nope(**kwargs):
         print (a.keys())
         temp_df = pd.DataFrame([a])
         for g in greeks:
-            o_name = f'mw_{g}'
+            t_name = f'mw_{g}'
+            o_name = f'weighted_{g}'
             temp_df[o_name] = option_df[o_name].mean()
         nope_df = nope_df.append(temp_df, ignore_index=True)
         #except Exception as e:
