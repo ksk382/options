@@ -24,6 +24,7 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
        df3['weekday_y'] = df3['date_y'].dt.dayofweek
        show_cols = []
        show_cols.append('sp')
+       show_cols.append('etf')
        show_cols.append('weekday_x')
        show_cols.append('weekday_y')
 
@@ -63,8 +64,8 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
        df3['sho_y'] = pd.to_numeric(df3['sho_y'])
        df4 = pd.merge(df3, nope_df, on='symbol')
        df4.pop('ticker')
-       df4['delta_over_sho'] = df4['net_delta'] / df4['sho_y']
-       df4['gamma_over_sho'] = df4['net_gamma'] / df4['sho_y']
+       df4['delta_over_sho'] = df4['net_idelta'] / df4['sho_y']
+       df4['gamma_over_sho'] = df4['net_igamma'] / df4['sho_y']
        #df4.pop('net_delta')
        #df4.pop('net_gamma')
 
@@ -106,7 +107,7 @@ def merge_tensors():
 
 def make_rec_tensors(df1, df2, nope_df, sp_500_df, etf_df):
 
-       df3 = munge(df1,df2,nope_df,sp_500_df)
+       df3 = munge(df1,df2,nope_df,sp_500_df, etf_df)
        df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
        df3['mvmnt'] = 0
        df5 = df3

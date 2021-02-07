@@ -153,13 +153,15 @@ def mlearn(notes, hurdle, df):
     model.save(f'{log_dir}mlearn_{now_str}_{hurdle}.h5')
     r_ = model_test()
     # save log file
-    log_file = f'{log_dir}/log_{now_str} - mse - {round(history.history["val_mse"][-1],2)} r_ - {r_}.txt'
+    log_header = f'{log_dir}/log_{now_str} - hurdle - {hurdle} mse - {round(history.history["val_mse"][-1],2)} r_ - {r_}'
+    log_file = f'{log_header}.txt'
 
     str =   notes + \
             '\n\n\n' + \
             f'hurdle: {hurdle}\n'+ \
             f'learning rate: {learning_rate}\n'+ \
             f'projected rate of return: {r_}\n\n' + \
+            f'{conf_matrix} \n' + \
             f'num positive predictions: {conf_matrix[:, 1].sum()}\n' + \
             f'rate of false positives / total positives: {pos_rate}\n\n' + \
             f'{hist.tail()}\n\n\n'
@@ -174,7 +176,7 @@ def mlearn(notes, hurdle, df):
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
     plt.axhline(y=var)
-    plt.savefig(f'{log_dir}/log_{now_str} - mse - {round(history.history["val_mse"][-1],2)} r_ - {r_}.png')
+    plt.savefig(f'{log_header}.png')
     #plt.show()
     plt.clf()
 
@@ -185,12 +187,10 @@ def mlearn(notes, hurdle, df):
         with redirect_stdout(f):
             model.summary()
 
-if __name__ == '__main__':
-
+def run_loop():
     df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
 
-    '''
     df1 = df.sort_values(by='mvmnt')
     x = pd.qcut(df1['mvmnt'], 10)
     y = []
@@ -198,13 +198,18 @@ if __name__ == '__main__':
         print(i, i.left, i.right)
         y.append(i.right)
     hurdles = y[-6:-1]
-    print (hurdles)
+    print(hurdles)
     input('enter')
     for hurdle in hurdles:
         notes = f'hurdle: {hurdle}'
-        print (notes)
-        mlearn(notes, hurdle, df)'''
+        print(notes)
+        mlearn(notes, hurdle, df)
 
-    hurdle = 0.0154
+
+if __name__ == '__main__':
+
+    df_file = '../nope_dataframes/combined_tensor_df.csv'
+    df = pd.read_csv(df_file, compression='gzip')
+    hurdle = 0.011
     notes = f'hurdle: {hurdle}'
     mlearn(notes, hurdle, df)
