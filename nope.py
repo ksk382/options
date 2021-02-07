@@ -108,50 +108,50 @@ def run_nope(**kwargs):
 
         # just find the latest dated option df.
         # later, replace this with something that gets close to the stock timestamp
-        try:
-            volume = stock_df[stock_df['symbol'] == ticker]['vl'].item()
-            adv_21 = stock_df[stock_df['symbol'] == ticker]['adv_21'].item()
-            option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
-            option_df = pd.read_csv(option_df_name, compression='gzip')
+        #try:
+        volume = stock_df[stock_df['symbol'] == ticker]['vl'].item()
+        adv_21 = stock_df[stock_df['symbol'] == ticker]['adv_21'].item()
+        option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
+        option_df = pd.read_csv(option_df_name, compression='gzip')
 
-            # find weighted delta
-            greeks = ['idelta',
-                      'igamma',
-                      'itheta',
-                      'ivega']
-            f = {}
-            for g in greeks:
-                o_name = f'weighted_{g}'
-                option_df[o_name] = option_df['vl'] * option_df[g]
+        # find weighted delta
+        greeks = ['idelta',
+                  'igamma',
+                  'itheta',
+                  'ivega']
+        f = {}
+        for g in greeks:
+            o_name = f'weighted_{g}'
+            option_df[o_name] = option_df['vl'] * option_df[g]
 
-            net_delta = option_df['weighted_idelta'].sum()
+        net_delta = option_df['weighted_idelta'].sum()
 
-            nope_metric = net_delta / volume
-            nope_21 = net_delta / adv_21
+        nope_metric = net_delta / volume
+        nope_21 = net_delta / adv_21
 
-            option_df['weighted_igamma'] = option_df['vl'] * option_df['igamma']
-            net_gamma = option_df['weighted_igamma'].sum()
+        option_df['weighted_igamma'] = option_df['vl'] * option_df['igamma']
+        net_gamma = option_df['weighted_igamma'].sum()
 
-            noge = net_gamma / volume
-            noge_21 = net_gamma / adv_21
+        noge = net_gamma / volume
+        noge_21 = net_gamma / adv_21
 
-            a = {'date': fname_root,
-                 'ticker': ticker,
-                 'nope_metric': nope_metric,
-                 'nope_adv_21': nope_21,
-                 'net_idelta': net_delta,
-                 'net_igamma': net_gamma,
-                 'noge': noge,
-                 'noge_21': noge_21}
+        a = {'date': fname_root,
+             'ticker': ticker,
+             'nope_metric': nope_metric,
+             'nope_adv_21': nope_21,
+             'net_idelta': net_delta,
+             'net_igamma': net_gamma,
+             'noge': noge,
+             'noge_21': noge_21}
 
-            temp_df = pd.DataFrame(a.items(), columns = a.keys())
-            for g in greeks:
-                o_name = f'mw_{g}'
-                temp_df[o_name] = option_df[o_name].mean()
-            nope_df = nope_df.append(temp_df, ignore_index=True)
-        except Exception as e:
-            print (str(e))
-            continue
+        temp_df = pd.DataFrame(a.items(), columns = a.keys())
+        for g in greeks:
+            o_name = f'mw_{g}'
+            temp_df[o_name] = option_df[o_name].mean()
+        nope_df = nope_df.append(temp_df, ignore_index=True)
+        #except Exception as e:
+        #    print (str(e))
+        #    continue
 
     print (nope_df)
     j = [i for i in option_df_list if i.endswith('.csv')]
