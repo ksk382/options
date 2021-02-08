@@ -12,8 +12,8 @@ def gather_stock_and_option_data(**kwargs):
     # gather the tickers to use
     ticker_list = load_ticker_list()
 
-    if 'kow_str' in kwargs.keys():
-        now_str = kwargs['kow_str']
+    if 'now_str' in kwargs.keys():
+        now_str = kwargs['now_str']
     else:
         now = dt.datetime.now()
         now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")

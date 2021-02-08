@@ -4,9 +4,9 @@ from clean_up import clean_up
 from ohlcv_retrieve import yf_ohlcv
 
 if __name__=='__main__':
-    gather_stock_and_option_data()
-    run_nope()
+    now_str = gather_stock_and_option_data()
+    run_nope(date_to_run=now_str)
     yf_ohlcv()
-    clean_up()
+    clean_up(date_to_run=now_str)
 
 

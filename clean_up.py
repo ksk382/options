@@ -8,7 +8,7 @@ import datetime as dt
 Need to get clean data that shows day -1 ohlcv, day 0 ohlcv, and day +1 o
 
 '''
-def clean_up():
+def clean_up(**kwargs):
 
     pd.set_option('display.min_rows', 50)
     pd.set_option('display.max_rows', 200)
@@ -16,10 +16,17 @@ def clean_up():
     ticker_list = load_ticker_list()
     o_dir = '../ohlcv/'
     s_dir = '../stock_dataframes/'
-    s_list = [i for i in os.listdir(s_dir) if i.endswith('15.30.csv')]
-    today = dt.datetime.now()
-    today_str = today.strftime("%Y-%m-%d")
-    print (s_list)
+    if 'date_to_run' in kwargs.keys():
+        now_str = kwargs['date_to_run'] + '.csv'
+        stock_df_name = [i for i in os.listdir(s_dir) if i.startswith(now_str)]
+        today_str = now_str
+    else:
+        list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if i.endswith('.csv')]
+        stock_df_name = max(list_of_files, key=os.path.getctime)
+        today_str = os.listdir(o_dir)[0][-14:-4]
+
+    #today = dt.datetime.now()
+    #today_str = today.strftime("%Y-%m-%d")
 
     odf_all = pd.DataFrame([])
     for ticker in ticker_list:
@@ -38,16 +45,15 @@ def clean_up():
     print ('loaded ohlcv')
     print (odf_all.tail())
 
-    for i in s_list:
-        fname = s_dir + i
-        d = i[:10]
-        df = pd.read_csv(fname, compression = 'gzip')
-        j = i.replace('.csv', '')
-        out_name = s_dir + j + '_synth.csv'
-        print (out_name)
-        x = odf_all[odf_all['date_s']==d]
-        out_df = pd.merge(df, x, on='symbol')
-        out_df.to_csv(out_name, compression = 'gzip', index = False)
+    df = pd.read_csv(stock_df_name, compression = 'gzip')
+    d = df['date'].iloc[0]
+    x = odf_all[odf_all['date_s']==d]
+    out_df = pd.merge(df, x, on='symbol')
+
+    j = stock_df_name.replace('.csv', '')
+    out_name = s_dir + j + '_synth.csv'
+    print(out_name)
+    out_df.to_csv(out_name, compression = 'gzip', index = False)
 
     print (out_df.columns)
     print (out_df.tail())
