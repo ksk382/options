@@ -52,7 +52,7 @@ def clean_up():
     print (out_df.columns)
     print (out_df.tail())
 
-if __name__=='__main__'()
+if __name__=='__main__':
     clean_up()
 
 
