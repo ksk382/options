@@ -9,11 +9,11 @@ def make_recs(now_str):
     pd.set_option('display.max_rows', 800)
     pd.set_option('display.min_rows', 200)
 
-    today_stock_file = f'../stock_dataframes/{now_str}.csv'
+    today_stock_file = f'../stock_dataframes/{now_str}_synth.csv'
     df2 = pd.read_csv(today_stock_file, compression='gzip')
 
     pr_date = df2['pr_date'].head(1).item() + '_15.30'
-    yesterday_stock_file = f'../stock_dataframes/{pr_date}.csv'
+    yesterday_stock_file = f'../stock_dataframes/{pr_date}_synth.csv'
     df1 = pd.read_csv(yesterday_stock_file, compression='gzip')
 
     today_nope = f'../nope_dataframes/{now_str}_nope.csv'
@@ -21,10 +21,12 @@ def make_recs(now_str):
     nope_df['symbol'] = nope_df['ticker']
 
     sp_500_df = pd.read_csv('sp500_ticker_list.csv', compression='gzip')
+    etf_df = pd.read_csv('etf_ticker_list.csv', compression='gzip')
 
-    df = make_rec_tensors(df1, df2, nope_df, sp_500_df)
+    df = make_rec_tensors(df1, df2, nope_df, sp_500_df, etf_df)
     print(df)
     rec_df = get_rec(df)
+    rec_df = rec_df.round(3)
     print(rec_df)
     rec_df.to_csv(f'../nope_dataframes/recs_{now_str}.csv', compression='gzip', index=False)
     return rec_df
@@ -38,7 +40,7 @@ def check_results():
     a = pd.read_csv(rec_file, compression = 'gzip')
     b = pd.read_csv(today_file, compression= 'gzip')
     x = pd.merge(a, b, on='symbol')
-    cols = ['symbol','last_y','pred','buy','opn','last']
+    cols = ['symbol','cl_s_y','pred','buy','opn','last']
     x = x[cols]
     x = x[x['buy']==1]
     x['result1'] = (x['last_y'] - x['opn']) * x['buy']
@@ -47,7 +49,7 @@ def check_results():
     print (r)
 
 if __name__ == "__main__":
-    now_str = '2021-02-04_15.30'
-    #df = make_recs(now_str)
-    check_results()
+    now_str = '2021-02-05_15.30'
+    df = make_recs(now_str)
+    #check_results()
 

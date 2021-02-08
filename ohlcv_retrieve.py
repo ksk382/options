@@ -6,8 +6,9 @@ import yfinance as yf
 from pathlib import Path
 from gather import load_ticker_list
 
-def yf_ohlcv(ticker_list):
+def yf_ohlcv():
 
+    ticker_list = load_ticker_list()
     today = dt.datetime.now()
     # 253 trading days in a year
     days_back = 20
@@ -56,5 +57,4 @@ def yf_ohlcv(ticker_list):
     return
 
 if __name__ == "__main__":
-    ticker_list = load_ticker_list()
-    yf_ohlcv(ticker_list)
+    yf_ohlcv()

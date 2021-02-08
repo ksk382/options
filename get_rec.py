@@ -25,11 +25,12 @@ def norm(x):
 def get_rec(tensor_df):
     cols = list(final_cols['0'])
     x = tensor_df[cols]
+    x = x.apply(pd.to_numeric, errors='coerce')
+    x = x.dropna(axis=1, how='all')
     x = norm(x)
     x.fillna(0, inplace=True)
     test_predictions = model.predict(x)
-    print (test_predictions)
-    rec = tensor_df[['symbol','last_y']]
+    rec = tensor_df[['symbol','cl_s_y']]
     rec['pred'] = test_predictions
     rec['buy'] = (rec['pred'] > .5) * 1
     return rec

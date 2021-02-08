@@ -89,6 +89,20 @@ def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df):
        print ('done')
        return
 
+def make_rec_tensors(df1, df2, nope_df, sp_500_df, etf_df):
+
+       df3 = munge(df1,df2,nope_df,sp_500_df, etf_df)
+       df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
+       df3['mvmnt'] = 0
+       df5 = df3
+
+       df5 = df5[~df5.isin([np.nan, np.inf, -np.inf]).any(1)]
+       df5['mvmnt'] = 0
+       # out_name = f'../nope_dataframes/tensor_df_{one_day_ago}_{ticker}.csv'
+       # print (f'writing to {out_name}')
+       # df5.to_csv(out_name, compression='gzip', index=False)
+       return df5
+
 def merge_tensors():
        dir_name = '../nope_dataframes/'
        x = os.listdir(dir_name)
@@ -105,19 +119,6 @@ def merge_tensors():
        combined_tensor_df.to_csv(out_name, compression = 'gzip', index = False)
        return
 
-def make_rec_tensors(df1, df2, nope_df, sp_500_df, etf_df):
-
-       df3 = munge(df1,df2,nope_df,sp_500_df, etf_df)
-       df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
-       df3['mvmnt'] = 0
-       df5 = df3
-
-       df5 = df5[~df5.isin([np.nan, np.inf, -np.inf]).any(1)]
-       df5['mvmnt'] = 0
-       # out_name = f'../nope_dataframes/tensor_df_{one_day_ago}_{ticker}.csv'
-       # print (f'writing to {out_name}')
-       # df5.to_csv(out_name, compression='gzip', index=False)
-       return df5
 
 def produce_training_data():
        all_dates = [
