@@ -210,8 +210,20 @@ if __name__ == '__main__':
 
     df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
-    hurdle = 0.0115
+
+    df1 = df.sort_values(by='mvmnt')
+    x = pd.qcut(df1['mvmnt'], 10)
+    y = []
+    for i in x.unique():
+        print(i, i.left, i.right)
+        y.append(i.right)
+    hurdles = y[2:-1]
+
+    hurdle = hurdles[-1]
     notes = f'hurdle: {hurdle}'
+    print (notes)
+    input('enter')
+
     mlearn(notes, hurdle, df)
 
     #run_loop()

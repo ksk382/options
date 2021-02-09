@@ -32,7 +32,10 @@ def make_recs(now_str):
     print(df)
     rec_df = get_rec(df)
     rec_df = rec_df.round(3)
-    print(rec_df)
+    y = rec_df[rec_df['buy'] == 1]
+    print (y)
+    print (len(y.index))
+    print (y['symbol'].unique())
     rec_df.to_csv(f'../nope_dataframes/recs_{now_str}.csv', compression='gzip', index=False)
     return rec_df
 
