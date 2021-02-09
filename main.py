@@ -8,5 +8,5 @@ if __name__=='__main__':
     run_nope(date_to_run=now_str)
     yf_ohlcv()
     clean_up(date_to_run=now_str)
-
+    print (f'All work for {now_str} complete')
 

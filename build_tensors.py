@@ -126,7 +126,8 @@ def produce_training_data():
               '2021-02-02_15.30',
               '2021-02-03_15.30',
               '2021-02-04_15.30',
-              '2021-02-05_09.30'
+              '2021-02-05_15.30',
+              '2021-02-08_12.30'
        ]
 
        for d in range(0, len(all_dates[:-2])):
@@ -143,7 +144,8 @@ def produce_training_data():
               before_stock_file = f'../stock_dataframes/{y}_synth.csv'
               df2 = pd.read_csv(before_stock_file, compression='gzip')
 
-              result_today_stock_file = f'../stock_dataframes/{z}_synth.csv'
+              #result_today_stock_file = f'../stock_dataframes/{z}_synth.csv'
+              result_today_stock_file = f'../stock_dataframes/{z}.csv'
               df_future = pd.read_csv(result_today_stock_file, compression='gzip')
 
               one_day_ago_nope_file = f'../nope_dataframes/{y}_nope.csv'

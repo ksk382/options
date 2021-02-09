@@ -37,7 +37,7 @@ def gather_stock_and_option_data(**kwargs):
 
     print ('\n\n\n\n&&&&&----- done gathering stock and option data\n\n')
 
-    return
+    return now_str
 
 def load_ticker_list():
     ticker_df = pd.read_csv('IWV_holdings.csv').dropna()

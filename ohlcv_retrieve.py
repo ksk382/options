@@ -16,6 +16,7 @@ def yf_ohlcv():
     earlier = today - DD
     earlier_str = earlier.strftime("%Y-%m-%d")
     today_str = today.strftime("%Y-%m-%d")
+    end_str = today + dt.timedelta(days=1)
 
     save_path = '../ohlcv/'
     if os.path.exists(save_path):
@@ -40,7 +41,7 @@ def yf_ohlcv():
         else:
             print (f'{count} out of {len(ticker_list)} - {ticker}')
             try:
-                y = yf.download(ticker, start=earlier_str, end=today_str,
+                y = yf.download(ticker, start=earlier_str, end=end_str,
                                 group_by="ticker")
             except Exception as e:
                 print (str(e))

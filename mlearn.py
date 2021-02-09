@@ -197,7 +197,7 @@ def run_loop():
     for i in x.unique():
         print(i, i.left, i.right)
         y.append(i.right)
-    hurdles = y[-6:-1]
+    hurdles = y[2:-1]
     print(hurdles)
     input('enter')
     for hurdle in hurdles:
@@ -210,6 +210,8 @@ if __name__ == '__main__':
 
     df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
-    hurdle = 0.011
+    hurdle = 0.0115
     notes = f'hurdle: {hurdle}'
     mlearn(notes, hurdle, df)
+
+    #run_loop()
