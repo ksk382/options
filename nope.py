@@ -63,7 +63,7 @@ def run_nope(**kwargs):
     # find the latest stock dataframe
     # later, replace this with something that just makes nope_dfs for every outstanding stock data frame
     stock_dir_name = '../stock_dataframes/'
-    stock_df_list = os.listdir(stock_dir_name)
+    stock_df_list = [i for i in os.listdir(stock_dir_name) if (i.endswith('.csv') and not i.endswith('_synth.csv'))]
     print (stock_df_list)
     if 'date_to_run' in kwargs.keys():
         latest_i = kwargs['date_to_run'] + '.csv'
