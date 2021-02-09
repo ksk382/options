@@ -74,7 +74,7 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
 def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df):
 
        mvmnt_df = df_future
-       mvmnt_df['opn_z'] = mvmnt_df['opn']
+       mvmnt_df['opn_z'] = mvmnt_df['opn_s']
        mvmnt_df = mvmnt_df[['symbol', 'opn_z']]
 
        df4 = munge(df1,df2,nope_df,sp_500_df, etf_df)
@@ -127,7 +127,8 @@ def produce_training_data():
               '2021-02-03_15.30',
               '2021-02-04_15.30',
               '2021-02-05_15.30',
-              '2021-02-08_12.30'
+              '2021-02-08_15.30',
+              '2021-02-09_09.30',
        ]
 
        for d in range(0, len(all_dates[:-2])):
@@ -145,7 +146,7 @@ def produce_training_data():
               df2 = pd.read_csv(before_stock_file, compression='gzip')
 
               #result_today_stock_file = f'../stock_dataframes/{z}_synth.csv'
-              result_today_stock_file = f'../stock_dataframes/{z}.csv'
+              result_today_stock_file = f'../stock_dataframes/{z}_synth.csv'
               df_future = pd.read_csv(result_today_stock_file, compression='gzip')
 
               one_day_ago_nope_file = f'../nope_dataframes/{y}_nope.csv'

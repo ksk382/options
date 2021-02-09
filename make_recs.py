@@ -43,27 +43,34 @@ def check_results():
     pd.set_option('display.max_rows', 800)
     pd.set_option('display.min_rows', 200)
 
-    rec_file = '../nope_dataframes/recs_2021-02-05_15.30.csv'
-    today_file = '../stock_dataframes/2021-02-08_09.30.csv'
+    rec_file = '../nope_dataframes/recs_2021-02-08_15.30.csv'
+    today_file = '../stock_dataframes/2021-02-09_09.30_synth.csv'
     a = pd.read_csv(rec_file, compression = 'gzip')
     b = pd.read_csv(today_file, compression= 'gzip')
     b = b[b['opn']!=0]
     x = pd.merge(a, b, on='symbol')
-    cols = ['symbol','cl_s_y','pred','buy','last']
+    cols = ['symbol','cl_s_y','pred','buy','opn']
     x = x[cols]
+    pr_date = b['pr_date'].iloc[0]
+    h = pr_date + ' close'
+    today_date = b['date'].iloc[0]
+    i = today_date + ' open'
+    cols2 = ['symbol',h,'pred','buy',i]
+    x.columns = cols2
     x = x[x['buy']==1]
-    x['profit'] = ((x['last'] - x['cl_s_y']) / x['cl_s_y']) * x['buy']
-    x = x.sort_values(by='pred', ascending=False)
+    x['profit'] = ((x[i] - x[h]) / x[h]) * x['buy']
+    x = x.sort_values(by='profit', ascending=False)
     print (x)
-    r = x['profit'].sum() / x['buy'].sum()
-    print (f'return: {r}')
-    sns.regplot(x['pred'], x['profit'])
 
-    plt.show()
+    r = x['profit'].sum() / x['buy'].sum()
+    print (f'num bets: {len(x.index)}')
+    print (f'return: {r}')
+    #sns.regplot(x['pred'], x['profit'])
+    #plt.show()
 
 
 if __name__ == "__main__":
-    now_str = '2021-02-08_15.30'
-    df = make_recs(now_str)
-    #check_results()
+    #now_str = '2021-02-08_15.30'
+    #df = make_recs(now_str)
+    check_results()
 

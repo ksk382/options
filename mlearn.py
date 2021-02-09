@@ -205,9 +205,7 @@ def run_loop():
         print(notes)
         mlearn(notes, hurdle, df)
 
-
-if __name__ == '__main__':
-
+def run_one():
     df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
 
@@ -221,9 +219,11 @@ if __name__ == '__main__':
 
     hurdle = hurdles[-1]
     notes = f'hurdle: {hurdle}'
-    print (notes)
-    input('enter')
+    print(notes)
 
     mlearn(notes, hurdle, df)
 
+
+if __name__ == '__main__':
+    run_one()
     #run_loop()

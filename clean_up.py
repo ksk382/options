@@ -13,7 +13,6 @@ def clean_up(**kwargs):
     pd.set_option('display.min_rows', 50)
     pd.set_option('display.max_rows', 200)
 
-    ticker_list = load_ticker_list()
     o_dir = '../ohlcv/'
     s_dir = '../stock_dataframes/'
     if 'date_to_run' in kwargs.keys():
@@ -28,12 +27,13 @@ def clean_up(**kwargs):
 
     #today = dt.datetime.now()
     #today_str = today.strftime("%Y-%m-%d")
-    odf_str = today_str[:10]
     odf_all = pd.DataFrame([])
-    for ticker in ticker_list:
-        o_name = o_dir + ticker + '_' + odf_str + '.csv'
+    o_file_list = [(o_dir + i) for i in os.listdir(o_dir) if i.endswith('csv')]
+    for o_name in o_file_list:
+        #o_name = o_dir + ticker + '_' + odf_str + '.csv'
         try:
             odf = pd.read_csv(o_name, compression = 'gzip')
+            ticker = o_name.split('_')[0].replace(o_dir, '')
             odf['ticker'] = ticker
             #print (odf.tail())
             odf_all = odf_all.append(odf, ignore_index=True)
@@ -64,6 +64,6 @@ def clean_up(**kwargs):
 if __name__=='__main__':
 
 
-    clean_up(date_to_run='2021-02-08_15.30')
+    clean_up(date_to_run='2021-02-09_09.30')
 
 
