@@ -4,7 +4,7 @@ from ohlcv_retrieve import yf_ohlcv
 
 if __name__=='__main__':
     x = run_nope()
-    if x = 1:
+    if x == 1:
         yf_ohlcv()
         clean_up()
         print (f'\n\n\n\n&&&&&----- Nope, ohlcv, and clean_up complete')
