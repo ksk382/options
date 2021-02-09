@@ -94,9 +94,12 @@ def run_nope(**kwargs):
     print (len(stock_df['symbol'].unique()))
 
     option_dir = '../option_dataframes/' + latest_i[:-4] + '/'
-    option_df_list = os.listdir(option_dir)
+    option_df_list = [i for i in os.listdir(option_dir) if i.endswith('.csv')]
     print (option_dir)
     print (option_df_list)
+    if len(option_df_list) == 0:
+        print (f'option dataframes not present for {option_dir}')
+        return 0
 
     nope_df = pd.DataFrame()
 
@@ -165,7 +168,7 @@ def run_nope(**kwargs):
     print (f'writing to {nope_df_name}')
     nope_df.to_csv(nope_df_name, compression = 'gzip', index = False)
 
-    return
+    return 1
 
 if __name__ == '__main__':
     date_to_run = input("enter date to run:\n")
