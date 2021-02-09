@@ -8,12 +8,9 @@ from sklearn.datasets import load_iris
 import seaborn as sns
 import os
 
-save_path = '../ohlcv/'
-if not os.path.exists(save_path):
-    print('path doesnt exist')
 
-
-x = [(save_path + i) for i in os.listdir(save_path) if i.endswith('.csv')]
-for i in x:
-    print (i)
-    os.remove(i)
+pr_date = '2021-02-08'
+stock_df_list = [i for i in os.listdir('../stock_dataframes/') if (i.endswith('_synth.csv') and pr_date in i)]
+stock_df_name = sorted(stock_df_list)[0]
+print (stock_df_list)
+print (stock_df_name)

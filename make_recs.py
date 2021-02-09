@@ -19,8 +19,9 @@ def make_recs(now_str):
 
     pr_date = df2['pr_date'].head(1).item()
     stock_df_list = [i for i in os.listdir('../stock_dataframes/') if (i.endswith('_synth.csv') and pr_date in i)]
+    stock_df_name = sorted(stock_df_list)[0]
 
-    yesterday_stock_file = f'../stock_dataframes/{pr_date}_synth.csv'
+    yesterday_stock_file = f'../stock_dataframes/{stock_df_name}'
     df1 = pd.read_csv(yesterday_stock_file, compression='gzip')
 
     today_nope = f'../nope_dataframes/{now_str}_nope.csv'
