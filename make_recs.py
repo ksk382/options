@@ -7,7 +7,7 @@ import pandas as pd
 from get_rec import get_rec
 from build_tensors import make_rec_tensors
 from get_rec import get_rec
-
+import os
 
 
 def make_recs(now_str):
@@ -17,7 +17,9 @@ def make_recs(now_str):
     today_stock_file = f'../stock_dataframes/{now_str}_synth.csv'
     df2 = pd.read_csv(today_stock_file, compression='gzip')
 
-    pr_date = df2['pr_date'].head(1).item() + '_15.30'
+    pr_date = df2['pr_date'].head(1).item()
+    stock_df_list = [i for i in os.listdir('../stock_dataframes/') if (i.endswith('_synth.csv') and pr_date in i)]
+
     yesterday_stock_file = f'../stock_dataframes/{pr_date}_synth.csv'
     df1 = pd.read_csv(yesterday_stock_file, compression='gzip')
 
@@ -70,7 +72,7 @@ def check_results():
 
 
 if __name__ == "__main__":
-    #now_str = '2021-02-08_15.30'
-    #df = make_recs(now_str)
-    check_results()
+    now_str = '2021-02-09_15.00'
+    df = make_recs(now_str)
+    #check_results()
 

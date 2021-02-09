@@ -6,6 +6,18 @@ import yfinance as yf
 from pathlib import Path
 from gather import load_ticker_list
 
+
+def clear_ohlcv():
+    save_path = '../ohlcv/'
+    if not os.path.exists(save_path):
+        print('path doesnt exist')
+        return
+
+    x = [(save_path + i) for i in os.listdir(save_path) if i.endswith('.csv')]
+    for i in x[:5]:
+        os.remove(i)
+    return
+
 def yf_ohlcv():
 
     ticker_list = load_ticker_list()
