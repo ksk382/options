@@ -35,7 +35,7 @@ def gather_stock_and_option_data(**kwargs):
             print (i)
         print (f'{len(error_list)} errors')
 
-    print ('\n\n\n\n&&&&&----- done gathering stock and option data\n\n')
+    print ('\n\n\n\n&&&&&----- done gathering stock and option data')
 
     return now_str
 
@@ -74,7 +74,7 @@ def gather_stock_data(**kwargs):
         print(i)
     print(f'{len(error_list)} errors')
 
-    print('\n\n\n\n&&&&&----- done gathering stock data\n\n')
+    print('\n\n\n\n&&&&&----- done gathering stock data')
 
     return
 

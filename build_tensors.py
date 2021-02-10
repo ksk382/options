@@ -52,6 +52,7 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
 
        show_cols = show_cols + ['sho_y']
        show_cols.append('symbol')
+       show_cols.append('name_y')
        show_cols.append('cl_s_y')
        show_cols.append('date_y')
        show_cols.append('beta_y')
