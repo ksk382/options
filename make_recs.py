@@ -47,7 +47,7 @@ def check_results():
     pd.set_option('display.min_rows', 200)
 
     rec_file = '../nope_dataframes/recs_2021-02-09_15.00 with high hurdle.csv'
-    today_file = '../stock_dataframes/2021-02-09_09.30_synth.csv'
+    today_file = '../stock_dataframes/2021-02-09_09.45_synth.csv'
     a = pd.read_csv(rec_file, compression = 'gzip')
     b = pd.read_csv(today_file, compression= 'gzip')
     b = b[b['opn']!=0]

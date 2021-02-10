@@ -64,6 +64,6 @@ def clean_up(**kwargs):
 if __name__=='__main__':
 
 
-    clean_up(date_to_run='2021-02-09_09.30')
+    clean_up(date_to_run='2021-02-10_09.45')
 
 
