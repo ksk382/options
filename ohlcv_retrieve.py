@@ -14,7 +14,7 @@ def clear_ohlcv():
         return
 
     x = [(save_path + i) for i in os.listdir(save_path) if i.endswith('.csv')]
-    for i in x[:5]:
+    for i in x:
         os.remove(i)
     return
 
