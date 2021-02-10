@@ -63,8 +63,7 @@ def clean_up(**kwargs):
     print (f'full shape: {out_df.shape}')
 
 if __name__=='__main__':
-
-
-    clean_up(date_to_run='2021-02-10_15.00')
+    date_to_run = input("enter date to run:\n")
+    clean_up(date_to_run=date_to_run)
 
 
