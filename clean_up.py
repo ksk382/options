@@ -60,10 +60,11 @@ def clean_up(**kwargs):
 
     print (out_df.columns)
     print (out_df.tail())
+    print (f'full shape: {out_df.shape}')
 
 if __name__=='__main__':
 
 
-    clean_up(date_to_run='2021-02-10_09.45')
+    clean_up(date_to_run='2021-02-10_15.00')
 
 

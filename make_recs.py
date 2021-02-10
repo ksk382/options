@@ -73,7 +73,7 @@ def check_results():
 
 
 if __name__ == "__main__":
-    #now_str = '2021-02-09_15.00'
-    #df = make_recs(now_str)
-    check_results()
+    now_str = '2021-02-10_15.00'
+    df = make_recs(now_str)
+    #heck_results()
 

@@ -197,7 +197,7 @@ def run_loop():
     for i in x.unique():
         print(i, i.left, i.right)
         y.append(i.right)
-    hurdles = y[2:-1]
+    hurdles = y[-3:-1]
     print(hurdles)
     input('enter')
     for hurdle in hurdles:
@@ -225,5 +225,5 @@ def run_one():
 
 
 if __name__ == '__main__':
-    run_one()
-    #run_loop()
+    #run_one()
+    run_loop()
