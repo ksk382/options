@@ -42,34 +42,6 @@ def make_recs(now_str):
     rec_df.to_csv(f'../nope_dataframes/recs_{now_str}.csv', compression='gzip', index=False)
     return rec_df
 
-def check_results():
-    pd.set_option('display.max_rows', 800)
-    pd.set_option('display.min_rows', 200)
-
-    rec_file = '../nope_dataframes/recs_2021-02-09_15.00.csv'
-    today_file = '../stock_dataframes/2021-02-10_09.45_synth.csv'
-    a = pd.read_csv(rec_file, compression = 'gzip')
-    b = pd.read_csv(today_file, compression= 'gzip')
-    b = b[b['opn']!=0]
-    x = pd.merge(a, b, on='symbol')
-    cols = ['symbol','cl_s_y','pred','buy','opn']
-    x = x[cols]
-    pr_date = b['pr_date'].iloc[0]
-    h = pr_date + ' close'
-    today_date = b['date'].iloc[0]
-    i = today_date + ' open'
-    cols2 = ['symbol',h,'pred','buy',i]
-    x.columns = cols2
-    x = x[x['buy']==1]
-    x['profit'] = ((x[i] - x[h]) / x[h]) * x['buy']
-    x = x.sort_values(by='profit', ascending=False)
-    print (x)
-
-    r = x['profit'].sum() / x['buy'].sum()
-    print (f'num bets: {len(x.index)}')
-    print (f'return: {r}')
-    #sns.regplot(x['pred'], x['profit'])
-    #plt.show()
 
 
 if __name__ == "__main__":

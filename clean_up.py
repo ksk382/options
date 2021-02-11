@@ -17,11 +17,11 @@ def clean_up(**kwargs):
     s_dir = '../stock_dataframes/'
     if 'date_to_run' in kwargs.keys():
         now_str = str(kwargs['date_to_run']) + '.csv'
-        stock_df_name = [(s_dir + i) for i in os.listdir(s_dir) if i.startswith(now_str)][0]
+        stock_df_name = [(s_dir + i) for i in os.listdir(s_dir) if (i.startswith(now_str) and not i.endswith('_synth.csv'))][0]
         today_str = now_str
         print (stock_df_name)
     else:
-        list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if i.endswith('.csv')]
+        list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if (i.endswith('.csv') and not i.endswith('_synth.csv'))]
         stock_df_name = max(list_of_files, key=os.path.getctime)
         today_str = os.listdir(o_dir)[0][-14:-4]
 
