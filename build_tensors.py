@@ -121,17 +121,7 @@ def merge_tensors():
        return
 
 
-def produce_training_data():
-       all_dates = [
-              '2021-02-01_15.30',
-              '2021-02-02_15.30',
-              '2021-02-03_15.30',
-              '2021-02-04_15.30',
-              '2021-02-05_15.30',
-              '2021-02-08_15.30',
-              '2021-02-09_15.00',
-              '2021-02-10_09.45'
-       ]
+def produce_training_data(all_dates):
 
        for d in range(0, len(all_dates[:-2])):
               x = all_dates[d]
@@ -189,7 +179,18 @@ def check_mvmnt_dist():
               plt.show()
 
 if __name__ == '__main__':
-
-       produce_training_data()
+       all_dates = [
+              '2021-02-01_15.30',
+              '2021-02-02_15.30',
+              '2021-02-03_15.30',
+              '2021-02-04_15.30',
+              '2021-02-05_15.30',
+              '2021-02-08_15.30',
+              '2021-02-09_15.00',
+              '2021-02-10_15.00',
+              '2021-02-11_15.00',
+              '2021-02-12_09.45'
+       ]
+       produce_training_data(all_dates)
        merge_tensors()
        check_mvmnt_dist()

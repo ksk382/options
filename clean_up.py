@@ -9,6 +9,7 @@ Need to get clean data that shows day -1 ohlcv, day 0 ohlcv, and day +1 o
 
 '''
 def clean_up(**kwargs):
+    #merges ohlcv data with stock dataframes
 
     pd.set_option('display.min_rows', 50)
     pd.set_option('display.max_rows', 200)
@@ -18,12 +19,10 @@ def clean_up(**kwargs):
     if 'date_to_run' in kwargs.keys():
         now_str = str(kwargs['date_to_run']) + '.csv'
         stock_df_name = [(s_dir + i) for i in os.listdir(s_dir) if (i.startswith(now_str) and not i.endswith('_synth.csv'))][0]
-        today_str = now_str
         print (stock_df_name)
     else:
         list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if (i.endswith('.csv') and not i.endswith('_synth.csv'))]
         stock_df_name = max(list_of_files, key=os.path.getctime)
-        today_str = os.listdir(o_dir)[0][-14:-4]
 
     #today = dt.datetime.now()
     #today_str = today.strftime("%Y-%m-%d")
@@ -41,13 +40,10 @@ def clean_up(**kwargs):
             print (str(e))
             continue
 
-
     odf_all.columns = ['opn_s','hi_s','lo_s','cl_s','adj_cl_s', 'vl_s','date_s','symbol']
     print ('loaded ohlcv')
 
-    print (stock_df_name)
     df = pd.read_csv(stock_df_name, compression = 'gzip')
-    print (df.tail())
     d = df['date'].iloc[0]
     x = odf_all[odf_all['date_s']==d]
     print ('x tail: \n')

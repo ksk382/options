@@ -31,8 +31,6 @@ def check_results():
     x['profit'] = ((x[i] - x[h]) / x[h]) * x['buy']
     x = x.sort_values(by='profit', ascending=False)
 
-
-
     print (x)
 
     r = x['profit'].sum() / x['buy'].sum()
@@ -40,3 +38,6 @@ def check_results():
     print (f'return: {r}')
     #sns.regplot(x['pred'], x['profit'])
     #plt.show()
+
+if __name__ == "__main__":
+    check_results()

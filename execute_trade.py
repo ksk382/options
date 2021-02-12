@@ -12,68 +12,74 @@ import xml.etree.cElementTree as ET
 from cred_file import acct_num, oauth_hdr, trade_endpoint
 import lxml.etree as etree
 
-print (acct_num)
-fixml = ET.Element('FIXML', xmlns="http://www.fixprotocol.org/FIXML-5-0-SP2")
-order = ET.SubElement(fixml, "Order",
-                    TmInForce="0",
-                    Typ="2",
-                    Side="1",
-                    Px="11.75",
-                    Acct=acct_num)
-inst = ET.SubElement(order, "Instrmt",
-                    SecTyp="0",
-                    Sym="F")
-ordqty = ET.SubElement(order, "OrdQty",
-                    Qty="1")
 
-tree = ET.ElementTree(fixml)
+def buy_stock(symbol, limit_price):
+    limit_price = str(limit_price)
+    fixml = ET.Element('FIXML', xmlns="http://www.fixprotocol.org/FIXML-5-0-SP2")
+    order = ET.SubElement(fixml, "Order",
+                          TmInForce="0",
+                          Typ="2",
+                          Side="1",
+                          Px=limit_price,
+                          Acct=acct_num)
+    inst = ET.SubElement(order, "Instrmt",
+                         SecTyp="CS",
+                         Sym=symbol)
+    ordqty = ET.SubElement(order, "OrdQty",
+                           Qty="1")
 
+    tree = ET.ElementTree(fixml)
 
-tree.write("test_xml.xml")
+    tree.write("test_xml.xml")
 
-target_url = trade_endpoint + acct_num + '/orders.xml'
-print (target_url)
-print (oauth_hdr)
-print (tree)
-XML_STRING = open('test_xml.xml').read()
-print (XML_STRING)
-print ('\n\n')
-#with open('test_xml.xml') as xml:
-print ('sending')
-r = requests.post(url=target_url, auth=oauth_hdr, data=XML_STRING)
-print(r)
-print(r.content)
-r = requests.get(url=target_url, auth=oauth_hdr)
-print (r)
-xml = ET.fromstring(r.content)
-x = etree.parse(r.content)
-for table in xml.iter():
-    for child in table:
-        print (child.tag, child.text)
+    target_url = trade_endpoint + acct_num + '/orders.xml'
+    print(target_url)
+    print(oauth_hdr)
+    print(tree)
+    XML_STRING = open('test_xml.xml').read()
+    print(XML_STRING)
+    print('\n\n')
+    # with open('test_xml.xml') as xml:
+    print('sending')
+    r = requests.post(url=target_url, auth=oauth_hdr, data=XML_STRING)
+    print(r)
+    print(r.content)
 
-'''
-root = ET.Element("root")
-doc = ET.SubElement(root, "doc")
-ET.SubElement(doc, "field1", name="blah").text = "some value1"
-ET.SubElement(doc, "field2", name="asdfasd").text = "some vlaue2"
+    return
 
-tree = ET.ElementTree(root)
-print (tree)
+def sell_stock(symbol, limit_price):
+    limit_price = str(limit_price)
+    fixml = ET.Element('FIXML', xmlns="http://www.fixprotocol.org/FIXML-5-0-SP2")
+    order = ET.SubElement(fixml, "Order",
+                          TmInForce="0",
+                          Typ="2",
+                          Side="2",
+                          Px=limit_price,
+                          Acct=acct_num)
+    inst = ET.SubElement(order, "Instrmt",
+                         SecTyp="CS",
+                         Sym=symbol)
+    ordqty = ET.SubElement(order, "OrdQty",
+                           Qty="1")
 
-tree.write("test_xml.xml")'''
+    tree = ET.ElementTree(fixml)
 
-'''
-xml = """my xml"""
-headers = {'Content-Type': 'application/xml'}
-requests.post('http://www.my-website.net/xml', data=xml, headers=headers)
-'''
+    tree.write("test_xml.xml")
 
+    target_url = trade_endpoint + acct_num + '/orders.xml'
+    print(target_url)
+    print(oauth_hdr)
+    print(tree)
+    XML_STRING = open('test_xml.xml').read()
+    print(XML_STRING)
+    print('\n\n')
+    # with open('test_xml.xml') as xml:
+    print('sending')
+    r = requests.post(url=target_url, auth=oauth_hdr, data=XML_STRING)
+    print(r)
+    print(r.content)
 
-'''
-<FIXML xmlns="http://www.fixprotocol.org/FIXML-5-0-SP2">
-  <Order TmInForce="0" Typ="2" Side="1" Px="13" Acct="12345678">
-    <Instrmt SecTyp="CS" Sym="F"/>
-    <OrdQty Qty="1"/>
-  </Order>
-</FIXML>
-'''
+    return
+
+if __name__=="__main__":
+    buy_stock('F', 11.30)
