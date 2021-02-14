@@ -43,6 +43,8 @@ def get_rec(tensor_df):
     rec = tensor_df[['symbol','name_y','cl_s_y']]
     rec.columns = ['symbol','name','close_price']
     rec['hurdle'] = hurdle
+    rec['hurdle_price'] = rec['close_price'] + rec['close_price'] * rec['hurdle']
+    rec['hurdle_price'] = rec['hurdle_price'].round(2)
     rec['confidence'] = test_predictions
     rec['buy'] = (rec['confidence'] > .5) * 1
     return rec
@@ -89,7 +91,7 @@ if __name__ == "__main__":
     list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if (i.endswith('_synth.csv'))]
     stock_df_name = max(list_of_files, key=os.path.getctime)
     time_str = stock_df_name.replace(s_dir, '').replace('_synth.csv', '')
-
+    print (time_str)
     rec_df = make_recs(time_str)
     y = rec_df[rec_df['buy'] == 1]
     print(y)
