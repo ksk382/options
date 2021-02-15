@@ -136,8 +136,10 @@ def yf_gather_info():
         for i in [j for j in existing_files if (j.startswith(ticker) and not j.endswith(f'{today_str}.csv')) ]:
             m = save_path + i
             try:
+                print (f'deleting {m}')
                 os.remove(m)
             except:
+                print (f'{m} somehow already gone')
                 pass
         count += 1
         f_name = f'{save_path}{ticker}_{today_str}.csv'
