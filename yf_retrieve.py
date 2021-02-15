@@ -133,7 +133,7 @@ def yf_gather_info():
     today_str = today.strftime("%Y-%m-%d")
     count = 0
     for ticker in ticker_list:
-        for i in [j for j in existing_files if (j.startswith(ticker) and not j.endswith(f'{today_str}.csv')) ]:
+        for i in [j for j in existing_files if (j.startswith((ticker+'_') and not j.endswith(f'{today_str}.csv')) ]:
             m = save_path + i
             try:
                 print (f'deleting {m}')
