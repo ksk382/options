@@ -8,6 +8,5 @@ msft = yf.Ticker("VERI")
 d = msft.info
 print(json.dumps(d, indent=4, sort_keys=True))
 
-# show institutional holders
-print (msft.institutional_holders)
+
 
