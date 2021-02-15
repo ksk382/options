@@ -13,7 +13,7 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
 
        df3 = pd.merge(df1, df2, on=['symbol'])
        df3['sp'] = df3['symbol'].isin(sp_500_df['Ticker']) * 1
-       df3['etf'] = df3['symbol'].isin(etf_df['Ticker'])*1
+       df3['etf'] = df3['symbol'].isin(etf_df['Ticker']) * 1
 
        # convert dates to datetime format
        df3['date_x'] = pd.to_datetime(df3['date_x'])

@@ -135,7 +135,10 @@ def yf_gather_info():
     for ticker in ticker_list:
         for i in [j for j in existing_files if (j.startswith(ticker) and not j.endswith(f'{today_str}.csv')) ]:
             m = save_path + i
-            os.remove(m)
+            try:
+                os.remove(m)
+            except:
+                pass
         count += 1
         f_name = f'{save_path}{ticker}_{today_str}.csv'
         if os.path.isfile(f_name):
