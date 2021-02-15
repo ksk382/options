@@ -10,19 +10,20 @@ def calc_num_buys(rec_df):
     num_stocks = len(rec_df.index)
     amnt_per_stock = balance / num_stocks
     rec_df['num_to_buy'] = round(amnt_per_stock / rec_df['close_price'], 0)
-    rec_df['value'] = rec_df['num_to_buy'] * rec_df['close_price']
-    total_val = rec_df['value'].sum()
+    rec_df['proj_val'] = rec_df['num_to_buy'] * rec_df['close_price']
+    total_val = rec_df['proj_val'].sum()
 
     while total_val < balance:
         amnt_per_stock += 1
         rec_df['num_to_buy'] = round(amnt_per_stock / rec_df['close_price'], 0)
-        rec_df['value'] = rec_df['num_to_buy'] * rec_df['close_price']
-        total_val = rec_df['value'].sum()
+        rec_df['proj_val'] = rec_df['num_to_buy'] * rec_df['close_price']
+        total_val = rec_df['proj_val'].sum()
     amnt_per_stock -= 1
     rec_df['num_to_buy'] = round(amnt_per_stock / rec_df['close_price'], 0)
-    rec_df['value'] = rec_df['num_to_buy'] * rec_df['close_price']
+    rec_df['proj_val'] = rec_df['num_to_buy'] * rec_df['close_price']
     rec_df = rec_df.sort_values(by='num_to_buy', ascending=False)
-    total_val = rec_df['value'].sum()
+    total_val = rec_df['proj_val'].sum()
+    rec_df['num_to_buy'] = rec_df['num_to_buy'].values.astype(int)
 
     return rec_df
 
@@ -40,7 +41,6 @@ def main(**kwargs):
         now = dt.datetime.now()
         now_str = dt.datetime.strftime(now, "%Y-%m-%d_") +'15.00'
         print(now_str)
-    now_str = '2021-02-12_15.00'
 
     out_name = decision_dir_name + now_str + '.csv'
 
@@ -51,6 +51,8 @@ def main(**kwargs):
 
     rec_df = calc_num_buys(rec_df)
     print (rec_df)
+    rec_df['last'] = ''
+    rec_df['bought'] = ''
 
     for index, row in rec_df.iterrows():
         symbol = row['symbol']
@@ -59,17 +61,28 @@ def main(**kwargs):
         num_to_buy = row['num_to_buy']
         print (symbol, price, h, num_to_buy)
         # make api call to determine current ask price
-        company_df, e = get_stock_df(company)
-        last_price = company_df.loc[0,'last']
+        company_df, e = get_stock_df(symbol)
+        last_ask = company_df.loc[0,'ask']
+        last_ask = float(last_ask)
+        rec_df.at[index, 'last'] = last_ask
         # check if current ask price is within a tolerance range of the modeled closing price
+        if last_ask < (price * 1.005):
+            print ('would buy')
+            buy_amnt = num_to_buy * last_ask
+            num_to_buy = str(num_to_buy)
+            limit_price = str(last_ask)
+            #buy_report = buy_stock(symbol, num_to_buy, limit_price)
+            #print (buy_report)
+            rec_df.at[index, 'bought'] = buy_amnt
+        else:
+            rec_df.at[index, 'bought'] = 0
+            print ('no')
 
-        if last_price < (price * 1.005):
-            buy_report = buy_stock(symbol, num_to_buy, last_price)
-            print (symbol)
-            print (buy_report)
-
-
+    print (rec_df)
+    print (rec_df['bought'].sum())
+    print (len(rec_df[rec_df['bought']>0].index))
     rec_df.to_csv(out_name, compression='gzip', index=False)
 
 if __name__ == '__main__':
-    main()
+    now_str = '2021-02-12_15.00'
+    main(date_to_run = now_str)

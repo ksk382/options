@@ -3,7 +3,8 @@ from api_calls import get_option_df, get_stock_df
 import datetime as dt
 import os
 import time
-from nope import nope_one_off
+import sys
+import argparse
 
 
 def gather_stock_and_option_data(**kwargs):
@@ -215,4 +216,13 @@ if __name__ == "__main__":
     #now_str = '2021-02-03_15.30'
     #gather_stock_and_option_data(kow_str = now_str)
     #gather_stock_and_option_data()
-    gather_stock_data()
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-m', '--mode',
+                        help='Enter -m f for full, -m l for light. Full run collects option and stock data.',
+                        required=False)
+    args = vars(parser.parse_args())
+
+    if args['mode'] == 'f':
+        gather_stock_and_option_data()
+    else:
+        gather_stock_data()

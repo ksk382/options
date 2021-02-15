@@ -1,7 +1,7 @@
 from requests_oauthlib import OAuth1
 import json
 
-with open('../aaa.txt') as json_file:
+with open('../aws_scp/aaa.txt') as json_file:
     data = json.load(json_file)
 
 consumer_key = data['consumer_key']

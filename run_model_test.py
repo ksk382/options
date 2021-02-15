@@ -7,16 +7,9 @@ import os
 from tensorflow.keras.models import load_model
 import tensorflow as tf
 
-def model_test():
+def run_model_test(model, hurdle):
     pd.set_option('display.max_rows', 2000)
     pd.set_option('display.min_rows', 100)
-
-    model_path = '../ML_logs/'
-    list_of_models = [(model_path + i) for i in os.listdir(model_path) if i.endswith('.h5')]
-    #print (list_of_models)
-    latest_file = max(list_of_models, key=os.path.getctime)
-    print(latest_file)
-    hurdle = float(latest_file.split('_')[-1].replace('.h5',''))
 
     train_stats = pd.read_csv('../ML_logs/train_stats.csv', compression = 'gzip')
     train_stats = train_stats.set_index('Unnamed: 0')
@@ -36,7 +29,6 @@ def model_test():
     normed_test_data = norm(test_dataset)
     normed_test_data.fillna(0, inplace=True)
 
-    model = load_model(latest_file)
     test_predictions = model.predict(normed_test_data)
     binary_test_pred = (test_predictions > .5) * 1
     test_dataset['binary_test_pred'] = binary_test_pred
@@ -62,5 +54,12 @@ def model_test():
     return r
 
 if __name__=='__main__':
-    model_test()
+    model_path = '../ML_logs/'
+    list_of_models = [(model_path + i) for i in os.listdir(model_path) if i.endswith('.h5')]
+    # print (list_of_models)
+    latest_file = max(list_of_models, key=os.path.getctime)
+    print(latest_file)
+    model = load_model(latest_file)
+    hurdle = float(latest_file.split('_')[-1].replace('.h5', ''))
+    run_model_test(model, hurdle)
 

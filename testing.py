@@ -1,8 +1,13 @@
-from gather import load_ticker_list
+import yfinance as yf
+import json
 import pandas as pd
-import numpy as np
-import subprocess
 
+msft = yf.Ticker("VERI")
 
-x = np.repeat(1/3, 3)
-print (x)
+# get stock info
+d = msft.info
+print(json.dumps(d, indent=4, sort_keys=True))
+
+# show institutional holders
+print (msft.institutional_holders)
+

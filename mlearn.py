@@ -11,7 +11,7 @@ import datetime as dt
 from contextlib import redirect_stdout
 import os
 import time
-from model_test import model_test
+from run_model_test import run_model_test
 
 def mlearn(notes, hurdle, df):
     # Make numpy values easier to read.
@@ -150,11 +150,12 @@ def mlearn(notes, hurdle, df):
 
     now_str = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d_%H.%M")
     ## Save entire model to a HDF5 file
-    model.save(f'{log_dir}mlearn_{now_str}_{hurdle}.h5')
-    r_ = model_test()
+    r_ = run_model_test(model, hurdle)
+    save_name = f'{now_str} - hurdle - {hurdle} mse - {round(history.history["val_mse"][-1],2)} r_ - {r_}'
+    model.save(f'{log_dir}{save_name}_model_{hurdle}.h5')
     # save log file
-    log_header = f'{log_dir}/log_{now_str} - hurdle - {hurdle} mse - {round(history.history["val_mse"][-1],2)} r_ - {r_}'
-    log_file = f'{log_header}.txt'
+    log_file_name = f'{log_dir}{save_name}_log'
+    log_file = f'{log_file_name}.txt'
 
     str =   notes + \
             '\n\n\n' + \
@@ -176,7 +177,7 @@ def mlearn(notes, hurdle, df):
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
     plt.axhline(y=var)
-    plt.savefig(f'{log_header}.png')
+    plt.savefig(f'{log_dir}{save_name}_graph.png')
     #plt.show()
     plt.clf()
 
@@ -197,7 +198,7 @@ def run_loop():
     for i in x.unique():
         print(i, i.left, i.right)
         y.append(i.right)
-    hurdles = y[-3:-1]
+    hurdles = y[-4:-1]
     print(hurdles)
     input('enter')
     for hurdle in hurdles:
@@ -206,7 +207,7 @@ def run_loop():
         mlearn(notes, hurdle, df)
 
 def run_one():
-    df_file = '../nope_dataframes/combined_tensor_df.csv'
+    '''df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
 
     df1 = df.sort_values(by='mvmnt')
@@ -217,13 +218,16 @@ def run_one():
         y.append(i.right)
     hurdles = y[2:-1]
 
-    hurdle = hurdles[-1]
-    notes = f'hurdle: {hurdle}'
+    hurdle = hurdles[-1]'''
+    df_file = '../nope_dataframes/combined_tensor_df.csv'
+    df = pd.read_csv(df_file, compression='gzip')
+    hurdle = .0163
+    notes = f'trying with high hurdle: {hurdle}'
     print(notes)
 
     mlearn(notes, hurdle, df)
 
 
 if __name__ == '__main__':
-    #run_one()
-    run_loop()
+    run_one()
+    #run_loop()

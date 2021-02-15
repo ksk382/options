@@ -75,7 +75,7 @@ def make_recs(now_str):
     rec_df = rec_df.round(3)
     pre_screen_length = rec_df[rec_df['buy']==1].index
     print (f'pre-screen list: {len(pre_screen_length)}')
-    no_go_df = pd.read_csv('../no_go.csv')
+    no_go_df = pd.read_csv('../aws_scp/no_go.csv')
     x = no_go_df[no_go_df['exclude'] == 1]['Ticker']
     y = rec_df[rec_df['symbol'].isin(x)].index
     rec_df = rec_df.drop(rec_df.index[y])
