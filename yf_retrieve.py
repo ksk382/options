@@ -132,7 +132,7 @@ def yf_gather_info():
     today = dt.datetime.now()
     today_str = today.strftime("%Y-%m-%d")
     count = 0
-    for ticker in ticker_list[:5]:
+    for ticker in ticker_list:
         for i in [j for j in existing_files if j.startswith(ticker) and not j.endswith(f'{today_str}.csv')]:
             m = save_path + i
             os.remove(m)
