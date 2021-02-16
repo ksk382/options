@@ -55,6 +55,7 @@ def yf_ohlcv():
             try:
                 y = yf.download(ticker, start=earlier_str, end=end_str,
                                 group_by="ticker")
+                print(f'{count} - {ticker} -- complete')
             except Exception as e:
                 print (str(e))
                 continue
@@ -166,4 +167,4 @@ def yf_gather_info():
     return
 
 if __name__ == "__main__":
-    yf_gather_info()
+    yf_merge()

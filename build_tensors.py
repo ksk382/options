@@ -8,8 +8,15 @@ import os
 import time
 import numpy as np
 import seaborn as sns
+import yfinance as yf
 
-def munge(df1, df2, nope_df, sp_500_df, etf_df):
+def munge(df1, df2, nope_df, sp_500_df, etf_df, spy_df):
+
+       df2_date = df2.loc[0, 'date']
+       spy_df = spy_df[spy_df['Date'] == df2_date].head(1)
+       spy_delta = (spy_df['Close'] - spy_df['Open']) / spy_df['Open']
+       df2['spy_delta'] = spy_delta.item()
+       df2['spy_delta'].round(4)
 
        df3 = pd.merge(df1, df2, on=['symbol'])
        df3['sp'] = df3['symbol'].isin(sp_500_df['Ticker']) * 1
@@ -27,6 +34,7 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
        show_cols.append('etf')
        show_cols.append('weekday_x')
        show_cols.append('weekday_y')
+       show_cols.append('spy_delta')
 
        day_chgs = ['opn_s','hi_s','lo_s', 'cl_s', 'vl_s', 'vwap']
        for i in day_chgs:
@@ -72,13 +80,13 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df):
 
        return df4
 
-def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df):
+def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df, spy_df):
 
        mvmnt_df = df_future
        mvmnt_df['opn_z'] = mvmnt_df['opn_s']
        mvmnt_df = mvmnt_df[['symbol', 'opn_z']]
 
-       df4 = munge(df1,df2,nope_df,sp_500_df, etf_df)
+       df4 = munge(df1,df2,nope_df,sp_500_df, etf_df, spy_df)
        df5 = pd.merge(df4, mvmnt_df, on='symbol')
        df5['mvmnt'] = (df5['opn_z'] - df5['cl_s_y']) / df5['cl_s_y']
        df5.pop('opn_z')
@@ -92,7 +100,14 @@ def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df):
 
 def make_rec_tensors(df1, df2, nope_df, sp_500_df, etf_df):
 
-       df3 = munge(df1,df2,nope_df,sp_500_df, etf_df)
+       # get a ohlcv prices for the S&P
+       today = dt.datetime.now()
+       today_str = today.strftime("%Y-%m-%d")
+       spy_df = yf.download('spy', start='2021-01-20', end=today_str,
+                            group_by="ticker")
+       spy_df['Date'] = spy_df.index
+
+       df3 = munge(df1,df2,nope_df,sp_500_df, etf_df, spy_df)
        df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
        df3['mvmnt'] = 0
        df5 = df3
@@ -123,6 +138,13 @@ def merge_tensors():
 
 def produce_training_data(all_dates):
 
+       # get a ohlcv prices for the S&P
+       today = dt.datetime.now()
+       today_str = today.strftime("%Y-%m-%d")
+       spy_df = yf.download('spy', start='2021-01-20', end=today_str,
+                            group_by="ticker")
+       spy_df['Date'] = spy_df.index
+
        for d in range(0, len(all_dates[:-2])):
               x = all_dates[d]
               y = all_dates[d + 1]
@@ -148,7 +170,7 @@ def produce_training_data(all_dates):
               sp_500_df = pd.read_csv('sp500_ticker_list.csv', compression='gzip')
               etf_df = pd.read_csv('etf_ticker_list.csv', compression = 'gzip')
 
-              make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df)
+              make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df, spy_df)
               print('\n\n')
 
        return
@@ -191,6 +213,8 @@ if __name__ == '__main__':
               '2021-02-11_15.00',
               '2021-02-12_09.45'
        ]
+
+
        produce_training_data(all_dates)
        merge_tensors()
        check_mvmnt_dist()

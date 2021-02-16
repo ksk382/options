@@ -22,7 +22,6 @@ def calc_num_buys(rec_df):
     rec_df['num_to_buy'] = round(amnt_per_stock / rec_df['close_price'], 0)
     rec_df['proj_val'] = rec_df['num_to_buy'] * rec_df['close_price']
     rec_df = rec_df.sort_values(by='num_to_buy', ascending=False)
-    total_val = rec_df['proj_val'].sum()
     rec_df['num_to_buy'] = rec_df['num_to_buy'].values.astype(int)
 
     return rec_df
@@ -39,7 +38,7 @@ def main(**kwargs):
         now_str = kwargs['date_to_run']
     else:
         now = dt.datetime.now()
-        now_str = dt.datetime.strftime(now, "%Y-%m-%d_") +'15.00'
+        now_str = dt.datetime.strftime(now, "%Y-%m-%d_") +'14.30'
         print(now_str)
 
     out_name = decision_dir_name + now_str + '.csv'
@@ -59,7 +58,7 @@ def main(**kwargs):
         price = row['close_price']
         h = row['hurdle_price']
         num_to_buy = row['num_to_buy']
-        print (symbol, price, h, num_to_buy)
+
         # make api call to determine current ask price
         company_df, e = get_stock_df(symbol)
         last_ask = company_df.loc[0,'ask']
@@ -71,8 +70,11 @@ def main(**kwargs):
             buy_amnt = num_to_buy * last_ask
             num_to_buy = str(num_to_buy)
             limit_price = str(last_ask)
-            #buy_report = buy_stock(symbol, num_to_buy, limit_price)
-            #print (buy_report)
+            print(f'{symbol}, rec_price: {price}, hurdle_price: {h}, limit_price: {limit_price}' 
+                  f'qty: {num_to_buy}, buy_amnt: {buy_amnt}')
+            input('press enter to buy')
+            buy_report = buy_stock(symbol, num_to_buy, limit_price)
+            print (buy_report)
             rec_df.at[index, 'bought'] = buy_amnt
         else:
             rec_df.at[index, 'bought'] = 0
@@ -84,5 +86,5 @@ def main(**kwargs):
     rec_df.to_csv(out_name, compression='gzip', index=False)
 
 if __name__ == '__main__':
-    now_str = '2021-02-12_15.00'
+    now_str = '2021-02-16_14.30'
     main(date_to_run = now_str)

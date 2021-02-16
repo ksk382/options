@@ -199,6 +199,7 @@ def run_loop():
         print(i, i.left, i.right)
         y.append(i.right)
     hurdles = y[-4:-1]
+    hurdles.append(.02)
     print(hurdles)
     input('enter')
     for hurdle in hurdles:
@@ -221,7 +222,7 @@ def run_one():
     hurdle = hurdles[-1]'''
     df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
-    hurdle = .0163
+    hurdle = .02
     notes = f'trying with high hurdle: {hurdle}'
     print(notes)
 
@@ -229,5 +230,5 @@ def run_one():
 
 
 if __name__ == '__main__':
-    run_one()
-    #run_loop()
+    #run_one()
+    run_loop()

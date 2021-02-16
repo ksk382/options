@@ -92,6 +92,7 @@ if __name__ == "__main__":
     stock_df_name = max(list_of_files, key=os.path.getctime)
     time_str = stock_df_name.replace(s_dir, '').replace('_synth.csv', '')
     print (time_str)
+    input('enter')
     rec_df = make_recs(time_str)
     y = rec_df[rec_df['buy'] == 1]
     print(y)
