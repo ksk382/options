@@ -5,7 +5,6 @@ import os
 import time
 import sys
 import argparse
-from yf_retrieve import yf_merge
 
 
 def gather_stock_and_option_data(**kwargs):
@@ -227,4 +226,4 @@ if __name__ == "__main__":
         gather_stock_and_option_data()
     else:
         gather_stock_data()
-        yf_merge()
+
