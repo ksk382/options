@@ -65,10 +65,11 @@ def main(**kwargs):
         last_ask = float(last_ask)
         rec_df.at[index, 'last'] = last_ask
         # check if current ask price is within a tolerance range of the modeled closing price
-        if last_ask < (price * 1.005):
+        if last_ask < (h * .99):
             print ('would buy')
             buy_amnt = num_to_buy * last_ask
             num_to_buy = str(num_to_buy)
+            # consider increasing limit price for better execution
             limit_price = str(last_ask)
             print(f'{symbol}, rec_price: {price}, hurdle_price: {h}, limit_price: {limit_price}' 
                   f'qty: {num_to_buy}, buy_amnt: {buy_amnt}')

@@ -15,8 +15,12 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df, spy_df):
        df2_date = df2.loc[0, 'date']
        spy_df = spy_df[spy_df['Date'] == df2_date].head(1)
        spy_delta = (spy_df['Close'] - spy_df['Open']) / spy_df['Open']
-       df2['spy_delta'] = spy_delta.item()
-       df2['spy_delta'].round(4)
+       print (spy_df)
+       print (spy_delta)
+       #input('enter')
+       df2['spy_delta'] = -.0006 #spy_delta.item()
+       #df2['spy_delta'].round(4)
+       spy_delta = -.0006
 
        df3 = pd.merge(df1, df2, on=['symbol'])
        df3['sp'] = df3['symbol'].isin(sp_500_df['Ticker']) * 1

@@ -5,6 +5,7 @@ import datetime as dt
 from cred_file import oauth_hdr, stock_endpoint, option_endpoint, balance_endpoint, trade_endpoint, acct_num
 import os
 import xml.etree.ElementTree as ET
+import json
 
 def get_stock_df(ticker):
     target_url = stock_endpoint + ticker
@@ -73,12 +74,19 @@ def limit_order(symbol, qty, limit_price, buy_sell):
     if not os.path.exists(xml_dir):
         os.mkdir(xml_dir)
     tree = ET.ElementTree(fixml)
-    out_name = xml_dir + symbol + 'xml'
+
+    now = dt.datetime.now()
+    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
+    out_name = xml_dir + symbol + now_str + '.xml'
     tree.write(out_name)
 
     target_url = trade_endpoint + acct_num + '/orders.xml'
     XML_STRING = open(out_name).read()
     r = requests.post(url=target_url, auth=oauth_hdr, data=XML_STRING)
+    out_name = xml_dir + symbol + now_str +  '_response.txt'
+    with open(out_name, 'wb') as f:
+        f.write(r.content)
+
     return (r.content)
 
 def get_holdings():
@@ -87,11 +95,17 @@ def get_holdings():
     d = r.json()['response']['accountholdings']
     return d
 
+def get_oders():
+    target_url = trade_endpoint + acct_num + '/orders.json'
+    r = requests.get(url=target_url, auth=oauth_hdr)
+    d = r.json()['response']
+    e = d['orderstatus']['order']
+    print(json.dumps(e, indent = 4, sort_keys=True))
+    for i in e:
+        root = ET.parse(i['fixmlmessage']).getroot()
+    value = root.get('FIXML')
+    print(value)
+    return d
+
 if __name__ == "__main__":
-    #r = buy_stock('AR','1','9')
-    #print (r)
-    y = get_balance()
-    print (y)
-    x = get_holdings()
-    print ('\n\n\nhere is x')
-    print (x)
+    r = get_oders()
