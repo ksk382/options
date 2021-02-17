@@ -1,5 +1,4 @@
 from nope import run_nope
-from clean_up import clean_up
 from yf_retrieve import yf_ohlcv, clear_ohlcv
 import datetime as dt
 
