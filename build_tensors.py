@@ -15,12 +15,8 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df, spy_df):
        df2_date = df2.loc[0, 'date']
        spy_df = spy_df[spy_df['Date'] == df2_date].head(1)
        spy_delta = (spy_df['Close'] - spy_df['Open']) / spy_df['Open']
-       print (spy_df)
-       print (spy_delta)
-       #input('enter')
-       df2['spy_delta'] = -.0006 #spy_delta.item()
-       #df2['spy_delta'].round(4)
-       spy_delta = -.0006
+       df2['spy_delta'] = spy_delta.item()
+       df2['spy_delta'].round(4)
 
        df3 = pd.merge(df1, df2, on=['symbol'])
        df3['sp'] = df3['symbol'].isin(sp_500_df['Ticker']) * 1
@@ -105,7 +101,7 @@ def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df, spy_d
 def make_rec_tensors(df1, df2, nope_df, sp_500_df, etf_df):
 
        # get a ohlcv prices for the S&P
-       today = dt.datetime.now()
+       today = dt.datetime.now() + dt.timedelta(days=1)
        today_str = today.strftime("%Y-%m-%d")
        spy_df = yf.download('spy', start='2021-01-20', end=today_str,
                             group_by="ticker")
@@ -143,7 +139,7 @@ def merge_tensors():
 def produce_training_data(all_dates):
 
        # get a ohlcv prices for the S&P
-       today = dt.datetime.now()
+       today = dt.datetime.now() + dt.timedelta(days=1)
        today_str = today.strftime("%Y-%m-%d")
        spy_df = yf.download('spy', start='2021-01-20', end=today_str,
                             group_by="ticker")
@@ -215,7 +211,8 @@ if __name__ == '__main__':
               '2021-02-09_15.00',
               '2021-02-10_15.00',
               '2021-02-11_15.00',
-              '2021-02-12_09.45'
+              '2021-02-16_14.30',
+              '2021-02-17_09.45'
        ]
 
 

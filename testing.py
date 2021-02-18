@@ -1,15 +1,26 @@
+import datetime as dt
+import os
+import time
+import numpy as np
+import seaborn as sns
 import yfinance as yf
-import json
-import pandas as pd
-from nonroutine.black_scholes import BSMerton
+from gather import load_ticker_list
 
-pd.set_option('display.max_rows', 800)
-pd.set_option('display.min_rows', 200)
-ticker = 'MSFT'
-df1 = pd.read_csv(f'../option_dataframes/2021-02-11_09.45/{ticker}_.csv', compression = 'gzip')
-df2 = pd.read_csv(f'../option_dataframes/2021-02-11_15.00/{ticker}_.csv', compression = 'gzip')
-sdf = pd.read_csv('../stock_dataframes/2021-02-11_09.45_synth.csv', compression = 'gzip')
-print (df)
-print (df.loc[0])
-print (sdf)
-print (sdf.loc[0])
+ticker_list = load_ticker_list()
+ticker_list = ticker_list
+
+today = dt.datetime.now()+ dt.timedelta(days = 1)
+today_str = today.strftime("%Y-%m-%d")
+data = yf.download(ticker_list, start='2021-01-20', end=today_str,
+                    group_by="ticker")
+
+print (data)
+data = data.T
+
+data.to_csv('../ohlcv/main.csv', compression='gzip')
+for ticker in ticker_list:
+    df = data.loc[(ticker,),].T
+    df['Date'] = df.index
+    df.to_csv('../ohlcv/' + ticker + '.csv', compression = 'gzip', index=False)
+
+

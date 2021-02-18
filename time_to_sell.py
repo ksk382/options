@@ -2,6 +2,7 @@ from api_calls import get_holdings, sell_stock, get_stock_df
 import datetime as dt
 from pytz import timezone
 import pandas as pd
+import json
 
 def check_fresh(x):
     x['bid_time'] = pd.to_datetime(x['bid_time'])
@@ -19,6 +20,7 @@ def check_fresh(x):
 def sell_all():
     holdings = get_holdings()
     print (holdings)
+    print(json.dumps(holdings, indent=4, sort_keys=True))
     for i in holdings['holding']:
         symbol = i['instrument']['sym']
         qty = i['qty']

@@ -11,7 +11,7 @@ def check_results():
     pd.set_option('display.min_rows', 200)
 
     rec_file = '../nope_dataframes/recs_2021-02-16_14.30.csv'
-    today_file = '../stock_dataframes/2021-02-12_17.45_synth.csv'
+    today_file = '../stock_dataframes/2021-02-17_09.45_synth.csv'
     a = pd.read_csv(rec_file, compression = 'gzip')
     b = pd.read_csv(today_file, compression= 'gzip')
     x = pd.merge(a, b, on='symbol')

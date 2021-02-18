@@ -40,7 +40,11 @@ def get_option_df(ticker):
 def get_balance():
     target_url = balance_endpoint
     r = requests.get(url=target_url, auth=oauth_hdr)
-    d = r.json()['response']['accountbalance']['accountvalue']
+    try:
+        d = r.json()['response']['accountbalance']['accountvalue']
+    except Exception as e:
+        print (str(e))
+        print (r)
     d = float(d)
     return d
 

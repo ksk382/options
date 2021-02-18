@@ -44,6 +44,15 @@ def yf_ohlcv():
             print (f'removing {j}')
             os.remove(j)
 
+    data = yf.download(ticker_list, start=earlier_str, end=end_str,
+                                group_by="ticker")
+
+    for ticker in ticker_list:
+        df = data.loc[(ticker,),].T
+        df['Date'] = df.index
+        df.to_csv('../ohlcv/' + ticker + '.csv', compression='gzip', index=False)
+
+    '''
     count = 0
     for ticker in ticker_list:
         count +=1
@@ -67,7 +76,7 @@ def yf_ohlcv():
                 size = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file()) / 1000000
                 print (f'size: {size} MB')
                 if size > 500:
-                    sys.exit(0)
+                    sys.exit(0)'''
     return
 
 
@@ -216,7 +225,8 @@ def yf_retrieve_multi_thread():
             print(future.result())
 
 
+
 if __name__ == "__main__":
-    #yf_retrieve_multi_thread()
+    yf_retrieve_multi_thread()
     #yf_ohlcv()
-    yf_merge()
+    #yf_merge()

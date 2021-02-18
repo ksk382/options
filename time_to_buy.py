@@ -60,26 +60,40 @@ def main(**kwargs):
         num_to_buy = row['num_to_buy']
 
         # make api call to determine current ask price
-        company_df, e = get_stock_df(symbol)
+        try:
+            company_df, rate_remaining = get_stock_df(symbol)
+        except Exception as exc:
+            print (str(exc))
+            print (row)
+            print ('rate_remaining:', rate_remaining)
+            continue
+
         last_ask = company_df.loc[0,'ask']
         last_ask = float(last_ask)
         rec_df.at[index, 'last'] = last_ask
+        hurdle_buffer = h * .99
         # check if current ask price is within a tolerance range of the modeled closing price
-        if last_ask < (h * .99):
+        if last_ask < hurdle_buffer:
             print ('would buy')
             buy_amnt = num_to_buy * last_ask
             num_to_buy = str(num_to_buy)
-            # consider increasing limit price for better execution
-            limit_price = str(last_ask)
+            # increasing limit price for better execution
+            limit_price = str(hurdle_buffer)
             print(f'{symbol}, rec_price: {price}, hurdle_price: {h}, limit_price: {limit_price}' 
                   f'qty: {num_to_buy}, buy_amnt: {buy_amnt}')
-            input('press enter to buy')
-            buy_report = buy_stock(symbol, num_to_buy, limit_price)
-            print (buy_report)
-            rec_df.at[index, 'bought'] = buy_amnt
+            decision = input('press enter to buy')
+            if decision != 'n':
+                buy_report = buy_stock(symbol, num_to_buy, limit_price)
+                print (buy_report)
+                rec_df.at[index, 'bought'] = buy_amnt
+            else:
+                print ('not bought')
+                rec_df.at[index, 'bought'] = 0
+            rec_df.to_csv(out_name, compression='gzip', index=False)
         else:
             rec_df.at[index, 'bought'] = 0
             print ('no')
+            rec_df.to_csv(out_name, compression='gzip', index=False)
 
     print (rec_df)
     print (rec_df['bought'].sum())
@@ -87,5 +101,5 @@ def main(**kwargs):
     rec_df.to_csv(out_name, compression='gzip', index=False)
 
 if __name__ == '__main__':
-    now_str = '2021-02-16_14.30'
+    now_str = '2021-02-17_14.30'
     main(date_to_run = now_str)
