@@ -227,6 +227,6 @@ def yf_retrieve_multi_thread():
 
 
 if __name__ == "__main__":
-    yf_retrieve_multi_thread()
-    #yf_ohlcv()
+    #yf_retrieve_multi_thread()
+    yf_ohlcv()
     #yf_merge()
