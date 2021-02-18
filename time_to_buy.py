@@ -78,17 +78,17 @@ def main(**kwargs):
             buy_amnt = num_to_buy * last_ask
             num_to_buy = str(num_to_buy)
             # increasing limit price for better execution
-            limit_price = str(hurdle_buffer)
+            limit_price = str(round(hurdle_buffer,1))
             print(f'{symbol}, rec_price: {price}, hurdle_price: {h}, limit_price: {limit_price}' 
                   f'qty: {num_to_buy}, buy_amnt: {buy_amnt}')
-            decision = input('press enter to buy')
-            if decision != 'n':
-                buy_report = buy_stock(symbol, num_to_buy, limit_price)
-                print (buy_report)
-                rec_df.at[index, 'bought'] = buy_amnt
-            else:
-                print ('not bought')
-                rec_df.at[index, 'bought'] = 0
+            #decision = input('press enter to buy')
+            #if decision != 'n':
+            buy_report = buy_stock(symbol, num_to_buy, limit_price)
+            print (buy_report)
+            rec_df.at[index, 'bought'] = buy_amnt
+            #else:
+            #    print ('not bought')
+            #    rec_df.at[index, 'bought'] = 0
             rec_df.to_csv(out_name, compression='gzip', index=False)
         else:
             rec_df.at[index, 'bought'] = 0
@@ -101,5 +101,7 @@ def main(**kwargs):
     rec_df.to_csv(out_name, compression='gzip', index=False)
 
 if __name__ == '__main__':
-    now_str = '2021-02-17_14.30'
+    now_str = '2021-02-18_14.30'
+    print (now_str)
+    input('enter')
     main(date_to_run = now_str)
