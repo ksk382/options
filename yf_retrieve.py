@@ -44,8 +44,11 @@ def yf_ohlcv():
             print (f'removing {j}')
             os.remove(j)
 
+    ticker_list = ticker_list[:10]
     data = yf.download(ticker_list, start=earlier_str, end=end_str,
                                 group_by="ticker")
+    print (data)
+    data = data.T
 
     for ticker in ticker_list:
         df = data.loc[(ticker,),].T
@@ -224,9 +227,28 @@ def yf_retrieve_multi_thread():
         for future in concurrent.futures.as_completed(futures):
             print(future.result())
 
+def make_today_frame():
+    today = dt.datetime.now()
+    today_str = today.strftime("%Y-%m-%d")
+    fname = f'../ohlcv/{today_str}_openprices.csv'
+
+    o_name = '../ohlcv/'
+    x = [i for i in os.listdir(o_name) if i.endswith('.csv')]
+    open_df = pd.DataFrame([])
+    for i in x:
+        ticker = i.replace('.csv', '')
+        j = o_name + i
+        df = pd.read_csv(j, compression = 'gzip')
+        df = df.loc[df['Date'] == today_str]
+        df['symbol'] = ticker
+        print (df)
+        open_df = open_df.append(df)
+    print (open_df)
+    open_df.to_csv(fname, compression='gzip', index=False)
 
 
 if __name__ == "__main__":
     #yf_retrieve_multi_thread()
     yf_ohlcv()
     #yf_merge()
+    make_today_frame()

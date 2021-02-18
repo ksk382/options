@@ -7,7 +7,7 @@ import yfinance as yf
 from gather import load_ticker_list
 
 ticker_list = load_ticker_list()
-ticker_list = ticker_list
+ticker_list = ticker_list[:10]
 
 today = dt.datetime.now()+ dt.timedelta(days = 1)
 today_str = today.strftime("%Y-%m-%d")
@@ -18,6 +18,7 @@ print (data)
 data = data.T
 
 data.to_csv('../ohlcv/main.csv', compression='gzip')
+
 for ticker in ticker_list:
     df = data.loc[(ticker,),].T
     df['Date'] = df.index
