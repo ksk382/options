@@ -16,7 +16,7 @@ def check_results():
     yest = today - dt.timedelta(days = 1)
     yest_str = yest.strftime("%Y-%m-%d")
     rec_file = f'../nope_dataframes/recs_{yest_str}_14.30.csv'
-    today_file = f'../stock_dataframes/{today_str}_openprices.csv'
+    today_file = f'../ohlcv/{today_str}_openprices.csv'
     print (rec_file)
     print (today_file)
 
@@ -27,6 +27,7 @@ def check_results():
     x = x[cols]
     x = x[x['buy']==1]
     x['profit'] = ((x['Open'] - x['close_price']) / x['close_price']) * x['buy']
+    x['profit'] = round(x['profit'],3)
     x = x.sort_values(by='profit', ascending=False)
 
     print (x)
