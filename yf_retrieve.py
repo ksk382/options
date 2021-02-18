@@ -105,9 +105,8 @@ def yf_merge(**kwargs):
         #o_name = o_dir + ticker + '_' + odf_str + '.csv'
         try:
             odf = pd.read_csv(o_name, compression = 'gzip')
-            ticker = o_name.split('_')[0].replace(o_dir, '')
+            ticker = o_name.replace(o_dir, '').replace('.csv', '')
             odf['ticker'] = ticker
-            #print (odf.tail())
             odf_all = odf_all.append(odf, ignore_index=True)
         except Exception as e:
             print (str(e))
