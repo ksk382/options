@@ -107,11 +107,12 @@ def yf_merge(**kwargs):
             odf = pd.read_csv(o_name, compression = 'gzip')
             ticker = o_name.replace(o_dir, '').replace('.csv', '')
             odf['ticker'] = ticker
-            print (odf.tail())
             odf_all = odf_all.append(odf, ignore_index=True)
         except Exception as e:
             print (str(e))
             continue
+
+    print (odf_all.tail())
 
     odf_all.columns = ['opn_s','hi_s','lo_s','cl_s','adj_cl_s', 'vl_s','date_s','symbol']
     print ('loaded ohlcv')
