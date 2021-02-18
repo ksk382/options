@@ -100,7 +100,7 @@ def yf_merge(**kwargs):
     #today = dt.datetime.now()
     #today_str = today.strftime("%Y-%m-%d")
     odf_all = pd.DataFrame([])
-    o_file_list = [(o_dir + i) for i in os.listdir(o_dir) if i.endswith('csv')]
+    o_file_list = [(o_dir + i) for i in os.listdir(o_dir) if (i.endswith('csv') and not (i.endswith('_openprices.csv'))]
     for o_name in o_file_list:
         #o_name = o_dir + ticker + '_' + odf_str + '.csv'
         try:
@@ -248,6 +248,6 @@ def make_today_frame():
 
 if __name__ == "__main__":
     #yf_retrieve_multi_thread()
-    yf_ohlcv()
-    #yf_merge(date_to_run='2021-02-18_09.45')
+    #yf_ohlcv()
+    yf_merge(date_to_run='2021-02-18_09.45')
     #make_today_frame()
