@@ -240,7 +240,6 @@ def make_today_frame():
         df = pd.read_csv(j, compression = 'gzip')
         df = df.loc[df['Date'] == today_str]
         df['symbol'] = ticker
-        print (df)
         open_df = open_df.append(df)
     print (open_df)
     open_df.to_csv(fname, compression='gzip', index=False)
