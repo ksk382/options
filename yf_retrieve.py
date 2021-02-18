@@ -44,7 +44,6 @@ def yf_ohlcv():
             print (f'removing {j}')
             os.remove(j)
 
-    ticker_list = ticker_list[:10]
     data = yf.download(ticker_list, start=earlier_str, end=end_str,
                                 group_by="ticker")
     print (data)
