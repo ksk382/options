@@ -193,13 +193,12 @@ def run_loop():
     df = pd.read_csv(df_file, compression='gzip')
 
     df1 = df.sort_values(by='mvmnt')
-    x = pd.qcut(df1['mvmnt'], 10)
+    x = pd.qcut(df1['mvmnt'], 20)
     y = []
     for i in x.unique():
         print(i, i.left, i.right)
         y.append(i.right)
-    hurdles = y[-4:-1]
-    hurdles.append(.02)
+    hurdles = y[-6:-1]
     print(hurdles)
     input('enter')
     for hurdle in hurdles:
@@ -222,7 +221,7 @@ def run_one():
     hurdle = hurdles[-1]'''
     df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
-    hurdle = .02
+    hurdle = .015
     notes = f'trying with high hurdle: {hurdle}'
     print(notes)
 

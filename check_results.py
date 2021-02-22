@@ -16,6 +16,10 @@ def check_results():
     yest = today - dt.timedelta(days = 1)
     yest_str = yest.strftime("%Y-%m-%d")
     rec_file = f'../nope_dataframes/recs_{yest_str}_14.30.csv'
+    n_dir = '../nope_dataframes/'
+    list_of_files = [(n_dir + i) for i in os.listdir(n_dir) if (i.startswith('recs_'))]
+    rec_file = max(list_of_files, key=os.path.getctime)
+    #rec_file = f'../nope_dataframes/recs_2021-02-19_14.30.csv'
     today_file = f'../ohlcv/{today_str}_openprices.csv'
     print (rec_file)
     print (today_file)

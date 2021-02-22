@@ -88,7 +88,7 @@ def make_recs(now_str):
 if __name__ == "__main__":
     #now_str = '2021-02-11_15.00'
     s_dir = '../stock_dataframes/'
-    list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if (i.endswith('_synth.csv'))]
+    list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if (i.endswith('14.30_synth.csv'))]
     stock_df_name = max(list_of_files, key=os.path.getctime)
     time_str = stock_df_name.replace(s_dir, '').replace('_synth.csv', '')
     print (time_str)

@@ -249,5 +249,6 @@ def make_today_frame():
 if __name__ == "__main__":
     #yf_retrieve_multi_thread()
     #yf_ohlcv()
-    yf_merge(date_to_run='2021-02-18_09.45')
+    #yf_merge(date_to_run='2021-02-18_09.45')
     #make_today_frame()
+    yf_gather_info()
