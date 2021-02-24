@@ -5,7 +5,7 @@ import pandas as pd
 import yfinance as yf
 from pathlib import Path
 from gather import load_ticker_list
-
+import argparse
 
 def clear_ohlcv():
     save_path = '../ohlcv/'
@@ -180,55 +180,6 @@ def yf_gather_info():
                     sys.exit(0)
     return
 
-def yf_retrieve_multi_thread():
-    import concurrent.futures
-    import urllib.request
-
-    ticker_list = load_ticker_list()
-    today = dt.datetime.now()
-    # 253 trading days in a year
-    days_back = 20
-    DD = dt.timedelta(days=days_back)
-    earlier = today - DD
-    earlier_str = earlier.strftime("%Y-%m-%d")
-    today_str = today.strftime("%Y-%m-%d")
-    end_str = today + dt.timedelta(days=1)
-
-    save_path = '../ohlcv/'
-    if os.path.exists(save_path):
-        print('path exists')
-    else:
-        os.mkdir(save_path)
-
-    contents = os.listdir(save_path)
-    s = today_str + '.csv'
-    for i in contents:
-        if not i.endswith(s):
-            j = save_path + i
-            print(f'removing {j}')
-            os.remove(j)
-
-    # Retrieve a single page and report the URL and contents
-    def yf_pull(ticker):
-        try:
-            y = yf.download(ticker, start=earlier_str, end=end_str,
-                            group_by="ticker")
-        except Exception as e:
-            print (ticker, str(e))
-            y = []
-        x = pd.DataFrame(y)
-        x['Date'] = x.index
-        f_name = f'{save_path}{ticker}_{today_str}.csv'
-        x.to_csv(f_name, compression='gzip', index=False)
-        return y
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = []
-        for ticker in ticker_list[:20]:
-            futures.append(executor.submit(yf_pull, ticker=ticker))
-        for future in concurrent.futures.as_completed(futures):
-            print(future.result())
-
 def make_today_frame():
     today = dt.datetime.now()
     today_str = today.strftime("%Y-%m-%d")
@@ -252,6 +203,18 @@ if __name__ == "__main__":
     #yf_retrieve_multi_thread()
     #clear_ohlcv()
     #yf_ohlcv()
-    yf_merge()
+    #yf_merge()
     #make_today_frame()
     #yf_gather_info()
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-d', '--date_to_run',
+                        help='Enter -d 2021-02-24_09.45',
+                        required=False)
+    args = vars(parser.parse_args())
+
+    if args['date_to_run'] != None:
+        print (args)
+        yf_merge(date_to_run=args['date_to_run'])
+    else:
+        print (args)
+        yf_merge()
