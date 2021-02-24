@@ -2,5 +2,17 @@ from nope import run_nope
 from yf_retrieve import yf_merge
 
 if __name__=='__main__':
-    run_nope()
-    yf_merge()
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-d', '--date_to_run',
+                        help='Enter -d 2021-02-24_09.45',
+                        required=False)
+    args = vars(parser.parse_args())
+
+    if args['date_to_run'] != None:
+        print(args)
+        run_nope(date_to_run=args['date_to_run'])
+        yf_merge(date_to_run=args['date_to_run'])
+    else:
+        print(args)
+        run_nope
+        yf_merge()
