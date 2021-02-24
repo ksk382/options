@@ -96,6 +96,7 @@ def yf_merge(**kwargs):
     else:
         list_of_files = [(s_dir + i) for i in os.listdir(s_dir) if (i.endswith('.csv') and not i.endswith('_synth.csv'))]
         stock_df_name = max(list_of_files, key=os.path.getctime)
+        print(stock_df_name)
 
     #today = dt.datetime.now()
     #today_str = today.strftime("%Y-%m-%d")
@@ -123,6 +124,7 @@ def yf_merge(**kwargs):
     print ('x tail: \n')
     print (x.tail())
     out_df = pd.merge(df, x, on='symbol')
+    out_df = out_df.drop_duplicates()
 
     out_name = stock_df_name.replace('.csv', '_synth.csv')
     print(out_name)
@@ -248,7 +250,8 @@ def make_today_frame():
 
 if __name__ == "__main__":
     #yf_retrieve_multi_thread()
+    #clear_ohlcv()
     #yf_ohlcv()
-    #yf_merge(date_to_run='2021-02-18_09.45')
+    yf_merge()
     #make_today_frame()
-    yf_gather_info()
+    #yf_gather_info()
