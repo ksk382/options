@@ -15,5 +15,5 @@ if __name__=='__main__':
         yf_merge(date_to_run=args['date_to_run'])
     else:
         print(args)
-        run_nope
+        run_nope()
         yf_merge()

@@ -77,6 +77,7 @@ def munge(df1, df2, nope_df, sp_500_df, etf_df, spy_df):
        df4['gamma_over_sho'] = df4['net_igamma'] / df4['sho_y']
        #df4.pop('net_delta')
        #df4.pop('net_gamma')
+       df4 = df4.drop_duplicates()
 
        return df4
 
@@ -216,7 +217,8 @@ if __name__ == '__main__':
               '2021-02-18_14.30',
               '2021-02-19_14.30',
               '2021-02-22_14.30',
-              '2021-02-23_14.30'
+              '2021-02-23_14.30',
+              '2021-02-24_09.45'
        ]
 
 

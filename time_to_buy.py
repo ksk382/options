@@ -34,16 +34,20 @@ def main(**kwargs):
     if not os.path.exists(decision_dir_name):
         os.mkdir(decision_dir_name)
 
-    if 'date_to_run' in kwargs.keys():
-        now_str = kwargs['date_to_run']
+    if 'fname' in kwargs.keys():
+        fname = kwargs['fname']
     else:
-        now = dt.datetime.now()
-        now_str = dt.datetime.strftime(now, "%Y-%m-%d_") +'14.30'
-        print(now_str)
+        print ('update fname')
+        return
 
-    out_name = decision_dir_name + now_str + '.csv'
+    out_name = decision_dir_name + fname
 
-    rec_df = pd.read_csv(f'../nope_dataframes/recs_{now_str}.csv', compression='gzip')
+    try:
+        rec_df = pd.read_csv(f'../nope_dataframes/{fname}', compression='gzip')
+    except:
+        print (f'no file {fname}')
+        return
+
     rec_df = rec_df[rec_df['buy']==1]
     print (rec_df)
     #rec_df['exec_trade'] = ''
@@ -101,7 +105,9 @@ def main(**kwargs):
     rec_df.to_csv(out_name, compression='gzip', index=False)
 
 if __name__ == '__main__':
-    now_str = '2021-02-18_14.30'
-    print (now_str)
+    today_str = '2021-02-24_14.30'
+    h = '.01'
+    fname = f'{today_str}_hurdle--{h}.csv'
+    print (fname)
     input('enter')
-    main(date_to_run = now_str)
+    main(fname = fname)
