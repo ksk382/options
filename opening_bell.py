@@ -5,5 +5,7 @@ import datetime as dt
 if __name__=='__main__':
     clear_ohlcv()
     yf_ohlcv()
+    print ('done with yf_ohlcv')
+    print ('making today frame')
     make_today_frame()
 
