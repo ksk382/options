@@ -18,8 +18,9 @@ def check_fresh(x):
         return False
 
 def sell_all():
+
     holdings = get_holdings()
-    print (holdings)
+    #print (holdings)
     print(json.dumps(holdings, indent=4, sort_keys=True))
     for i in holdings['holding']:
         symbol = i['instrument']['sym']
@@ -32,6 +33,7 @@ def sell_all():
             print (f'{symbol}, qty: {qty}, purchase price: {purchase_price}, last_bid: {last_bid}')
             input(f'press enter to sell at last bid')
             r = sell_stock(symbol, qty, last_bid)
+            print (r)
 
 if __name__ == "__main__":
     sell_all()

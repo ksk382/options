@@ -15,18 +15,17 @@ def check_results():
     today_str = today.strftime("%Y-%m-%d")
     yest = today - dt.timedelta(days = 1)
     yest_str = yest.strftime("%Y-%m-%d")
-    rec_file = f'../nope_dataframes/recs_{yest_str}_14.30.csv'
     n_dir = '../nope_dataframes/'
+    today_file = f'../ohlcv/{today_str}_openprices.csv'
+    b = pd.read_csv(today_file, compression='gzip')
     list_of_files = [(n_dir + i) for i in os.listdir(n_dir) if (i.startswith(f'recs_{yest_str}'))]
+    list_of_files = sorted(list_of_files)
     for j in list_of_files:
         rec_file = j
         #rec_file = f'../nope_dataframes/recs_2021-02-19_14.30.csv'
-        today_file = f'../ohlcv/{today_str}_openprices.csv'
         print (rec_file)
         print (today_file)
-
         a = pd.read_csv(rec_file, compression = 'gzip')
-        b = pd.read_csv(today_file, compression= 'gzip')
         x = pd.merge(a, b, on='symbol')
         cols = ['symbol','close_price','hurdle','confidence','buy','Open']
         x = x[cols]

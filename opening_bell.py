@@ -1,5 +1,6 @@
 from nope import run_nope
-from yf_retrieve import yf_ohlcv, clear_ohlcv, make_today_frame
+from yf_retrieve import yf_ohlcv, clear_ohlcv
+from yf_merge import make_today_frame
 import datetime as dt
 
 if __name__=='__main__':

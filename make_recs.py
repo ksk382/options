@@ -44,6 +44,7 @@ def make_recs(now_str):
     today_str = now_str[:10]
     model_names = [(model_path + i) for i in os.listdir(model_path) if (i.endswith('.h5') and i.startswith(today_str))]
     print ('model_names:')
+    model_names = sorted(model_names)
     print(model_names)
     input('enter')
 
@@ -71,6 +72,7 @@ def make_recs(now_str):
     x = no_go_df[no_go_df['exclude'] == 1]['Ticker']
 
     for m in model_names:
+        print (m)
         rec_df = get_rec(df, m)
         hurdle = rec_df.loc[0, 'hurdle']
         rec_df = rec_df.round(3)
@@ -80,10 +82,10 @@ def make_recs(now_str):
         rec_df = rec_df.drop(rec_df.index[y])
         rec_df = rec_df.sort_values(by='confidence', ascending=False)
         rec_df.to_csv(f'../nope_dataframes/recs_{now_str}_hurdle--{hurdle}.csv', compression='gzip', index=False)
-        print ('\n\n')
         z = rec_df[rec_df['buy'] == 1]
         print(z)
         print(len(z.index))
+        print ('\n\n\n\n')
     return rec_df
 
 
@@ -96,9 +98,7 @@ if __name__ == "__main__":
     print (time_str)
     input('enter')
     rec_df = make_recs(time_str)
-    y = rec_df[rec_df['buy'] == 1]
-    print(y)
-    print(len(y.index))
+
     #print(y['symbol'].unique())
 
 

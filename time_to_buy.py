@@ -105,9 +105,9 @@ def main(**kwargs):
     rec_df.to_csv(out_name, compression='gzip', index=False)
 
 if __name__ == '__main__':
-    today_str = '2021-02-24_14.30'
-    h = '.01'
-    fname = f'{today_str}_hurdle--{h}.csv'
+    today_str = '2021-02-25_14.30'
+    h = '0.0135'
+    fname = f'recs_{today_str}_hurdle--{h}.csv'
     print (fname)
     input('enter')
     main(fname = fname)

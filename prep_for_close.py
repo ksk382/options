@@ -1,5 +1,6 @@
 from nope import run_nope
-from yf_retrieve import yf_ohlcv, clear_ohlcv, yf_merge
+from yf_retrieve import yf_ohlcv, clear_ohlcv, yf_ohlcv_hourly
+from yf_merge import yf_merge
 import datetime as dt
 import os
 
@@ -17,6 +18,7 @@ if __name__=='__main__':
     if x == 1:
         clear_ohlcv()
         yf_ohlcv()
+        yf_ohlcv_hourly()
         yf_merge()
         print (f'\n\n\n\n&&&&&----- Nope, ohlcv, and clean_up complete')
     else:
