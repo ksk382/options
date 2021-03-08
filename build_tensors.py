@@ -113,6 +113,7 @@ def make_training_tensors(df1, df2, df_future, nope_df, sp_500_df, etf_df, spy_d
        df5 = pd.merge(df4, mvmnt_df, on='symbol')
        df5['mvmnt'] = (df5['opn_z'] - df5['cl_s_y']) / df5['cl_s_y']
        df5.pop('opn_z')
+       df5.pop('cl_s_y')
        df5 = df5[~df5.isin([np.nan, np.inf, -np.inf]).any(1)]
 
        df2_date = df2['date'].head(1).item() + '_15.30'

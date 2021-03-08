@@ -201,7 +201,8 @@ def run_loop():
         print(i, i.left, i.right)
         y.append(i.right)
     hurdles = y[-6:-1]
-    print(hurdles)
+    hurdles = list(reversed(hurdles))
+    print(f'hurdles: {hurdles}')
     input('enter')
     for hurdle in hurdles:
         notes = f'hurdle: {hurdle}'

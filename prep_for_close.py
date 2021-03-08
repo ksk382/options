@@ -20,6 +20,6 @@ if __name__=='__main__':
         yf_ohlcv()
         yf_ohlcv_hourly()
         yf_merge()
-        print (f'\n\n\n\n&&&&&----- Nope, ohlcv, and clean_up complete')
+        print (f'\n\n\n\n&&&&&----- Nope, ohlcv, and yf_merge complete')
     else:
         print ('nope did not complete')
