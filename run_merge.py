@@ -1,5 +1,5 @@
 from nope import run_nope
-from yf_retrieve import yf_merge
+from yf_merge import yf_merge
 import argparse
 
 if __name__=='__main__':
