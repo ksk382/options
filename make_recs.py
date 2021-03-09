@@ -42,10 +42,12 @@ def make_recs(now_str):
 
     model_path = '../ML_logs/'
     today_str = now_str[:10]
-    model_names = [(model_path + i) for i in os.listdir(model_path) if (i.endswith('.h5') and i.startswith(today_str))]
+    model_str = '2021-03-08'
+    model_names = [(model_path + i) for i in os.listdir(model_path) if (i.endswith('.h5') and i.startswith(model_str))]
     print ('model_names:')
     model_names = sorted(model_names)
-    print(model_names)
+    for i in model_names:
+        print (i)
     input('enter')
 
     today_stock_file = f'../stock_dataframes/{now_str}_synth.csv'

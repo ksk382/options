@@ -18,7 +18,7 @@ if __name__=='__main__':
     if x == 1:
         clear_ohlcv()
         yf_ohlcv()
-        yf_ohlcv_hourly()
+        #yf_ohlcv_hourly()
         yf_merge()
         print (f'\n\n\n\n&&&&&----- Nope, ohlcv, and yf_merge complete')
     else:

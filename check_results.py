@@ -20,6 +20,7 @@ def check_results():
     b = pd.read_csv(today_file, compression='gzip')
     list_of_files = [(n_dir + i) for i in os.listdir(n_dir) if (i.startswith(f'recs_{yest_str}'))]
     list_of_files = sorted(list_of_files)
+    print('\n\n\n')
     for j in list_of_files:
         rec_file = j
         #rec_file = f'../nope_dataframes/recs_2021-02-19_14.30.csv'
@@ -32,6 +33,7 @@ def check_results():
         x = x[x['buy']==1]
         x['profit'] = ((x['Open'] - x['close_price']) / x['close_price']) * x['buy']
         x['profit'] = round(x['profit'],3)
+        x['Open'] = round(x['Open'], 3)
         x = x.sort_values(by='profit', ascending=False)
 
         print (x)
@@ -39,6 +41,7 @@ def check_results():
         r = x['profit'].sum() / x['buy'].sum()
         print (f'num bets: {len(x.index)}')
         print (f'return: {r}')
+        print ('\n\n\n')
         #sns.regplot(x['pred'], x['profit'])
         #plt.show()
 

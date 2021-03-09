@@ -12,6 +12,7 @@ from contextlib import redirect_stdout
 import os
 import time
 from run_model_test import run_model_test
+import argparse
 
 def mlearn(notes, hurdle, df):
     # Make numpy values easier to read.
@@ -209,7 +210,7 @@ def run_loop():
         print(notes)
         mlearn(notes, hurdle, df)
 
-def run_one():
+def run_one(h):
     '''df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
 
@@ -224,7 +225,7 @@ def run_one():
     hurdle = hurdles[-1]'''
     df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
-    hurdle = .015
+    hurdle = float(h)
     notes = f'trying with high hurdle: {hurdle}'
     print(notes)
 
@@ -232,5 +233,15 @@ def run_one():
 
 
 if __name__ == '__main__':
-    #run_one()
-    run_loop()
+
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-j', '--hurdle',
+                        help='Enter -j .015',
+                        required=False)
+    args = vars(parser.parse_args())
+
+    if args['hurdle'] != None:
+        h = args['hurdle']
+        run_one(h)
+    else:
+        run_loop()

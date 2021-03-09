@@ -7,6 +7,7 @@ from pathlib import Path
 from gather import load_ticker_list
 import argparse
 from nope import run_nope
+import math
 
 def make_today_frame():
     today = dt.datetime.now()
@@ -81,6 +82,42 @@ def yf_merge(**kwargs):
     print (f'full shape: {out_df.shape}')
 
 
+def interval_merge():
+
+    # merges ohlcv_hourly data with stock dataframes
+    pd.set_option('display.min_rows', 50)
+    pd.set_option('display.max_rows', 200)
+
+    o_dir = '../ohlcv_hourly/'
+    s_dir = '../stock_dataframes/'
+
+    s_name = '2021-03-04_14.30.csv'
+
+    o_name = o_dir + 'AAPL.csv'
+    odf = pd.read_csv(o_name, compression='gzip')
+    odf['Datetime'] = pd.to_datetime(odf['Datetime'])
+    odf['Date'] = odf['Datetime'].dt.date
+    print (odf)
+
+    df = odf.iloc[6::7, :]
+    print (df)
+
+    for k in ['Adj Close', 'Volume']:
+        m = k + '_end'
+        odf[m] = odf[k][6::7]
+        for i in range(0,6):
+            j = 5 - i
+            odf.at[j::7, m] = odf[m].shift(-(i+1))
+
+    odf['cl_mvm'] = (odf['Adj Close_end'] - odf['Adj Close']) / odf['Adj Close']
+    odf['vlm_mvm'] = (odf['Volume_end'] - odf['Volume']) / odf['Volume']
+
+    print (odf)
+
+
+    return
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Description of your program')
@@ -91,7 +128,7 @@ if __name__ == "__main__":
 
     if args['date_to_run'] != None:
         print(args)
-        run_nope(date_to_run=args['date_to_run'])
+        #run_nope(date_to_run=args['date_to_run'])
         yf_merge(date_to_run=args['date_to_run'])
     else:
         print(args)
