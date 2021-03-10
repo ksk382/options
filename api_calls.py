@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from pathlib import Path
+print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 import requests
 import pandas as pd
 import datetime as dt
@@ -74,7 +76,7 @@ def limit_order(symbol, qty, limit_price, buy_sell):
     ordqty = ET.SubElement(order, "OrdQty",
                            Qty=qty)
 
-    xml_dir = '../transaction_xml/'
+    xml_dir = '../../transaction_xml/'
     if not os.path.exists(xml_dir):
         os.mkdir(xml_dir)
     tree = ET.ElementTree(fixml)

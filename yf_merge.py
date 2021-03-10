@@ -1,13 +1,7 @@
 import datetime as dt
-import sys
 import os
 import pandas as pd
-import yfinance as yf
-from pathlib import Path
-from gather import load_ticker_list
 import argparse
-from nope import run_nope
-import math
 
 def make_today_frame():
     today = dt.datetime.now()
@@ -114,7 +108,6 @@ def interval_merge():
 
     print (odf)
 
-
     return
 
 
@@ -128,9 +121,7 @@ if __name__ == "__main__":
 
     if args['date_to_run'] != None:
         print(args)
-        #run_nope(date_to_run=args['date_to_run'])
         yf_merge(date_to_run=args['date_to_run'])
     else:
         print(args)
-        run_nope()
         yf_merge()

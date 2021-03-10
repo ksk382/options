@@ -42,7 +42,7 @@ def make_recs(now_str):
 
     model_path = '../ML_logs/'
     today_str = now_str[:10]
-    model_str = '2021-03-08'
+    model_str = today_str #'2021-03-08'
     model_names = [(model_path + i) for i in os.listdir(model_path) if (i.endswith('.h5') and i.startswith(model_str))]
     print ('model_names:')
     model_names = sorted(model_names)

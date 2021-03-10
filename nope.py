@@ -3,6 +3,7 @@ from api_calls import get_option_df, get_stock_df
 import os
 import sys
 import datetime as dt
+import argparse
 
 def run_nope(**kwargs):
 
@@ -123,32 +124,18 @@ def run_nope(**kwargs):
     return 1
 
 if __name__ == '__main__':
-    date_to_run = input("enter date to run:\n")
-    run_nope(date_to_run=date_to_run)
-    '''
-    all_dates = [
-        '2021-02-01_15.30',
-        '2021-02-02_15.30',
-        '2021-02-03_15.30'
-    ]
-    for i in all_dates:
-        run_nope(date_to_run = i)
-    '''
-    '''
-    now_str = '2021-02-04_15.30'
-    ticker = 'NVDA'
-    stock_dir_name = '../stock_dataframes/'
-    stock_df_name = stock_dir_name + now_str + '.csv'
-    stock_df = pd.read_csv(stock_df_name, compression = 'gzip')
-    option_dir = '../option_dataframes/' + now_str + '/'
-    option_df_list = os.listdir(option_dir)
-    option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
-    option_df = pd.read_csv(option_df_name, compression='gzip')
 
-    print (stock_df)
-    nope_one_off(ticker, stock_df, option_df, now_str)'''
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-d', '--date_to_run',
+                        help='Enter -d 2021-02-24_09.45',
+                        required=False)
+    args = vars(parser.parse_args())
 
-
+    if args['date_to_run'] != None:
+        print(args)
+        run_nope(date_to_run=date_to_run)
+    else:
+        run_nope()
 
 
 

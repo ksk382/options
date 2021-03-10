@@ -14,10 +14,20 @@ if __name__=='__main__':
     stock_df_name = max(list_of_files, key=os.path.getctime)
     time_str = stock_df_name.replace(s_dir,'').replace('.csv','')
 
-    x = run_nope(date_to_run=time_str)
+    nope_name = f'..nope_dataframes/{time_str}_nope.csv'
+    if os.path.exists(nope_name):
+        print ('nope file exists')
+        x = 1
+    else:
+        x = 1
+        pass
+        #x = run_nope(date_to_run=time_str)
+
     if x == 1:
         clear_ohlcv()
+        print ('Gathering yf_ohlcv')
         yf_ohlcv()
+        print('yf_ohlcv complete...')
         #yf_ohlcv_hourly()
         yf_merge()
         print (f'\n\n\n\n&&&&&----- Nope, ohlcv, and yf_merge complete')

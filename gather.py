@@ -1,3 +1,5 @@
+from pathlib import Path
+print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 import pandas as pd
 from api_calls import get_option_df, get_stock_df
 import datetime as dt
@@ -5,7 +7,7 @@ import os
 import time
 import sys
 import argparse
-
+from nope import run_nope
 
 def gather_stock_and_option_data(**kwargs):
     print ('\n\n\n\n&&&&&----- gathering stock and option data\n\n')
@@ -224,6 +226,7 @@ if __name__ == "__main__":
 
     if args['mode'] == 'f':
         gather_stock_and_option_data()
+        run_nope()
     else:
         gather_stock_data()
 
