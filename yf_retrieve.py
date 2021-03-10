@@ -75,6 +75,7 @@ def yf_gather_info():
     today_str = today.strftime("%Y-%m-%d")
     count = 0
     for ticker in ticker_list:
+        '''
         for i in [j for j in existing_files if (j.startswith((ticker+'_')) and not j.endswith(f'{today_str}.csv')) ]:
             m = save_path + i
             try:
@@ -82,7 +83,7 @@ def yf_gather_info():
                 os.remove(m)
             except:
                 print (f'{m} somehow already gone')
-                pass
+                pass'''
         count += 1
         f_name = f'{save_path}{ticker}_{today_str}.csv'
         if os.path.isfile(f_name):
