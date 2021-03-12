@@ -89,7 +89,7 @@ def main(**kwargs):
             #if decision != 'n':
             buy_report = buy_stock(symbol, num_to_buy, limit_price)
             print (buy_report)
-            rec_df.at[index, 'bought'] = buy_amnt
+            rec_df.at[index, 'bought'] = round(buy_amnt,3)
             #else:
             #    print ('not bought')
             #    rec_df.at[index, 'bought'] = 0
@@ -100,13 +100,15 @@ def main(**kwargs):
             rec_df.to_csv(out_name, compression='gzip', index=False)
 
     print (rec_df)
-    print (rec_df['bought'].sum())
+    print ('bought sum: ', rec_df['bought'].sum())
+    d = get_balance()
+    print ('remaining balance: ',d)
     print (len(rec_df[rec_df['bought']>0].index))
     rec_df.to_csv(out_name, compression='gzip', index=False)
 
 if __name__ == '__main__':
-    today_str = '2021-03-10_14.30'
-    h = '0.0098'
+    today_str = '2021-03-11_14.30'
+    h = '0.0124'
     fname = f'recs_{today_str}_hurdle--{h}.csv'
     print (fname)
     input('enter')

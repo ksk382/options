@@ -44,6 +44,9 @@ def get_balance():
     r = requests.get(url=target_url, auth=oauth_hdr)
     try:
         d = r.json()['response']['accountbalance']['accountvalue']
+        e = json.dumps(r.json(), indent = 4, sort_keys=True)
+        print (e)
+        input('enter')
     except Exception as e:
         print (str(e))
         print (r)
@@ -76,7 +79,7 @@ def limit_order(symbol, qty, limit_price, buy_sell):
     ordqty = ET.SubElement(order, "OrdQty",
                            Qty=qty)
 
-    xml_dir = '../../transaction_xml/'
+    xml_dir = '../transaction_xml/'
     if not os.path.exists(xml_dir):
         os.mkdir(xml_dir)
     tree = ET.ElementTree(fixml)
@@ -89,7 +92,7 @@ def limit_order(symbol, qty, limit_price, buy_sell):
     target_url = trade_endpoint + acct_num + '/orders.xml'
     XML_STRING = open(out_name).read()
     r = requests.post(url=target_url, auth=oauth_hdr, data=XML_STRING)
-    out_name = xml_dir + symbol + now_str +  '_response.txt'
+    out_name = xml_dir + now_str + symbol +  '_response.txt'
     with open(out_name, 'wb') as f:
         f.write(r.content)
 
@@ -101,7 +104,7 @@ def get_holdings():
     d = r.json()['response']['accountholdings']
     return d
 
-def get_oders():
+def get_orders():
     target_url = trade_endpoint + acct_num + '/orders.json'
     r = requests.get(url=target_url, auth=oauth_hdr)
     d = r.json()['response']
@@ -114,4 +117,5 @@ def get_oders():
     return d
 
 if __name__ == "__main__":
-    r = get_oders()
+    d = get_balance()
+    print (d)
