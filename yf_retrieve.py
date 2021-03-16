@@ -18,6 +18,7 @@ def clear_ohlcv():
         return
 
     x = [(save_path + i) for i in os.listdir(save_path) if i.endswith('.csv')]
+    x = [i for i in x if not i.endswith('_openprices.csv')]
     for i in x:
         os.remove(i)
     return
@@ -48,15 +49,23 @@ def yf_ohlcv():
             print (f'removing {j}')
             os.remove(j)
 
-    data = yf.download(ticker_list, start=earlier_str, end=end_str,
-                                group_by="ticker")
-    print (data)
-    data = data.T
+    n = 500
+    for i in range(0, len(ticker_list), n):
+        y = (len(ticker_list) / n)
+        print (f'Round {i} of {y}')
+        short_ticker_list = ticker_list[i:(i + n)]
 
-    for ticker in ticker_list:
-        df = data.loc[(ticker,),].T
-        df['Date'] = df.index
-        df.to_csv('../ohlcv/' + ticker + '.csv', compression='gzip', index=False)
+        data = yf.download(short_ticker_list, start=earlier_str, end=end_str,
+                                    group_by="ticker")
+
+        print ('yf download complete. saving files')
+        #print (data)
+        data = data.T
+
+        for ticker in short_ticker_list:
+            df = data.loc[(ticker,),].T
+            df['Date'] = df.index
+            df.to_csv('../ohlcv/' + ticker + '.csv', compression='gzip', index=False)
 
     return
 
@@ -146,4 +155,5 @@ def yf_ohlcv_hourly():
             print (f'Writing to csv. Count: {count}')
 
 if __name__ == "__main__":
-    yf_ohlcv_hourly()
+    #yf_ohlcv_hourly()
+    yf_ohlcv()

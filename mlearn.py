@@ -73,7 +73,7 @@ def mlearn(notes, hurdle, df):
     normed_test_data = norm(test_dataset)
     normed_test_data.fillna(0, inplace=True)
     print (normed_train_data.tail())
-    learning_rate = .000001
+    learning_rate = .00001
 
     def build_model():
         model = keras.Sequential([

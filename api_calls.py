@@ -43,10 +43,7 @@ def get_balance():
     target_url = balance_endpoint
     r = requests.get(url=target_url, auth=oauth_hdr)
     try:
-        d = r.json()['response']['accountbalance']['accountvalue']
-        e = json.dumps(r.json(), indent = 4, sort_keys=True)
-        print (e)
-        input('enter')
+        d = r.json()['response']['accountbalance']['buyingpower']['cashavailableforwithdrawal']
     except Exception as e:
         print (str(e))
         print (r)
