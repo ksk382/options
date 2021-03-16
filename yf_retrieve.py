@@ -41,14 +41,6 @@ def yf_ohlcv():
     else:
         os.mkdir(save_path)
 
-    contents = os.listdir(save_path)
-    s = today_str + '.csv'
-    for i in contents:
-        if not i.endswith(s):
-            j = save_path + i
-            print (f'removing {j}')
-            os.remove(j)
-
     n = 500
     for i in range(0, len(ticker_list), n):
         y = (len(ticker_list) / n)
