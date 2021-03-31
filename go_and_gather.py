@@ -14,7 +14,7 @@ def load_ticker_list():
     ticker_list = ticker_list + list(etf_df['Ticker'].unique())
     return ticker_list
 
-def api_stat(symbol, headers, access_key):
+def api_stat(symbol, headers):
 
     canonical_querystring = 'token=' + access_key
     canonical_uri = f'/v1/stock/{symbol}/stats'
@@ -42,7 +42,6 @@ def main():
         all_stock_df = pd.DataFrame()
         all_stock_df['symbol'] = ''
 
-    access_key = os.environ.get('IEX_PUBLIC_KEY')
     headers = get_auth_headers()
     print ('headers:\n')
     print (headers)
@@ -56,24 +55,24 @@ def main():
     for symbol in ticker_list:
         count += 1
         print(f'{count} getting {symbol} data')
-        #try:
-        if symbol in all_stock_df['symbol'].unique():
-            print(f'Already have {symbol}')
-        stock_df = api_stat(symbol, headers, access_key)
-        stock_df['symbol'] = symbol
-        all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
+        try:
+            if symbol in all_stock_df['symbol'].unique():
+                print(f'Already have {symbol}')
+            stock_df = api_stat(symbol, headers)
+            stock_df['symbol'] = symbol
+            all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
 
-        # save every 100 tickers
-        if count % 100 == 0:
-            print(f'{count} writing to {stock_save_name}')
-            all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
+            # save every 100 tickers
+            if count % 100 == 0:
+                print(f'{count} writing to {stock_save_name}')
+                all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
 
-        '''except Exception as e:
+        except Exception as e:
             exception_count += 1
             print(symbol,'---', str(e))
             error_list.append([symbol, str(e)])
             if exception_count > 2:
-                time.sleep(2)'''
+                time.sleep(2)
 
     all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
     print (f'&&&&&& loop completed. exception count: {exception_count}')
