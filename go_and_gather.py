@@ -34,7 +34,9 @@ def main():
     now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
     print(now_str)
 
-    stock_dir_name = '../stock_dataframes/'
+    stock_dir_name = '../stat_dataframes/'
+    if not os.path.exists(stock_dir_name):
+        os.mkdir(stock_dir_name)
     fname = now_str + '.csv'
     stock_save_name = stock_dir_name + fname
     if os.path.isfile(stock_save_name):
