@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 import datetime as dt
 import time
+from cred_file import access_key, host
 
 def load_ticker_list():
     ticker_df = pd.read_csv('IWV_holdings.csv').dropna()
@@ -16,7 +17,6 @@ def load_ticker_list():
 def api_stat(symbol, headers, access_key):
 
     canonical_querystring = 'token=' + access_key
-    host = 'cloud.iexapis.com'
     canonical_uri = f'/v1/stock/{symbol}/stats'
     endpoint = "https://" + host + canonical_uri
     request_url = endpoint + '?' + canonical_querystring
@@ -26,8 +26,6 @@ def api_stat(symbol, headers, access_key):
     return df
 
 def main():
-
-
 
     now = dt.datetime.now()
     now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
