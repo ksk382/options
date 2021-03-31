@@ -27,8 +27,7 @@ def api_stat(symbol, headers, access_key):
 
 def main():
 
-    access_key = os.environ.get('IEX_PUBLIC_KEY')
-    headers = get_auth_headers()
+
 
     now = dt.datetime.now()
     now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
@@ -44,6 +43,11 @@ def main():
     else:
         all_stock_df = pd.DataFrame()
         all_stock_df['symbol'] = ''
+
+    access_key = os.environ.get('IEX_PUBLIC_KEY')
+    headers = get_auth_headers()
+    print ('headers:\n')
+    print (headers)
 
     error_list = []
     ticker_list = load_ticker_list()
@@ -68,7 +72,7 @@ def main():
 
         except Exception as e:
             exception_count += 1
-            print(symbol, str(e))
+            print(symbol,'---', str(e))
             error_list.append([symbol, str(e)])
             if exception_count > 2:
                 time.sleep(2)
