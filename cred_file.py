@@ -15,4 +15,6 @@ stock_endpoint = data['stock_endpoint']
 option_endpoint = data['option_endpoint']
 trade_endpoint = data['trade_endpoint']
 balance_endpoint = data['balance_endpoint']
-
+host = data['host']
+access_key = data['access_key']
+secret_key = data['secret_key']
