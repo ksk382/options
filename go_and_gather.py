@@ -58,24 +58,24 @@ def main():
     for symbol in ticker_list:
         count += 1
         print(f'{count} getting {symbol} data')
-        try:
-            if symbol in all_stock_df['symbol'].unique():
-                print(f'Already have {symbol}')
-            stock_df = api_stat(symbol, headers, access_key)
-            stock_df['symbol'] = symbol
-            all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
+        #try:
+        if symbol in all_stock_df['symbol'].unique():
+            print(f'Already have {symbol}')
+        stock_df = api_stat(symbol, headers, access_key)
+        stock_df['symbol'] = symbol
+        all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
 
-            # save every 100 tickers
-            if count % 100 == 0:
-                print(f'{count} writing to {stock_save_name}')
-                all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
+        # save every 100 tickers
+        if count % 100 == 0:
+            print(f'{count} writing to {stock_save_name}')
+            all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
 
-        except Exception as e:
+        '''except Exception as e:
             exception_count += 1
             print(symbol,'---', str(e))
             error_list.append([symbol, str(e)])
             if exception_count > 2:
-                time.sleep(2)
+                time.sleep(2)'''
 
     all_stock_df.to_csv(stock_save_name, compression='gzip', index=False)
     print (f'&&&&&& loop completed. exception count: {exception_count}')
