@@ -57,16 +57,16 @@ def run_nope(**kwargs):
     nope_df = pd.DataFrame()
 
     count = 0
-    for ticker in stock_df['symbol'].unique():
+    for symbol in stock_df['symbol'].unique():
         count +=1
-        print (f'{count} -- {ticker}')
+        print (f'{count} -- {symbol}')
 
         # just find the latest dated option df.
         # later, replace this with something that gets close to the stock timestamp
         try:
-            volume = stock_df[stock_df['symbol'] == ticker]['vl'].item()
-            adv_21 = stock_df[stock_df['symbol'] == ticker]['adv_21'].item()
-            option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((ticker + '_'))][0]
+            volume = stock_df[stock_df['symbol'] == symbol]['vl'].item()
+            adv_21 = stock_df[stock_df['symbol'] == symbol]['adv_21'].item()
+            option_df_name = [(option_dir + i) for i in option_df_list if i.startswith((symbol + '_'))][0]
             option_df = pd.read_csv(option_df_name, compression='gzip')
 
             # find weighted delta
@@ -90,7 +90,7 @@ def run_nope(**kwargs):
             noge_21 = net_gamma / adv_21
 
             a = {'date': fname_root,
-                 'ticker': ticker,
+                 'symbol': symbol,
                  'nope_metric': nope_metric,
                  'nope_adv_21': nope_21,
                  'net_idelta': net_delta,
