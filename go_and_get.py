@@ -9,6 +9,14 @@ import sys
 import argparse
 from nope import run_nope
 
+def load_ticker_list():
+    ticker_df = pd.read_csv('IWV_holdings.csv').dropna()
+    ticker_df = ticker_df[ticker_df['Ticker'] != '-']
+    ticker_list = list(ticker_df['Ticker'].unique())
+    etf_df = pd.read_csv('etf_ticker_list.csv', compression = 'gzip')
+    ticker_list = ticker_list + list(etf_df['Ticker'].unique())
+    return ticker_list
+
 def gather_stock_and_option_data(**kwargs):
     print ('\n\n\n\n&&&&&----- gathering stock and option data\n\n')
 
@@ -41,14 +49,6 @@ def gather_stock_and_option_data(**kwargs):
     print ('\n\n\n\n&&&&&----- done gathering stock and option data')
 
     return now_str
-
-def load_ticker_list():
-    ticker_df = pd.read_csv('IWV_holdings.csv').dropna()
-    ticker_df = ticker_df[ticker_df['Ticker'] != '-']
-    ticker_list = list(ticker_df['Ticker'].unique())
-    etf_df = pd.read_csv('etf_ticker_list.csv', compression = 'gzip')
-    ticker_list = ticker_list + list(etf_df['Ticker'].unique())
-    return ticker_list
 
 def gather_stock_data(**kwargs):
     print('\n\n\n\n&&&&&----- gathering stock and option data\n\n')

@@ -25,7 +25,7 @@ def api_stat(symbol, headers):
     df = pd.DataFrame([d])
     return df
 
-def main():
+def gather_stats():
 
     now = dt.datetime.now()
     now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
@@ -78,5 +78,7 @@ def main():
     print (f'&&&&&& loop completed. exception count: {exception_count}')
     print (error_list)
 
+
 if __name__ == '__main__':
-    main()
+    gather_stats()
+

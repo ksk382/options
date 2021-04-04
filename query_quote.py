@@ -25,10 +25,10 @@ def api_quote(symbol, headers):
     df = pd.DataFrame([d])
     return df
 
-def main():
+def query_quote():
+
     headers = get_auth_headers()
     ticker_list = load_ticker_list()
-
 
     now = dt.datetime.now()
     now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
@@ -71,6 +71,7 @@ def main():
     print (f'&&&&&& loop completed. exception count: {exception_count}')
     print (error_list)
     print (all_quote_df)
+    return
 
 if __name__ == '__main__':
-    main()
+    query_quote()

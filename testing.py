@@ -7,17 +7,16 @@ import yfinance as yf
 import pandas as pd
 
 
-today = dt.datetime.now()
-# 253 trading days in a year
-days_back = 60
-DD = dt.timedelta(days=days_back)
-earlier = today - DD
-earlier_str = earlier.strftime("%Y-%m-%d")
-end_str = today + dt.timedelta(days=1)
+pd.set_option('display.max_rows', 800)
 
-t = '^TNX'
-data = yf.download(t, start=earlier_str, end=end_str,
-                                group_by="ticker", interval='60m')
+label_date = '2021-04-01'
 
+df = pd.read_csv('../ohlcv/ohlcv.csv', compression='gzip')
+df = df[['symbol', 'date', 'close', 'high', 'low', 'open', 'volume', 'id', 'key',
+       'subkey', 'updated', 'changeOverTime', 'marketChangeOverTime',
+       'uOpen', 'uClose', 'uHigh', 'uLow', 'uVolume', 'fOpen', 'fClose',
+       'fHigh', 'fLow', 'fVolume', 'label', 'change', 'changePercent']]
+print (df)
+df = df.drop_duplicates(subset=['symbol', 'date'], keep='first')
 
-print (data)
+df.to_csv('../ohlcv/ohlcv.csv', compression='gzip', index=False)
