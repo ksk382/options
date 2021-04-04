@@ -106,26 +106,47 @@ def munge(df1, df2, quote_df):
     df3 = df3.drop_duplicates()
     return df3
 
-def label_the_tensors(x_date, y_date, z_date):
-    df1 = pd.read_csv(f'../combined_dataframes/{x_date}.csv', compression='gzip')
-    df2 = pd.read_csv(f'../combined_dataframes/{y_date}.csv', compression='gzip')
-    quote_df = pd.read_csv(f'../quote_dataframes/{y_date}_15.50.csv', compression='gzip')
+def label_the_tensors(df3, z_date):
+    '''
+    :param df3: the already munged data (constructed tensors)
+    :param z_date: today i.e. this morning
+    :return: df4, which is a set of tensors labeled with price movement overnight
+    '''
+    '''
+    
+    # this only works for older data where ohlcv exists. you won't call ohlcv mid-market 
+    # if it needs to be really accurate though maybe the training data should be 
+    # built with a two day lag so you can label it with ohlcv?
+    
     ohlcv = pd.read_csv('../ohlcv/ohlcv.csv', compression='gzip')
-    df3 = munge(df1, df2, quote_df)
-
     label_df = ohlcv[ohlcv['date'] == z_date][['symbol', 'open']]
+    label_df.columns = ['symbol', 'tmrw_opn']
+    label_df = label_df.sort_values(by='symbol')
+    '''
+
+    # this is if you want to do training data asap, but it relies on IEX open prices
+    quote_dir = '../quote_dataframes/'
+    x = os.listdir(quote_dir)
+    z_file_list = [(quote_dir + i) for i in x if i.startswith(z_date)]
+    fname = min(z_file_list, key=os.path.getctime)
+    quote_df = pd.read_csv(fname, compression='gzip')
+    label_df = quote_df[['symbol', 'latestPrice']]
     label_df.columns = ['symbol', 'tmrw_opn']
     label_df = label_df.sort_values(by='symbol')
 
     df4 = pd.merge(df3, label_df, on='symbol')
-
     df4['mvmnt'] = (df4['tmrw_opn'] - df4['latestPrice']) / df4['latestPrice']
+    return df4
 
+def make_labeled_tensors(x_date, y_date, z_date):
+    df1 = pd.read_csv(f'../combined_dataframes/{x_date}.csv', compression='gzip')
+    df2 = pd.read_csv(f'../combined_dataframes/{y_date}.csv', compression='gzip')
+    quote_df = pd.read_csv(f'../quote_dataframes/{y_date}_15.50.csv', compression='gzip')
+    df3 = munge(df1, df2, quote_df)
+    df4 = label_the_tensors(df3, z_date)
     df4 = df4[~df4.isin([np.nan, np.inf, -np.inf]).any(1)]
-
     out_name = f'../ML_content/tensor_df_set_{y_date}.csv'
     df4.to_csv(out_name, compression='gzip', index=False)
-
     return df4
 
 def make_training_tensors(x_date, y_date, z_date):
@@ -137,7 +158,7 @@ def make_training_tensors(x_date, y_date, z_date):
     # check if the tensors for each date have already been built
     if not (s for s in x if y_date in s):
         print(f'making {y_date}')
-        label_the_tensors(x_date, y_date, z_date)
+        make_labeled_tensors(x_date, y_date, z_date)
 
     # combine all the tensor files that have been built
     combined_tensor_df = pd.DataFrame([])
