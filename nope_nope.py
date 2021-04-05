@@ -29,7 +29,7 @@ def run_nope(**kwargs):
                 try:
                     csv_time = dt.datetime.strptime(j, "%Y-%m-%d_%H.%M")
                 except:
-                    csv_time = dt.datetime.strptime(j, "%Y-%m-%d %H.%M")
+                    csv_time = 0
                 if csv_time > latest:
                     latest = csv_time
                     latest_i = i
