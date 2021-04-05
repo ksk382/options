@@ -29,7 +29,8 @@ def run_nope(**kwargs):
                 try:
                     csv_time = dt.datetime.strptime(j, "%Y-%m-%d_%H.%M")
                 except:
-                    csv_time = 0
+                    #made a fake date to be less than
+                    csv_time = dt.datetime.strptime('2020-04-05_15.40', "%Y-%m-%d_%H.%M")
                 if csv_time > latest:
                     latest = csv_time
                     latest_i = i
