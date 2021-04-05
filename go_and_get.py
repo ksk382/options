@@ -7,7 +7,7 @@ import os
 import time
 import sys
 import argparse
-from nope import run_nope
+from nope_nope import run_nope
 
 def load_ticker_list():
     ticker_df = pd.read_csv('IWV_holdings.csv').dropna()
