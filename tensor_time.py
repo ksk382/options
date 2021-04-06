@@ -1,17 +1,5 @@
 # -*- coding: utf-8 -*-
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 import pandas as pd
-import datetime as dt
-import os
-import time
-import numpy as np
-import seaborn as sns
-import yfinance as yf
-
-import pandas as pd
-import datetime as dt
 import os
 import numpy as np
 
@@ -117,26 +105,28 @@ def label_the_tensors(df3, z_date):
     # this only works for older data where ohlcv exists. you won't call ohlcv mid-market 
     # if it needs to be really accurate though maybe the training data should be 
     # built with a two day lag so you can label it with ohlcv?
-    
-    ohlcv = pd.read_csv('../ohlcv/ohlcv.csv', compression='gzip')
-    label_df = ohlcv[ohlcv['date'] == z_date][['symbol', 'open']]
-    label_df.columns = ['symbol', 'tmrw_opn']
-    label_df = label_df.sort_values(by='symbol')
     '''
 
+    ohlcv = pd.read_csv('../ohlcv/ohlcv.csv', compression='gzip')
+    label_df = ohlcv[ohlcv['date'] == z_date][['symbol', 'open', 'date']]
+    label_df.columns = ['symbol', 'tmrw_opn', 'z_date']
+    label_df = label_df.sort_values(by='symbol')
+
+
     # this is if you want to do training data asap, but it relies on IEX open prices
+    '''
     quote_dir = '../quote_dataframes/'
     x = os.listdir(quote_dir)
     z_file_list = [(quote_dir + i) for i in x if i.startswith(z_date)]
     fname = min(z_file_list, key=os.path.getctime)
     quote_df = pd.read_csv(fname, compression='gzip')
-    quote_df['datetime'] = pd.to_datetime(quote_df['lastTradeTime'],unit='ms').dt.tz_localize('utc').dt.tz_convert('US/Eastern').dt.round('1s')
+    quote_df['datetime'] = pd.to_datetime(quote_df['lastTradeTime'],unit='ms')
+    quote_df['datetime'] = quote_df['datetime'].dt.tz_localize('utc').dt.tz_convert('US/Eastern').dt.round('1s')
+    quote_df['date] = quote_df['datetime'].dt.date
     label_df = quote_df[['symbol', 'latestPrice', 'datetime']]
     label_df.columns = ['symbol', 'tmrw_opn', 'datetime']
-    label_df = label_df.sort_values(by='symbol')
+    label_df = label_df.sort_values(by='symbol')'''
 
-    print (label_df)
-    input('enter')
 
     df4 = pd.merge(df3, label_df, on='symbol')
     df4['mvmnt'] = (df4['tmrw_opn'] - df4['latestPrice']) / df4['latestPrice']
