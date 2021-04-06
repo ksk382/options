@@ -173,6 +173,7 @@ def make_training_tensors(x_date, y_date, z_date):
     combined_tensor_df.to_csv(combined_tensor_df_name, compression='gzip', index=False)
 
 if __name__ == "__main__":
+    print ('running tensor_time.py')
     x_date = '2021-03-31'
     y_date = '2021-04-01'
     z_date = '2021-04-05'
