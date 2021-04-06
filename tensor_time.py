@@ -136,6 +136,9 @@ def make_labeled_tensors(x_date, y_date, z_date):
     df1 = pd.read_csv(f'../combined_dataframes/{x_date}.csv', compression='gzip')
     df2 = pd.read_csv(f'../combined_dataframes/{y_date}.csv', compression='gzip')
     quote_df = pd.read_csv(f'../quote_dataframes/{y_date}_15.50.csv', compression='gzip')
+
+    print (f'initial_shapes--    df1: {df1.shape}    df2: {df2.shape}')
+
     df3 = munge(df1, df2, quote_df)
     df4 = label_the_tensors(df3, z_date)
     df4 = df4[~df4.isin([np.nan, np.inf, -np.inf]).any(1)]
