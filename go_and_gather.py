@@ -83,4 +83,5 @@ def gather_stats():
 
 if __name__ == '__main__':
     gather_stats()
+    print(f'{Path(__file__).resolve()} completed')
 

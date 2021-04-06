@@ -139,6 +139,6 @@ if __name__ == '__main__':
         run_nope(date_to_run=date_to_run)
     else:
         run_nope()
-
+    print(f'{Path(__file__).resolve()} completed')
 
 

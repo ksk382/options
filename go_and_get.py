@@ -230,3 +230,4 @@ if __name__ == "__main__":
     else:
         gather_stock_data()
 
+    print(f'{Path(__file__).resolve()} completed')

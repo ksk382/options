@@ -77,3 +77,4 @@ def query_quote():
 
 if __name__ == '__main__':
     query_quote()
+    print(f'{Path(__file__).resolve()} completed')

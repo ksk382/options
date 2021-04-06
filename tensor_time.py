@@ -181,5 +181,5 @@ if __name__ == "__main__":
     z_date = '2021-04-05'
     make_training_tensors(x_date, y_date, z_date)
 
-
+    print(f'{Path(__file__).resolve()} completed')
 

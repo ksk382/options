@@ -72,3 +72,4 @@ if __name__ == "__main__":
         today_str = dt.datetime.strftime(now, "%Y-%m-%d")
     print (f'running merge_df_files: {today_str}')
     merge_df_files(today_str)
+    print(f'{Path(__file__).resolve()} completed')

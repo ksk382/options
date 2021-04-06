@@ -92,11 +92,13 @@ def daily_ohlcv():
     count = 0
     exception_count = 0
     error_list = []
+    empty_dfs = []
     for symbol in ticker_list:
         count += 1
         print(f'{count} getting {symbol} data')
-        try:
-            stock_df = api_ohlcv_today(symbol, headers)
+        #try:
+        stock_df = api_ohlcv_today(symbol, headers)
+        if not stock_df.empty:
             epochtime = stock_df['open']['time']
             stock_df['datetime'] = pd.to_datetime(stock_df['open']['time'], unit='ms')
             stock_df['datetime'] = stock_df['datetime'].dt.tz_localize('utc').dt.tz_convert('US/Eastern').dt.round('1s')
@@ -104,26 +106,35 @@ def daily_ohlcv():
             y = time.strftime('%Y-%m-%d', time.gmtime(epochtime / 1000.))
             stock_df = stock_df.T['price']
             stock_df['date'] = y
+            print (stock_df)
             all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
-            # save every 100 tickers
-            if count % 100 == 0:
-                print(f'{count} writing to {ohlcv_save_name}')
-                all_stock_df.to_csv(ohlcv_save_name, compression='gzip', index=False)
+        else:
+            empty_dfs.append(symbol)
+        # save every 100 tickers
+        if count % 100 == 0:
+            print(f'{count} writing to {ohlcv_save_name}')
+            all_stock_df.to_csv(ohlcv_save_name, compression='gzip', index=False)
 
+        '''
         except Exception as e:
             exception_count += 1
             print(symbol, '---', str(e))
             error_list.append([symbol, str(e)])
             if exception_count > 2:
-                time.sleep(2)
+                time.sleep(2)'''
 
     all_stock_df = all_stock_df.drop_duplicates(subset=['symbol', 'date'], keep='first')
     all_stock_df.to_csv(ohlcv_save_name, compression='gzip', index=False)
     print(f'&&&&&& loop completed. exception count: {exception_count}')
+    print('error_list: ')
     print(error_list)
+    print('empty dataframes:')
+    print(empty_dfs)
+    print(len(empty_dfs))
     return
 
 if __name__ == '__main__':
 
     # functions that should not run during market hours
     daily_ohlcv()
+    print(f'{Path(__file__).resolve()} completed')
