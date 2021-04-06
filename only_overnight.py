@@ -93,24 +93,27 @@ def daily_ohlcv():
     for symbol in ticker_list:
         count += 1
         print(f'{count} getting {symbol} data')
-        try:
-            stock_df = api_ohlcv_today(symbol, headers)
-            epochtime = stock_df['open']['time']
-            y = time.strftime('%Y-%m-%d', time.gmtime(epochtime / 1000.))
-            stock_df = stock_df.T['price']
-            stock_df['date'] = y
-            all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
-            # save every 100 tickers
-            if count % 100 == 0:
-                print(f'{count} writing to {ohlcv_save_name}')
-                all_stock_df.to_csv(ohlcv_save_name, compression='gzip', index=False)
+        #try:
+        stock_df = api_ohlcv_today(symbol, headers)
+        epochtime = stock_df['open']['time']
+        stock_df['datetime'] = pd.to_datetime(stock_df['open']['time'], unit='ms')
+        stock_df['datetime'] = stock_df['datetime'].dt.tz_localize('utc').dt.tz_convert('US/Eastern').dt.round('1s')
+        stock_df['date'] = stock_df['datetime'].dt.date
+        y = time.strftime('%Y-%m-%d', time.gmtime(epochtime / 1000.))
+        stock_df = stock_df.T['price']
+        stock_df['date'] = y
+        all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
+        # save every 100 tickers
+        if count % 100 == 0:
+            print(f'{count} writing to {ohlcv_save_name}')
+            all_stock_df.to_csv(ohlcv_save_name, compression='gzip', index=False)
 
-        except Exception as e:
-            exception_count += 1
-            print(symbol, '---', str(e))
-            error_list.append([symbol, str(e)])
-            if exception_count > 2:
-                time.sleep(2)
+        #except Exception as e:
+        #    exception_count += 1
+        #    print(symbol, '---', str(e))
+        #    error_list.append([symbol, str(e)])
+        #    if exception_count > 2:
+        #        time.sleep(2)
 
     all_stock_df = all_stock_df.drop_duplicates(subset=['symbol', 'date'], keep='first')
     all_stock_df.to_csv(ohlcv_save_name, compression='gzip', index=False)

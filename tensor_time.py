@@ -130,9 +130,13 @@ def label_the_tensors(df3, z_date):
     z_file_list = [(quote_dir + i) for i in x if i.startswith(z_date)]
     fname = min(z_file_list, key=os.path.getctime)
     quote_df = pd.read_csv(fname, compression='gzip')
-    label_df = quote_df[['symbol', 'latestPrice']]
-    label_df.columns = ['symbol', 'tmrw_opn']
+    quote_df['datetime'] = pd.to_datetime(quote_df['lastTradeTime'],unit='ms').dt.tz_localize('utc').dt.tz_convert('US/Eastern').dt.round('1s')
+    label_df = quote_df[['symbol', 'latestPrice', 'datetime']]
+    label_df.columns = ['symbol', 'tmrw_opn', 'datetime']
     label_df = label_df.sort_values(by='symbol')
+
+    print (label_df)
+    input('enter')
 
     df4 = pd.merge(df3, label_df, on='symbol')
     df4['mvmnt'] = (df4['tmrw_opn'] - df4['latestPrice']) / df4['latestPrice']
@@ -158,7 +162,8 @@ def make_training_tensors(x_date, y_date, z_date):
     # check if the tensors for each date have already been built
     if not (s for s in x if y_date in s):
         print(f'making {y_date}')
-        make_labeled_tensors(x_date, y_date, z_date)
+
+    make_labeled_tensors(x_date, y_date, z_date)
 
     # combine all the tensor files that have been built
     combined_tensor_df = pd.DataFrame([])
@@ -177,7 +182,7 @@ def make_training_tensors(x_date, y_date, z_date):
 if __name__ == "__main__":
     x_date = '2021-03-31'
     y_date = '2021-04-01'
-    z_date = '2021-04-01'
+    z_date = '2021-04-05'
     make_training_tensors(x_date, y_date, z_date)
 
 
