@@ -155,9 +155,9 @@ def make_training_tensors(x_date, y_date, z_date):
     # check if the tensors for each date have already been built
     if not (s for s in x if y_date in s):
         print(f'making {y_date}')
+        make_labeled_tensors(x_date, y_date, z_date)
 
-    make_labeled_tensors(x_date, y_date, z_date)
-
+    x = os.listdir(dir_name)
     # combine all the tensor files that have been built
     combined_tensor_df = pd.DataFrame([])
     for i in x:
