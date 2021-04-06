@@ -1,3 +1,5 @@
+from pathlib import Path
+print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 import pandas as pd
 from api_calls import get_option_df, get_stock_df
 import os

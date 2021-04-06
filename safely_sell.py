@@ -1,3 +1,5 @@
+from pathlib import Path
+print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 from api_calls import get_holdings, sell_stock, get_stock_df
 import datetime as dt
 from pytz import timezone
