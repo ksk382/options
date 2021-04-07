@@ -1,6 +1,6 @@
 from tensor_time import munge
 
-def main()
+def main():
 
     #run checks
     '''

@@ -4,6 +4,8 @@ print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resol
 import pandas as pd
 import os
 import numpy as np
+from create_combined_dfs import latest_file
+import sys
 
 pd.set_option('display.max_rows', 800)
 
@@ -129,6 +131,10 @@ def label_the_tensors(df3, z_date):
     label_df.columns = ['symbol', 'tmrw_opn', 'datetime']
     label_df = label_df.sort_values(by='symbol')'''
 
+    print (f'label_df shape: {label_df}')
+    if label_df.empty:
+        print (f'empty label df. ending {Path(__file__).resolve()}')
+        sys.exit()
 
     df4 = pd.merge(df3, label_df, on='symbol')
     df4['mvmnt'] = (df4['tmrw_opn'] - df4['latestPrice']) / df4['latestPrice']
@@ -137,9 +143,10 @@ def label_the_tensors(df3, z_date):
 def make_labeled_tensors(x_date, y_date, z_date):
     df1 = pd.read_csv(f'../combined_dataframes/{x_date}.csv', compression='gzip')
     df2 = pd.read_csv(f'../combined_dataframes/{y_date}.csv', compression='gzip')
-    quote_df = pd.read_csv(f'../quote_dataframes/{y_date}_15.50.csv', compression='gzip')
+    quote_df_name = latest_file('../quote_dataframes/', y_date)
+    quote_df = pd.read_csv(quote_df_name, compression='gzip')
 
-    print (f'initial_shapes--    df1: {df1.shape}    df2: {df2.shape}')
+    print (f'initial_shapes--    df1: {df1.shape}    df2: {df2.shape}   quote_df: {quote_df.shape}')
 
     df3 = munge(df1, df2, quote_df)
     df4 = label_the_tensors(df3, z_date)
@@ -157,7 +164,7 @@ def make_training_tensors(x_date, y_date, z_date):
     # check if the tensors for each date have already been built
     if not (s for s in x if y_date in s):
         print(f'making {y_date}')
-        make_labeled_tensors(x_date, y_date, z_date)
+    df4 = make_labeled_tensors(x_date, y_date, z_date)
 
     x = os.listdir(dir_name)
     # combine all the tensor files that have been built
@@ -176,10 +183,12 @@ def make_training_tensors(x_date, y_date, z_date):
 
 if __name__ == "__main__":
     print ('running tensor_time.py')
-    x_date = '2021-03-31'
-    y_date = '2021-04-01'
-    z_date = '2021-04-05'
-    make_training_tensors(x_date, y_date, z_date)
+    a = '2021-03-31'
+    b = '2021-04-01'
+    c = '2021-04-05'
+    a = '2021-04-06'
+
+    make_training_tensors(b, c, a)
 
     print(f'{Path(__file__).resolve()} completed')
 

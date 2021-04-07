@@ -95,7 +95,6 @@ def daily_ohlcv():
     empty_dfs = []
     for symbol in ticker_list:
         count += 1
-        print(f'{count} getting {symbol} data')
         #try:
         stock_df = api_ohlcv_today(symbol, headers)
         if not stock_df.empty:
@@ -106,9 +105,10 @@ def daily_ohlcv():
             y = time.strftime('%Y-%m-%d', time.gmtime(epochtime / 1000.))
             stock_df = stock_df.T['price']
             stock_df['date'] = y
-            print (stock_df)
             all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
+            print(f'{count} saved {symbol} data')
         else:
+            print(f'{count}-------no data for {symbol}-------')
             empty_dfs.append(symbol)
         # save every 100 tickers
         if count % 100 == 0:
