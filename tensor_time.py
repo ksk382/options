@@ -11,8 +11,11 @@ pd.set_option('display.max_rows', 800)
 
 
 def munge(df1, df2, quote_df):
+    print (f'initial_shapes inside munge--    df1: {df1.shape}    df2: {df2.shape}   quote_df: {quote_df.shape}')
     df3 = pd.merge(df1, df2, on=['symbol'])
+    print(f'shape after df1 df2 merge--    df3: {df3.shape}')
     df3 = pd.merge(df3, quote_df, on=['symbol'])
+    print(f'shape after quote_df merge--    df3: {df3.shape}')
 
     # convert dates to datetime format
     df3['df_date_x'] = pd.to_datetime(df3['df_date_x'])
@@ -95,6 +98,8 @@ def munge(df1, df2, quote_df):
 
     df3 = df3[show_cols]
     df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
+    print(f'shape after nan clear--    df3: {df3.shape}')
+    print ('\n\n\n')
     df3 = df3.drop_duplicates()
     return df3
 
@@ -131,7 +136,7 @@ def label_the_tensors(df3, z_date):
     label_df.columns = ['symbol', 'tmrw_opn', 'datetime']
     label_df = label_df.sort_values(by='symbol')'''
 
-    print (f'label_df shape: {label_df}')
+    print (f'label_df shape: \n{label_df}')
     if label_df.empty:
         print (f'empty label df. ending {Path(__file__).resolve()}')
         sys.exit()
@@ -149,6 +154,7 @@ def make_labeled_tensors(x_date, y_date, z_date):
     print (f'initial_shapes--    df1: {df1.shape}    df2: {df2.shape}   quote_df: {quote_df.shape}')
 
     df3 = munge(df1, df2, quote_df)
+    print(f'shape after munge--    df3: {df3.shape}')
     df4 = label_the_tensors(df3, z_date)
     df4 = df4[~df4.isin([np.nan, np.inf, -np.inf]).any(1)]
     out_name = f'../ML_content/tensor_df_set_{y_date}.csv'
@@ -162,8 +168,8 @@ def make_training_tensors(x_date, y_date, z_date):
 
     x = os.listdir(dir_name)
     # check if the tensors for each date have already been built
-    if not (s for s in x if y_date in s):
-        print(f'making {y_date}')
+    #if not (s for s in x if y_date in s):
+    #    print(f'making {y_date}')
     df4 = make_labeled_tensors(x_date, y_date, z_date)
 
     x = os.listdir(dir_name)
