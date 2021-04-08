@@ -114,6 +114,7 @@ def label_the_tensors(df3, z_date):
     # this only works for older data where ohlcv exists. you won't call ohlcv mid-market 
     # if it needs to be really accurate though maybe the training data should be 
     # built with a two day lag so you can label it with ohlcv?
+    # it is more important for this to be accurate. it will be a two day lag
     '''
 
     ohlcv = pd.read_csv('../ohlcv/ohlcv.csv', compression='gzip')
@@ -161,17 +162,7 @@ def make_labeled_tensors(x_date, y_date, z_date):
     df4.to_csv(out_name, compression='gzip', index=False)
     return df4
 
-def make_training_tensors(x_date, y_date, z_date):
-    dir_name = '../ML_content/'
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-
-    x = os.listdir(dir_name)
-    # check if the tensors for each date have already been built
-    #if not (s for s in x if y_date in s):
-    #    print(f'making {y_date}')
-    df4 = make_labeled_tensors(x_date, y_date, z_date)
-
+def merge_made_tensors(dir_name):
     x = os.listdir(dir_name)
     # combine all the tensor files that have been built
     combined_tensor_df = pd.DataFrame([])
@@ -186,15 +177,34 @@ def make_training_tensors(x_date, y_date, z_date):
 
     combined_tensor_df_name = dir_name + 'combined_tensor_df.csv'
     combined_tensor_df.to_csv(combined_tensor_df_name, compression='gzip', index=False)
+    return
+
+def make_training_tensors(x_date, y_date, z_date, dir_name):
+    # x = os.listdir(dir_name)
+    # check if the tensors for each date have already been built
+    #if not (s for s in x if y_date in s):
+    #    print(f'making {y_date}')
+    df4 = make_labeled_tensors(x_date, y_date, z_date)
+
+    return
 
 if __name__ == "__main__":
     print ('running tensor_time.py')
-    a = '2021-03-31'
-    b = '2021-04-01'
-    c = '2021-04-05'
-    a = '2021-04-06'
+    dir_name = '../ML_content/'
+    if not os.path.exists(dir_name):
+        os.mkdir(dir_name)
 
-    make_training_tensors(b, c, a)
+    a = ['2021-03-31',
+         '2021-04-01',
+         '2021-04-05',
+         '2021-04-06']
 
+    for i in range(0, (len(a)-2)):
+        x = a[i]
+        y = a[i+1]
+        z = a[i+2]
+        make_training_tensors(x, y, z, dir_name)
+
+    merge_made_tensors(dir_name)
     print(f'{Path(__file__).resolve()} completed')
 
