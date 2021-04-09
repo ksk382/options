@@ -22,7 +22,15 @@ def api_ohlcv_chart(symbol, headers):
     canonical_uri = f'/v1/stock/{symbol}/chart/5d'
     endpoint = "https://" + host + canonical_uri
     request_url = endpoint + '?' + canonical_querystring
-    r = requests.get(request_url, headers=headers)
+    try:
+        r = requests.get(request_url, headers=headers)
+    except requests.exceptions.Timeout:
+        # Maybe set up for a retry, or continue in a retry loop
+        time.sleep(3)
+        r = requests.get(request_url, headers=headers)
+    except requests.exceptions.RequestException as e:
+        # catastrophic error. bail.
+        return 0
     d = r.json()
     df = pd.DataFrame(d)
     return df
@@ -48,8 +56,9 @@ def pull_ohlcv():
             if symbol in all_stock_df['symbol'].unique():
                 print(f'Already have {symbol}')
             stock_df = api_ohlcv_chart(symbol, headers)
-            stock_df['symbol'] = symbol
-            all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
+            if stock_df != 0:
+                stock_df['symbol'] = symbol
+                all_stock_df = all_stock_df.append(stock_df, ignore_index=True)
 
             # save every 100 tickers
             if count % 100 == 0:

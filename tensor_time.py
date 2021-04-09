@@ -194,10 +194,20 @@ if __name__ == "__main__":
     if not os.path.exists(dir_name):
         os.mkdir(dir_name)
 
-    a = ['2021-03-31',
-         '2021-04-01',
-         '2021-04-05',
-         '2021-04-06']
+    a = []
+    dates = os.listdir('../combined_dataframes/')
+    dates = [i for i in sorted(dates) if i.endswith('.csv')]
+    for i in dates:
+        # needs to be dates[-1] ?? because the
+        # last combined_df file will not have ohlcv labels
+        j = i.replace('.csv', '')
+        a.append(j)
+
+    #a = ['2021-03-31',
+    #     '2021-04-01',
+    #     '2021-04-05',
+    #     '2021-04-06']
+    print (a)
 
     for i in range(0, (len(a)-2)):
         x = a[i]

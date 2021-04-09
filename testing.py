@@ -9,10 +9,9 @@ import pandas as pd
 
 pd.set_option('display.max_rows', 800)
 
-label_date = '2021-04-01'
-
-df = pd.read_csv('../ohlcv/ohlcv.csv', compression='gzip')
-
-x = df[df['date'] == '2021-04-06']
+x = os.listdir('../combined_dataframes/')
 print (x)
-print (x.shape)
+x = sorted(x)
+for i in x:
+    j = i.replace('.csv', '')
+    print (j)

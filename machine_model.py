@@ -25,8 +25,16 @@ def mlearn(notes, hurdle, df):
     #df_file = '../nope_dataframes/combined_tensor_df.csv'
     #df = pd.read_csv(df_file, compression = 'gzip')
 
+    print (df.shape)
+    abcd = df.columns
     df = df.apply(pd.to_numeric, errors='coerce')
     df = df.dropna(axis=1, how='all')
+    print ('after numeric / dropna')
+    print(df.shape)
+    bcde = df.columns
+    ghji = [i for i in abcd if i not in bcde]
+    print (ghji)
+    input('enter')
 
     df['buy'] = (df['mvmnt'] > hurdle) * 1
     label = 'buy'
@@ -42,9 +50,10 @@ def mlearn(notes, hurdle, df):
     test_dataset = df.drop(train_dataset.index)
     test_dataset.to_csv('../ML_logs/test_dataset.csv', compression = 'gzip', index = False)
 
-    for i in ['mvmnt']:
+    for i in ['mvmnt', 'tmrw_opn', 'latestPrice']:
         train_dataset.pop(i)
         test_dataset.pop(i)
+
 
     #sns.pairplot(train_dataset[['days_before_dividend',
     #            'delta_open', 'delta_close', 'delta_high', 'delta_low',
@@ -192,7 +201,7 @@ def mlearn(notes, hurdle, df):
             model.summary()
 
 def run_loop():
-    df_file = '../nope_dataframes/combined_tensor_df.csv'
+    df_file = '../ML_content/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
 
     df1 = df.sort_values(by='mvmnt')
@@ -223,7 +232,7 @@ def run_one(h):
     hurdles = y[2:-1]
 
     hurdle = hurdles[-1]'''
-    df_file = '../nope_dataframes/combined_tensor_df.csv'
+    df_file = '../ML_content/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
     hurdle = float(h)
     notes = f'trying with high hurdle: {hurdle}'

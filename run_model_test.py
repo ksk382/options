@@ -13,6 +13,7 @@ def run_model_test(model, hurdle):
 
     train_stats = pd.read_csv('../ML_logs/train_stats.csv', compression = 'gzip')
     train_stats = train_stats.set_index('Unnamed: 0')
+
     print (train_stats.shape)
 
     test_dataset = pd.read_csv('../ML_logs/test_dataset.csv', compression = 'gzip')
@@ -22,7 +23,7 @@ def run_model_test(model, hurdle):
 
     test_labels = (test_dataset['mvmnt'] > hurdle) * 1
     true_label = test_dataset.pop('mvmnt')
-    test_dataset.pop('buy')
+
 
     print(test_dataset.shape)
     print (test_dataset.columns)
