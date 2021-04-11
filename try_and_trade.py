@@ -6,8 +6,8 @@ def main():
     '''
     check whether the data for the day exists
     get account cash amount
-     
     '''
+
 
     # load model
 
@@ -15,8 +15,15 @@ def main():
 
     # load df1 and df2 (combined dataframes from today and yesterday)
 
+
+    # should the ticker list be shuffled? otherwise you always buy early on
+    # large cap
     # for each ticker,
     #   pull a live quote
+
+    # updated thought 4.10.21: if you're firing live like that, you don't
+    # know what percentage of capital to throw at it. I.e. need all the buys
+    # before you can estimate buy amounts
 
     #   merge the data into a tensor
     #   munge(df1, df2, quote_df)

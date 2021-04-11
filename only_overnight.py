@@ -139,7 +139,7 @@ def daily_ohlcv():
     print(error_list)
     print('empty dataframes:')
     print(empty_dfs)
-    print(len(empty_dfs))
+    print('length of empty dataframes: ', len(empty_dfs))
     return
 
 if __name__ == '__main__':

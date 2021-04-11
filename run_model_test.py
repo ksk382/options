@@ -11,22 +11,21 @@ def run_model_test(model, hurdle):
     pd.set_option('display.max_rows', 2000)
     pd.set_option('display.min_rows', 100)
 
-    train_stats = pd.read_csv('../ML_logs/train_stats.csv', compression = 'gzip')
-    train_stats = train_stats.set_index('Unnamed: 0')
+    train_stats = pd.read_csv('../ML_content/train_stats.csv', compression='gzip', index_col = 0)
+    # train_stats = train_stats.set_index('Unnamed: 0')
 
-    print (train_stats.shape)
+    test_dataset = pd.read_csv('../ML_content/test_dataset.csv', compression='gzip')
+    test_labels = (test_dataset['mvmnt'] > hurdle) * 1
+    true_label = test_dataset.pop('mvmnt')
+    test_prices = test_dataset[['symbol','latestPrice']]
 
-    test_dataset = pd.read_csv('../ML_logs/test_dataset.csv', compression = 'gzip')
+    final_cols = pd.read_csv('../ML_content/final_cols.csv', compression='gzip')
+    final_cols = list(final_cols['0'])
+    test_dataset = test_dataset[final_cols]
 
     def norm(x):
         return (x - train_stats['mean']) / train_stats['std']
 
-    test_labels = (test_dataset['mvmnt'] > hurdle) * 1
-    true_label = test_dataset.pop('mvmnt')
-
-
-    print(test_dataset.shape)
-    print (test_dataset.columns)
     normed_test_data = norm(test_dataset)
     normed_test_data.fillna(0, inplace=True)
 
@@ -36,10 +35,12 @@ def run_model_test(model, hurdle):
     test_dataset['test_pred'] = test_predictions
     test_dataset['true_label'] = true_label
     test_dataset['profit'] = test_dataset['binary_test_pred'] * test_dataset['true_label']
-    cols = ['test_pred', 'binary_test_pred', 'true_label', 'profit']
+
+
+    cols = ['test_pred', 'binary_test_pred', 'true_label','profit']
     test_dataset = test_dataset.sort_values(by='profit', ascending=False)
     test_dataset = test_dataset.round(4)
-    #print (test_dataset[cols])
+    print (test_dataset[cols])
     r = test_dataset['profit'].sum() / test_dataset['binary_test_pred'].sum()
     r = round(r,4)
     num_bets = test_dataset['binary_test_pred'].sum()

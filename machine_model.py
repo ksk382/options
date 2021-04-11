@@ -14,7 +14,10 @@ import time
 from run_model_test import run_model_test
 import argparse
 
+
 def mlearn(notes, hurdle, df):
+    EPOCHS = 300
+
     # Make numpy values easier to read.
     np.set_printoptions(precision=3, suppress=True)
 
@@ -25,68 +28,63 @@ def mlearn(notes, hurdle, df):
     #df_file = '../nope_dataframes/combined_tensor_df.csv'
     #df = pd.read_csv(df_file, compression = 'gzip')
 
-    print (df.shape)
-    abcd = df.columns
-    df = df.apply(pd.to_numeric, errors='coerce')
-    df = df.dropna(axis=1, how='all')
-    print ('after numeric / dropna')
-    print(df.shape)
-    bcde = df.columns
-    ghji = [i for i in abcd if i not in bcde]
-    print (ghji)
-    input('enter')
-
+    # add the labels
     df['buy'] = (df['mvmnt'] > hurdle) * 1
     label = 'buy'
     raw_count = df['buy'].sum()
-    print (f'hurdle: {hurdle} -- raw_count: {raw_count}')
-    time.sleep(.5)
     total_population = df.shape[0]
 
-    print (df.head())
-    print (df.shape)
 
+    ## slice off and save the test dataset
     train_dataset = df.sample(frac=0.8,random_state=0)
     test_dataset = df.drop(train_dataset.index)
-    test_dataset.to_csv('../ML_logs/test_dataset.csv', compression = 'gzip', index = False)
+    test_dataset.to_csv('../ML_content/test_dataset.csv', compression = 'gzip', index = False)
 
-    for i in ['mvmnt', 'tmrw_opn', 'latestPrice']:
+    # drop the columns that give away the answer
+    train_labels = train_dataset.pop(label)
+    test_labels = test_dataset.pop(label)
+    dropcols = ['symbol',
+                'mvmnt',
+                'tmrw_opn',
+                'latestPrice',
+                'z_date',
+                'df_date_x',
+                'df_date_y']
+    for i in dropcols:
         train_dataset.pop(i)
         test_dataset.pop(i)
+
+    # remove non-numeric columns
+    df = df.apply(pd.to_numeric, errors='coerce')
+    df = df.dropna(axis=1, how='all')
 
 
     #sns.pairplot(train_dataset[['days_before_dividend',
     #            'delta_open', 'delta_close', 'delta_high', 'delta_low',
     #            'delta_volume', 'op_1.0']], diag_kind='kde')
-
-    train_labels = train_dataset.pop(label)
-    test_labels = test_dataset.pop(label)
     #plt.show()
+
+    # norm the training data, save the norm stats
     train_stats = train_dataset.describe()
     train_stats = train_stats.transpose()
-    train_stats.to_csv('../ML_logs/train_stats.csv', compression = 'gzip', index = True)
-
-    print (train_dataset.tail())
-    print (train_dataset.columns)
-    final_cols = pd.DataFrame(train_dataset.columns)
-    final_cols.to_csv('../ML_logs/final_cols.csv', compression = 'gzip', index = False)
-    print ('Final train_dataset shape: ', train_dataset.shape)
+    train_stats.to_csv('../ML_content/train_stats.csv', compression = 'gzip', index = True)
 
     def norm(x):
         return (x - train_stats['mean']) / train_stats['std']
 
-
     normed_train_data = norm(train_dataset)
     normed_train_data.fillna(0, inplace=True)
-
     normed_test_data = norm(test_dataset)
     normed_test_data.fillna(0, inplace=True)
-    print (normed_train_data.tail())
+
+    final_cols = pd.DataFrame(normed_train_data.columns)
+    final_cols.to_csv('../ML_content/final_cols.csv', compression='gzip', index=False)
+
     learning_rate = .00001
 
     def build_model():
         model = keras.Sequential([
-            layers.Dense(128, activation=tf.nn.tanh, input_shape=[len(train_dataset.keys())]),
+            layers.Dense(128, activation=tf.nn.tanh, input_shape=[len(normed_train_data.keys())]),
             layers.Dense(128, activation=tf.nn.tanh),
             layers.Dense(128, activation=tf.nn.tanh),
             layers.Dropout(.2, noise_shape=None, seed=1),
@@ -123,7 +121,7 @@ def mlearn(notes, hurdle, df):
             if epoch % 100 == 0: print('')
             print('.', end='')
 
-    EPOCHS = 300
+
 
     #checkpoint_path = "database/cp.ckpt"
     #checkpoint_dir = os.path.dirname(checkpoint_path)
@@ -162,8 +160,8 @@ def mlearn(notes, hurdle, df):
 
     now_str = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d_%H.%M")
     ## Save entire model to a HDF5 file
-    r_ = run_model_test(model, hurdle)
-    save_name = f'{now_str} - hurdle - {hurdle} mse - {round(history.history["val_mse"][-1],2)} r_ - {r_}'
+    test_rate = run_model_test(model, hurdle)
+    save_name = f'{now_str} - hurdle - {hurdle} mse - {round(history.history["val_mse"][-1],2)} test_rate - {test_rate}'
     model.save(f'{log_dir}{save_name}_model_{hurdle}.h5')
     # save log file
     log_file_name = f'{log_dir}{save_name}_log'
@@ -173,7 +171,7 @@ def mlearn(notes, hurdle, df):
             '\n\n\n' + \
             f'hurdle: {hurdle}\n'+ \
             f'learning rate: {learning_rate}\n'+ \
-            f'projected rate of return: {r_}\n\n' + \
+            f'projected rate of return: {test_rate} \n\n' + \
             f'{conf_matrix} \n' + \
             f'num positive predictions: {conf_matrix[:, 1].sum()}\n' + \
             f'rate of false positives / total positives: {pos_rate}\n\n' + \

@@ -166,7 +166,7 @@ def merge_made_tensors(dir_name):
     x = os.listdir(dir_name)
     # combine all the tensor files that have been built
     combined_tensor_df = pd.DataFrame([])
-    for i in x:
+    for i in sorted(x):
         if i.startswith('tensor_df_set_'):
             j = dir_name + i
             print(f'reading {j}')

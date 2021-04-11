@@ -49,7 +49,7 @@ if __name__ == '__main__':
     host = 'cloud.iexapis.com'
     canonical_uri = '/v1/stock/msft/stats'
     endpoint = "https://" + host + canonical_uri
-    access_key = os.environ.get('IEX_PUBLIC_KEY')
+    #access_key = os.environ.get('IEX_PUBLIC_KEY')
     canonical_querystring = 'token=' + access_key
 
     request_url = endpoint + '?' + canonical_querystring
