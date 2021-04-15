@@ -1,47 +1,97 @@
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
+from tensor_time import munge
+import pandas as pd
 import datetime as dt
 import os
-import time
-import numpy as np
-import seaborn as sns
-import yfinance as yf
-import pandas as pd
-from api_auth import get_auth_headers
-import requests
-from cred_file import access_key, host
-from api_calls import get_holdings, get_balance
-import time
-import datetime
-
-d = get_holdings()
-print (d)
-
-e = get_balance()
-print (e)
-
-start = time.time()
-#query_quote()
-time.sleep(3)
-end = time.time()
-print(end - start)
-x = str(datetime.timedelta(seconds=(end-start)))
-print (x)
+from create_combined_dfs import latest_file
+from tensorflow.keras.models import load_model
+import tensorflow as tf
 
 
-'''
-most_recent_s_frame = '../stock_dataframes/2021-04-09_14.00.csv'
-s_frame = pd.read_csv(most_recent_s_frame, compression='gzip')
-s_frame['bid_ask_diff'] = s_frame['ask'] - s_frame['bid']
-s_frame = s_frame[['symbol', 'bid_ask_diff', 'last']]
-s_frame['pct_bid_ask_diff'] = s_frame['bid_ask_diff'] / s_frame['last']
-print (s_frame.tail())
-s_frame = s_frame.reset_index()
-print (s_frame['pct_bid_ask_diff'].mean())
-s_frame = s_frame.sort_values(by='pct_bid_ask_diff')
-s_frame = s_frame.reset_index()
-print (s_frame)
-hist = s_frame.plot.scatter('index', 'pct_bid_ask_diff')
-plt.show()
-'''
+
+def get_rec(tensor_df, m, cols, train_stats):
+
+    def norm(x):
+        return (x - train_stats['mean']) / train_stats['std']
+
+    model = load_model(m)
+    hurdle = float(m.split('_')[-1].replace('.h5', ''))
+    x = tensor_df[cols]
+    x = x.apply(pd.to_numeric, errors='coerce')
+    x = x.dropna(axis=1, how='all')
+    x = norm(x)
+    x.fillna(0, inplace=True)
+    test_predictions = model.predict(x)
+    rec = tensor_df[['symbol','name_y','cl_s_y']]
+    rec.columns = ['symbol','name','close_price']
+    rec['hurdle'] = hurdle
+    rec['hurdle_price'] = rec['close_price'] + rec['close_price'] * rec['hurdle']
+    rec['hurdle_price'] = rec['hurdle_price'].round(2)
+    rec['confidence'] = test_predictions
+    rec['buy'] = (rec['confidence'] > .5) * 1
+    return rec
+
+
+def main():
+    now = dt.datetime.now()
+    now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
+    print(now_str)
+    today_str = dt.datetime.strftime(now, "%Y-%m-%d")
+
+    #run checks
+    '''
+    check whether the data for the day exists
+    get account cash amount
+    '''
+
+
+
+
+    # load df1 and df2 (combined dataframes from today and yesterday)
+    x_date = '2021-04-13'
+    y_date = '2021-04-14'
+    df1 = pd.read_csv(f'../combined_dataframes/{x_date}.csv', compression='gzip')
+    df2 = pd.read_csv(f'../combined_dataframes/{y_date}.csv', compression='gzip')
+    quote_df_name = latest_file('../quote_dataframes/', y_date)
+    quote_df = pd.read_csv(quote_df_name, compression='gzip')
+    print(f'initial_shapes--    df1: {df1.shape}    df2: {df2.shape}   quote_df: {quote_df.shape}')
+    df3 = munge(df1, df2, quote_df)
+    print (df3.tail())
+
+    final_cols = pd.read_csv('../ML_content/final_cols.csv', compression='gzip')
+    final_cols = list(final_cols['0'])
+    df4 = df3[final_cols]
+
+    print (df4.tail())
+
+    train_stats = pd.read_csv('../ML_content/train_stats.csv', compression='gzip', index_col = 0)
+
+    # load model
+    model_file = '../ML_logs/2021-04-14_17.49 - hurdle - 0.0218 mse - 0.09 test_rate - 0.0456_model_0.0218.h5'
+
+    r = get_rec(df4, model_file, final_cols, train_stats)
+
+    print (r)
+
+
+    # should the ticker list be shuffled? otherwise you always buy early on
+    # large cap
+    # for each ticker,
+    #   pull a live quote
+
+    # updated thought 4.10.21: if you're firing live like that, you don't
+    # know what percentage of capital to throw at it. I.e. need all the buys
+    # before you can estimate buy amounts
+
+    #   merge the data into a tensor
+    #   munge(df1, df2, quote_df)
+    #   strip out the columns not used in the model
+    #   normalize the data to the train norms
+    #   push the tensor through the model to get a buy decision
+
+    #   execute a buy decision
+    #   log the buys
+
+    return
+
+if __name__ == '__main__':
+    main()

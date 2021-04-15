@@ -230,7 +230,6 @@ if __name__ == "__main__":
 
     if args['mode'] == 'f':
         gather_stock_and_option_data()
-        run_nope()
     else:
         gather_stock_data()
 
