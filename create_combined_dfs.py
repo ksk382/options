@@ -5,6 +5,7 @@ import datetime as dt
 import os
 import numpy as np
 import argparse
+import time
 
 pd.set_option('display.max_rows', 800)
 
@@ -59,6 +60,7 @@ def merge_df_files(today_str):
 
 if __name__ == "__main__":
 
+    start = time.time()
     parser = argparse.ArgumentParser(description='Description of your program')
     parser.add_argument('-d', '--date_to_run',
                         help='Enter -d 2021-02-24',
@@ -72,4 +74,7 @@ if __name__ == "__main__":
         today_str = dt.datetime.strftime(now, "%Y-%m-%d")
     print (f'running merge_df_files: {today_str}')
     merge_df_files(today_str)
+    end = time.time()
+    x = str(dt.timedelta(seconds=(end - start)))
+    print(f'Elapsed time: {x}')
     print(f'{Path(__file__).resolve()} completed')

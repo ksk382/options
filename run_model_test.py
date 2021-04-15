@@ -40,6 +40,7 @@ def run_model_test(model, hurdle):
     cols = ['test_pred', 'binary_test_pred', 'true_label','profit']
     test_dataset = test_dataset.sort_values(by='profit', ascending=False)
     test_dataset = test_dataset.round(4)
+    test_dataset = test_dataset[test_dataset['binary_test_pred'] == 1]
     print (test_dataset[cols])
     r = test_dataset['profit'].sum() / test_dataset['binary_test_pred'].sum()
     r = round(r,4)
@@ -58,9 +59,10 @@ def run_model_test(model, hurdle):
 if __name__=='__main__':
     model_path = '../ML_logs/'
     list_of_models = [(model_path + i) for i in os.listdir(model_path) if i.endswith('.h5')]
-    # print (list_of_models)
+    #print (list_of_models)
     latest_file = max(list_of_models, key=os.path.getctime)
     print(latest_file)
+    latest_file = '../ML_logs/2021-04-12_19.29 - hurdle - 0.0278 mse - 0.12 test_rate - 0.0243_model_0.0278.h5'
     model = load_model(latest_file)
     hurdle = float(latest_file.split('_')[-1].replace('.h5', ''))
     run_model_test(model, hurdle)

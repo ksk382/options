@@ -6,6 +6,7 @@ import os
 import sys
 import datetime as dt
 import argparse
+import time
 
 def run_nope(**kwargs):
 
@@ -128,6 +129,8 @@ def run_nope(**kwargs):
 
 if __name__ == '__main__':
 
+    start = time.time()
+
     parser = argparse.ArgumentParser(description='Description of your program')
     parser.add_argument('-d', '--date_to_run',
                         help='Enter -d 2021-02-24_09.45',
@@ -141,4 +144,9 @@ if __name__ == '__main__':
         run_nope()
     print(f'{Path(__file__).resolve()} completed')
 
+
+    end = time.time()
+    x = str(dt.timedelta(seconds=(end - start)))
+    print(f'Elapsed time: {x}')
+    print(f'{Path(__file__).resolve()} completed')
 

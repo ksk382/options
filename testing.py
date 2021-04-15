@@ -12,6 +12,8 @@ from api_auth import get_auth_headers
 import requests
 from cred_file import access_key, host
 from api_calls import get_holdings, get_balance
+import time
+import datetime
 
 d = get_holdings()
 print (d)
@@ -19,7 +21,13 @@ print (d)
 e = get_balance()
 print (e)
 
-
+start = time.time()
+#query_quote()
+time.sleep(3)
+end = time.time()
+print(end - start)
+x = str(datetime.timedelta(seconds=(end-start)))
+print (x)
 
 
 '''

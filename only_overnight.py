@@ -145,5 +145,9 @@ def daily_ohlcv():
 if __name__ == '__main__':
 
     # functions that should not run during market hours
+    start = time.time()
     daily_ohlcv()
+    end = time.time()
+    x = str(dt.timedelta(seconds=(end - start)))
+    print(f'Elapsed time: {x}')
     print(f'{Path(__file__).resolve()} completed')

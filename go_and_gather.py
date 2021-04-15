@@ -82,6 +82,10 @@ def gather_stats():
 
 
 if __name__ == '__main__':
+    start = time.time()
     gather_stats()
+    end = time.time()
+    x = str(dt.timedelta(seconds=(end - start)))
+    print(f'Elapsed time: {x}')
     print(f'{Path(__file__).resolve()} completed')
 

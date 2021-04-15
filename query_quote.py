@@ -76,5 +76,9 @@ def query_quote():
     return
 
 if __name__ == '__main__':
+    start = time.time()
     query_quote()
+    end = time.time()
+    x = str(dt.timedelta(seconds=(end - start)))
+    print (f'Elapsed time: {x}')
     print(f'{Path(__file__).resolve()} completed')

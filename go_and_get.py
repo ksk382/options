@@ -218,6 +218,10 @@ if __name__ == "__main__":
     #now_str = '2021-02-03_15.30'
     #gather_stock_and_option_data(kow_str = now_str)
     #gather_stock_and_option_data()
+
+    start = time.time()
+
+
     parser = argparse.ArgumentParser(description='Description of your program')
     parser.add_argument('-m', '--mode',
                         help='Enter -m f for full, -m l for light. Full run collects option and stock data.',
@@ -230,4 +234,7 @@ if __name__ == "__main__":
     else:
         gather_stock_data()
 
+    end = time.time()
+    x = str(dt.timedelta(seconds=(end - start)))
+    print(f'Elapsed time: {x}')
     print(f'{Path(__file__).resolve()} completed')
