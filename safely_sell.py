@@ -44,7 +44,7 @@ def sell_all():
             except Exception as e:
                 print (f'failed to sell {symbol}')
                 print (str(e))
-
+        count += 1
         holdings = get_holdings()
         h = len(holdings['holding'])
         print (f'length of holdings: {h}')

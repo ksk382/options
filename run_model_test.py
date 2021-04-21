@@ -21,23 +21,25 @@ def run_model_test(model, hurdle):
 
     final_cols = pd.read_csv('../ML_content/final_cols.csv', compression='gzip')
     final_cols = list(final_cols['0'])
-    test_dataset = test_dataset[final_cols]
+    trimmed_dataset = test_dataset[final_cols]
 
     def norm(x):
         return (x - train_stats['mean']) / train_stats['std']
 
-    normed_test_data = norm(test_dataset)
+    normed_test_data = norm(trimmed_dataset)
     normed_test_data.fillna(0, inplace=True)
 
     test_predictions = model.predict(normed_test_data)
+    test_dataset['test_pred'] = test_predictions
+
     binary_test_pred = (test_predictions > .5) * 1
     test_dataset['binary_test_pred'] = binary_test_pred
     test_dataset['test_pred'] = test_predictions
     test_dataset['true_label'] = true_label
-    test_dataset['profit'] = test_dataset['binary_test_pred'] * test_dataset['true_label']
+    test_dataset = test_dataset[test_dataset['ba_spread'] < hurdle]
+    test_dataset['profit'] = test_dataset['binary_test_pred'] * test_dataset['true_label'] - test_dataset['ba_spread']
 
-
-    cols = ['test_pred', 'binary_test_pred', 'true_label','profit']
+    cols = ['symbol', 'df_date_y', 'test_pred', 'binary_test_pred', 'true_label','profit', 'ba_spread']
     test_dataset = test_dataset.sort_values(by='profit', ascending=False)
     test_dataset = test_dataset.round(4)
     test_dataset = test_dataset[test_dataset['binary_test_pred'] == 1]
@@ -62,7 +64,7 @@ if __name__=='__main__':
     #print (list_of_models)
     latest_file = max(list_of_models, key=os.path.getctime)
     print(latest_file)
-    latest_file = '../ML_logs/2021-04-12_19.29 - hurdle - 0.0278 mse - 0.12 test_rate - 0.0243_model_0.0278.h5'
+    latest_file = '../ML_logs/2021-04-15_23.06 - hurdle - 0.0163 mse - 0.15 test_rate - -0.3932_model_0.0163.h5'
     model = load_model(latest_file)
     hurdle = float(latest_file.split('_')[-1].replace('.h5', ''))
     run_model_test(model, hurdle)

@@ -11,7 +11,9 @@ pd.set_option('display.max_rows', 800)
 
 
 def munge(df1, df2, quote_df):
-    print (f'initial_shapes inside munge--    df1: {df1.shape}    df2: {df2.shape}   quote_df: {quote_df.shape}')
+    print (f'initial_shapes--    df1: {df1.shape}    df2: {df2.shape}   quote_df: {quote_df.shape}')
+    df2['ba_spread'] = (df2['ask'] - df2['bid']) / df2['last']
+    df2.loc[df2['ba_spread'] > 1, 'ba_spread'] = 0
     df3 = pd.merge(df1, df2, on=['symbol'])
     print(f'shape after df1 df2 merge--    df3: {df3.shape}')
     df3 = pd.merge(df3, quote_df, on=['symbol'])
@@ -67,20 +69,36 @@ def munge(df1, df2, quote_df):
          'mw_igamma_y',
          'mw_itheta_y',
          'mw_ivega_y',
-         'iexVolume',
-         'latestVolume']
+         'latestVolume',
+         'ba_spread']
+
+    #show_cols.append('iexVolume')
+    # 4/14/21 removed this from show_cols because of a data gap
+    # from 4/4-4/14
 
     for i in s:
         show_cols.append(i)
 
     # add in relative values
     day_chgs = ['opn', 'hi', 'lo', 'cl', 'vl', 'vwap']
+    day_chgs = day_chgs + ['nope_metric',
+                'nope_adv_21',
+                'net_idelta',
+                'net_igamma',
+                'noge',
+                'noge_21',
+                'mw_idelta',
+                'mw_igamma',
+                'mw_itheta',
+                'mw_ivega']
     for i in day_chgs:
         x = i + '_x'
         y = i + '_y'
         j = i + '_pctchg_1d'
         df3[j] = (df3[y] - df3[x]) / df3[x]
         show_cols.append(j)
+
+    df2['nope_norm'] = (df2['nope_metric'] - df2['nope_metric'].mean()) / df2['nope_metric'].std()
 
     price_stretch = ['adp_100', 'adp_200', 'adp_50', 'wk52hi', 'wk52lo']
     for i in price_stretch:
@@ -98,9 +116,9 @@ def munge(df1, df2, quote_df):
 
     df3 = df3[show_cols]
     df3 = df3[~df3.isin([np.nan, np.inf, -np.inf]).any(1)]
-    print(f'shape after nan clear--    df3: {df3.shape}')
-    print ('\n\n\n')
     df3 = df3.drop_duplicates()
+    print(f'shape after munge--    df3: {df3.shape}')
+    print ('\n\n')
     return df3
 
 def label_the_tensors(df3, z_date):
@@ -147,15 +165,19 @@ def label_the_tensors(df3, z_date):
     return df4
 
 def make_labeled_tensors(x_date, y_date, z_date):
-    df1 = pd.read_csv(f'../combined_dataframes/{x_date}.csv', compression='gzip')
-    df2 = pd.read_csv(f'../combined_dataframes/{y_date}.csv', compression='gzip')
+    x_name = f'../combined_dataframes/{x_date}.csv'
+    y_name = f'../combined_dataframes/{y_date}.csv'
+    df1 = pd.read_csv(x_name, compression='gzip')
+    df2 = pd.read_csv(y_name, compression='gzip')
     quote_df_name = latest_file('../quote_dataframes/', y_date)
+    if '15.' not in quote_df_name:
+        input(f'hold on: {quote_df_name}')
     quote_df = pd.read_csv(quote_df_name, compression='gzip')
-
-    print (f'initial_shapes--    df1: {df1.shape}    df2: {df2.shape}   quote_df: {quote_df.shape}')
+    print(f'df1:        {x_name}')
+    print(f'df2:        {y_name}')
+    print(f'quote_df:   {quote_df_name}')
 
     df3 = munge(df1, df2, quote_df)
-    print(f'shape after munge--    df3: {df3.shape}')
     df4 = label_the_tensors(df3, z_date)
     df4 = df4[~df4.isin([np.nan, np.inf, -np.inf]).any(1)]
     out_name = f'../ML_content/tensor_df_set_{y_date}.csv'
@@ -207,7 +229,7 @@ if __name__ == "__main__":
     #     '2021-04-01',
     #     '2021-04-05',
     #     '2021-04-06']
-    print (a)
+
 
     for i in range(0, (len(a)-2)):
         x = a[i]

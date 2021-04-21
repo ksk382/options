@@ -17,6 +17,7 @@ import argparse
 
 def mlearn(notes, hurdle, df):
     EPOCHS = 300
+    learning_rate = .00001
 
     # Make numpy values easier to read.
     np.set_printoptions(precision=3, suppress=True)
@@ -79,8 +80,6 @@ def mlearn(notes, hurdle, df):
 
     final_cols = pd.DataFrame(normed_train_data.columns)
     final_cols.to_csv('../ML_content/final_cols.csv', compression='gzip', index=False)
-
-    learning_rate = .00001
 
     def build_model():
         model = keras.Sequential([
@@ -150,17 +149,25 @@ def mlearn(notes, hurdle, df):
     test_predictions = model.predict(normed_test_data)
     test_predictions = (test_predictions > .5)
 
-    print ('confusion matrix:')
     conf_matrix = tf.math.confusion_matrix(test_labels, test_predictions)
     conf_matrix = conf_matrix.numpy()
-    print (conf_matrix)
     pos_rate = conf_matrix[0][1] / (conf_matrix[:,1].sum())
-    print (f'num positive predictions: {conf_matrix[:,1].sum()}')
-    print (f'rate of false positives / total positives: {pos_rate}')
+    betting_rate = conf_matrix[:,1].sum() / conf_matrix[:,0].sum()
+
+    test_rate = run_model_test(model, hurdle)
+
+    notes2 = f'hurdle: {hurdle}\n' + \
+            f'learning rate: {learning_rate}\n' + \
+            f'projected rate of return: {test_rate} \n\n' + \
+            f'{conf_matrix} \n' + \
+            f'num positive predictions: {conf_matrix[:, 1].sum()}\n' + \
+            f'rate of false positives / total positives: {pos_rate}\n' + \
+            f'rate of positive prediction (betting rate): {betting_rate})\n'
+    print (notes2)
 
     now_str = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d_%H.%M")
     ## Save entire model to a HDF5 file
-    test_rate = run_model_test(model, hurdle)
+
     save_name = f'{now_str} - hurdle - {hurdle} mse - {round(history.history["val_mse"][-1],2)} test_rate - {test_rate}'
     model.save(f'{log_dir}{save_name}_model_{hurdle}.h5')
     # save log file
@@ -169,14 +176,10 @@ def mlearn(notes, hurdle, df):
 
     str =   notes + \
             '\n\n\n' + \
-            f'hurdle: {hurdle}\n'+ \
-            f'learning rate: {learning_rate}\n'+ \
-            f'projected rate of return: {test_rate} \n\n' + \
-            f'{conf_matrix} \n' + \
-            f'num positive predictions: {conf_matrix[:, 1].sum()}\n' + \
-            f'rate of false positives / total positives: {pos_rate}\n\n' + \
+            notes2 + '\n\n\n' + \
             f'{hist.tail()}\n\n\n'
 
+    str = str + '\nFinal Columns: \n' + ''.join((e + ', ') for e in normed_train_data.columns)
     print (str)
 
     # "Loss"

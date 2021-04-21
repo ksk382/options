@@ -14,8 +14,8 @@ def latest_file(dir_name, today_str):
     flist = [(dir_name + i) for i in os.listdir(dir_name) if
              (i.endswith('.csv') and i.startswith(today_str) and
               not i.endswith('_16.30.csv') and not i.endswith('synth.csv'))]
-    print (flist)
-    fname = max(flist, key=os.path.getctime)
+    #fname = max(flist, key=os.path.getctime)
+    fname = sorted(flist)[-1]
     return fname
 
 def merge_df_files(today_str):
@@ -56,6 +56,7 @@ def merge_df_files(today_str):
     out_name = f'{out_dir}{today_str}.csv'
     df4.to_csv(out_name, compression='gzip', index=False)
     print (df4.iloc[0])
+    print (df4.shape)
     return
 
 if __name__ == "__main__":

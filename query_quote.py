@@ -8,6 +8,7 @@ import datetime as dt
 import time
 from cred_file import access_key, host
 
+
 def load_ticker_list():
     ticker_df = pd.read_csv('IWV_holdings.csv').dropna()
     ticker_df = ticker_df[ticker_df['Ticker'] != '-']
