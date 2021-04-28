@@ -8,13 +8,21 @@ from cred_file import oauth_hdr, stock_endpoint, option_endpoint, balance_endpoi
 import os
 import xml.etree.ElementTree as ET
 import json
+from collections import defaultdict
+from bs4 import BeautifulSoup
+from copy import copy
 
 def get_stock_df(ticker):
     target_url = stock_endpoint + ticker
     r = requests.get(url=target_url, auth=oauth_hdr)
     #print(json.dumps(d, indent = 4, sort_keys=True))
-    d = r.json()['response']['quotes']['quote']
-    df = pd.DataFrame([d])
+    df = pd.DataFrame()
+    try:
+        d = r.json()['response']['quotes']['quote']
+
+        df = pd.DataFrame([d])
+    except:
+        print (r)
     # pass a rate limiter
     try:
         e = int(r.headers['X-RateLimit-Remaining'])
@@ -102,17 +110,20 @@ def get_holdings():
     return d
 
 def get_orders():
-    target_url = trade_endpoint + acct_num + '/orders.json'
+    target_url = trade_endpoint + acct_num + '/history.json'
     r = requests.get(url=target_url, auth=oauth_hdr)
     d = r.json()['response']
-    e = d['orderstatus']['order']
-    print(json.dumps(e, indent = 4, sort_keys=True))
+    #print (d)
+    e = d['transactions']
+    print(json.dumps(e, indent=4, sort_keys=True))
+    trans = {}
+
     for i in e:
-        root = ET.parse(i['fixmlmessage']).getroot()
-    value = root.get('FIXML')
-    print(value)
-    return d
+        trans['symbol'] = i['symbol']
+
+    return e
 
 if __name__ == "__main__":
-    d = get_balance()
-    print (d)
+    d = get_orders()
+
+    #print (d)

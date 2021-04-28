@@ -79,6 +79,9 @@ def munge(df1, df2, quote_df):
     for i in s:
         show_cols.append(i)
 
+    df3['latestPrice_todaychg'] = (df3['latestPrice'] - df3['opn_y']) / df3['latestPrice']
+    show_cols.append('latestPrice_todaychg')
+
     # add in relative values
     day_chgs = ['opn', 'hi', 'lo', 'cl', 'vl', 'vwap']
     day_chgs = day_chgs + ['nope_metric',

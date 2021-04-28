@@ -1,17 +1,25 @@
 import pandas as pd
 import os
 import datetime as dt
-from api_calls import get_stock_df, get_balance, sell_stock, buy_stock, acct_num, get_holdings
-import json
+from api_calls import get_stock_df, get_balance, sell_stock, buy_stock, acct_num, get_holdings, get_orders
 import pandas as pd
+from api_auth import get_auth_headers
+from cred_file import access_key, host
+import requests
+from pathlib import Path
+print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
+from api_auth import get_auth_headers
+import os
+import requests
+import pandas as pd
+import datetime as dt
+import time
+from cred_file import access_key, host
+import json
+from api_calls import get_stock_df
 
-def latest_file(dir_name, today_str):
-    flist = [(dir_name + i) for i in os.listdir(dir_name) if
-             (i.endswith('.csv') and i.startswith(today_str) and
-              not i.endswith('_16.30.csv') and not i.endswith('synth.csv'))]
-    #fname = max(flist, key=os.path.getctime)
-    fname = sorted(flist)[-1]
-    return fname
 
-f = latest_file('../quote_dataframes/', '2021-04-09')
-print (f)
+pd.set_option('display.max_rows', 500)
+
+x, y = get_stock_df('TSLA')
+print (x.iloc[0])

@@ -37,7 +37,7 @@ def sell_all():
                 company_df, e = get_stock_df(symbol)
                 if check_fresh(company_df):
                     last_bid = company_df.loc[0, 'bid']
-                    print(f'{symbol}, qty: {qty}, purchase price: {purchase_price}, last_bid: {last_bid}')
+                    print(f'\n\n{symbol}, qty: {qty}, purchase price: {purchase_price}, last_bid: {last_bid}\n')
                     # input(f'press enter to sell at last bid')
                     r = sell_stock(symbol, qty, last_bid)
                     print(r)
@@ -55,4 +55,5 @@ def sell_all():
     return
 
 if __name__ == "__main__":
+    time.sleep(1)
     sell_all()

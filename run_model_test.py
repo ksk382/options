@@ -66,6 +66,7 @@ if __name__=='__main__':
     print(latest_file)
     latest_file = '../ML_logs/2021-04-15_23.06 - hurdle - 0.0163 mse - 0.15 test_rate - -0.3932_model_0.0163.h5'
     model = load_model(latest_file)
-    hurdle = float(latest_file.split('_')[-1].replace('.h5', ''))
+    hurdle = float(latest_file.split('_h_')[-1].replace('_model.h5', ''))
+    print (hurdle)
     run_model_test(model, hurdle)
 

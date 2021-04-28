@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use('TkAgg')
+#atplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from tensorflow.keras.layers.experimental import preprocessing
 import numpy as np
@@ -15,9 +15,9 @@ from run_model_test import run_model_test
 import argparse
 
 
-def mlearn(notes, hurdle, df):
+def mlearn(hurdle, df):
     EPOCHS = 300
-    learning_rate = .00001
+    learning_rate = .000002
 
     # Make numpy values easier to read.
     np.set_printoptions(precision=3, suppress=True)
@@ -86,14 +86,12 @@ def mlearn(notes, hurdle, df):
             layers.Dense(128, activation=tf.nn.tanh, input_shape=[len(normed_train_data.keys())]),
             layers.Dense(128, activation=tf.nn.tanh),
             layers.Dense(128, activation=tf.nn.tanh),
-            layers.Dropout(.2, noise_shape=None, seed=1),
-            layers.Dense(64, activation=tf.nn.tanh),
             layers.Dense(64, activation=tf.nn.tanh),
             layers.Dropout(.2, noise_shape=None, seed=1),
             layers.Dense(64, activation=tf.nn.tanh),
-            layers.Dropout(.2, noise_shape=None, seed=1),
             layers.Dense(64, activation=tf.nn.tanh),
             layers.Dropout(.2, noise_shape=None, seed=1),
+            layers.Dense(64, activation=tf.nn.tanh),
             layers.Dense(64, activation=tf.nn.tanh),
             layers.Dropout(.2, noise_shape=None, seed=1),
             layers.Dense(64, activation=tf.nn.tanh),
@@ -158,29 +156,36 @@ def mlearn(notes, hurdle, df):
 
     notes2 = f'hurdle: {hurdle}\n' + \
             f'learning rate: {learning_rate}\n' + \
+            f'epochs: {EPOCHS}\n' + \
             f'projected rate of return: {test_rate} \n\n' + \
+            f'conf matrix: \n' + \
             f'{conf_matrix} \n' + \
             f'num positive predictions: {conf_matrix[:, 1].sum()}\n' + \
             f'rate of false positives / total positives: {pos_rate}\n' + \
-            f'rate of positive prediction (betting rate): {betting_rate})\n'
+            f'rate of positive prediction (betting rate): {betting_rate})\n\n\n' + \
+            '\npopulation stats:\n' + \
+            f'mean: {df[label].mean()}\n' + \
+            f'std: {df[label].std()}\n' + \
+            f'std sqd: {var}\n' + \
+            f'mad: {df[label].mad()}\n' + \
+            f'raw_count: {raw_count} of {total_population} ({pct_count})\n\n\n'
     print (notes2)
 
     now_str = dt.datetime.strftime(dt.datetime.now(), "%Y-%m-%d_%H.%M")
     ## Save entire model to a HDF5 file
 
-    save_name = f'{now_str} - hurdle - {hurdle} mse - {round(history.history["val_mse"][-1],2)} test_rate - {test_rate}'
-    model.save(f'{log_dir}{save_name}_model_{hurdle}.h5')
-    # save log file
-    log_file_name = f'{log_dir}{save_name}_log'
-    log_file = f'{log_file_name}.txt'
+    save_name = f'{now_str}_mse_{round(history.history["val_mse"][-1],2)}_return_{test_rate}_h_{hurdle}'
+    model.save(f'{log_dir}{save_name}_model.h5')
 
-    str =   notes + \
-            '\n\n\n' + \
-            notes2 + '\n\n\n' + \
+    # save log file
+    log_file = f'{log_dir}{save_name}_log.txt'
+
+    str =   notes2 + '\n\n\n' + \
             f'{hist.tail()}\n\n\n'
 
     str = str + '\nFinal Columns: \n' + ''.join((e + ', ') for e in normed_train_data.columns)
     print (str)
+
 
     # "Loss"
     plt.plot(history.history['mse'])
@@ -216,9 +221,7 @@ def run_loop():
     print(f'hurdles: {hurdles}')
     input('enter')
     for hurdle in hurdles:
-        notes = f'hurdle: {hurdle}'
-        print(notes)
-        mlearn(notes, hurdle, df)
+        mlearn(hurdle, df)
 
 def run_one(h):
     '''df_file = '../nope_dataframes/combined_tensor_df.csv'
@@ -239,7 +242,7 @@ def run_one(h):
     notes = f'trying with high hurdle: {hurdle}'
     print(notes)
 
-    mlearn(notes, hurdle, df)
+    mlearn(hurdle, df)
 
 
 if __name__ == '__main__':
