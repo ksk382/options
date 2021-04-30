@@ -19,13 +19,15 @@ def get_stock_df(ticker):
     df = pd.DataFrame()
     try:
         d = r.json()['response']['quotes']['quote']
-
         df = pd.DataFrame([d])
     except:
         print (r)
     # pass a rate limiter
     try:
         e = int(r.headers['X-RateLimit-Remaining'])
+        if e == 0:
+            print ('** api_call:get_stock_df -- e = 0. out of requests ** ')
+            print (r.headers)
     except:
         e = 1
     return df, e
@@ -124,6 +126,6 @@ def get_orders():
     return e
 
 if __name__ == "__main__":
-    d = get_orders()
+    d = get_stock_df('AAPL')
 
     #print (d)

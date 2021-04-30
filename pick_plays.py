@@ -6,14 +6,14 @@ from tensor_time import munge
 from tensorflow.keras.models import load_model
 from api_auth import get_auth_headers
 from query_quote import api_quote
-from api_calls import get_stock_df, get_balance, sell_stock, buy_stock, acct_num, get_holdings
+from api_calls import get_holdings
 
 def import_model():
     model_path = '../ML_logs/'
     #list_of_models = [(model_path + i) for i in os.listdir(model_path) if i.endswith('.h5')]
     # print (list_of_models)
     #latest_file = max(list_of_models, key=os.path.getctime)
-    m_name = '2021-04-28_10.58_mse_0.11_return_0.0116_h_0.00867_model.h5'
+    m_name = '2021-04-29_08.32_mse_0.11_return_0.0083_h_0.00853_model.h5'
     latest_file = '../ML_logs/'+ m_name
     print (latest_file)
     input('check this model filename')

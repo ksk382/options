@@ -54,7 +54,7 @@ def query_quote():
     error_list = []
     for symbol in ticker_list:
         count+=1
-        print(f'{count} getting {symbol} data')
+        print(f'{count} getting {symbol} quote_dataframe data')
         try:
             e = api_quote(symbol, headers)
             all_quote_df = all_quote_df.append(e, ignore_index=True)

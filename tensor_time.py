@@ -137,28 +137,32 @@ def label_the_tensors(df3, z_date):
     # built with a two day lag so you can label it with ohlcv?
     # it is more important for this to be accurate. it will be a two day lag
     '''
-
+    '''
+    # update 4.30.21: opening prices might be too volatile. Maybe target 9:50 AM prices 
     ohlcv = pd.read_csv('../ohlcv/ohlcv.csv', compression='gzip')
     label_df = ohlcv[ohlcv['date'] == z_date][['symbol', 'open', 'date']]
     label_df.columns = ['symbol', 'tmrw_opn', 'z_date']
     label_df = label_df.sort_values(by='symbol')
+    '''
 
 
     # this is if you want to do training data asap, but it relies on IEX open prices
-    '''
+
     quote_dir = '../quote_dataframes/'
     x = os.listdir(quote_dir)
-    z_file_list = [(quote_dir + i) for i in x if i.startswith(z_date)]
+    z_file_list = [(quote_dir + i) for i in x if i.startswith(z_date) and i.endswith('09.50.csv')]
     fname = min(z_file_list, key=os.path.getctime)
     quote_df = pd.read_csv(fname, compression='gzip')
-    quote_df['datetime'] = pd.to_datetime(quote_df['lastTradeTime'],unit='ms')
-    quote_df['datetime'] = quote_df['datetime'].dt.tz_localize('utc').dt.tz_convert('US/Eastern').dt.round('1s')
-    quote_df['date] = quote_df['datetime'].dt.date
-    label_df = quote_df[['symbol', 'latestPrice', 'datetime']]
-    label_df.columns = ['symbol', 'tmrw_opn', 'datetime']
-    label_df = label_df.sort_values(by='symbol')'''
+    #quote_df['datetime'] = pd.to_datetime(quote_df['lastTradeTime'],unit='ms')
+    #quote_df['datetime'] = quote_df['datetime'].dt.tz_localize('utc').dt.tz_convert('US/Eastern').dt.round('1s')
+    #quote_df['date'] = quote_df['datetime'].dt.date
+    label_df = quote_df[['symbol', 'latestPrice']]#, 'datetime']]
+    label_df.columns = ['symbol', 'tmrw_opn']#, 'datetime']
+    label_df = label_df.sort_values(by='symbol')
+    label_df['z_date'] = z_date
 
-    print (f'label_df shape: \n{label_df}')
+
+    print (f'label_df: \n{label_df}')
     if label_df.empty:
         print (f'empty label df. ending {Path(__file__).resolve()}')
         sys.exit()

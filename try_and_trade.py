@@ -2,8 +2,7 @@ from tensor_time import munge
 import os
 import pandas as pd
 import datetime as dt
-from api_auth import get_auth_headers
-from query_quote import api_quote
+
 from api_calls import get_stock_df, get_balance, sell_stock, buy_stock, acct_num, get_holdings
 
 
@@ -48,21 +47,20 @@ if __name__ == "__main__":
         symbol = row['symbol']
 
         # make api call to determine current ask price
-        #try:
-        company_df, rate_remaining = get_stock_df(symbol)
+        try:
+            company_df, rate_remaining = get_stock_df(symbol)
 
-        last_ask = company_df.loc[0, 'ask']
-        last_ask = float(last_ask)
-        z.at[index, 'last_ask'] = last_ask
-
-        if last_ask < row['ba_hurdle']:
-            z.at[index, 'buy_at_price'] = 1
-        '''except Exception as exc:
+            last_ask = company_df.loc[0, 'ask']
+            last_ask = float(last_ask)
+            z.at[index, 'last_ask'] = last_ask
+            if last_ask < row['ba_hurdle']:
+                z.at[index, 'buy_at_price'] = 1
+        except Exception as exc:
             print(str(exc))
             # print(row)
             print('rate_remaining:', rate_remaining)
             last_ask = 10000000
-            continue'''
+            continue
 
     z['last_ask'] = pd.to_numeric(z['last_ask'])
     print(z[['symbol', 'hurdle_price', 'ba_spread',

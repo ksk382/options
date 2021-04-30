@@ -1,5 +1,5 @@
 import matplotlib
-#atplotlib.use('TkAgg')
+#matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from tensorflow.keras.layers.experimental import preprocessing
 import numpy as np
@@ -16,8 +16,8 @@ import argparse
 
 
 def mlearn(hurdle, df):
-    EPOCHS = 300
-    learning_rate = .000002
+    EPOCHS = 200
+    learning_rate = .000005
 
     # Make numpy values easier to read.
     np.set_printoptions(precision=3, suppress=True)
@@ -154,7 +154,8 @@ def mlearn(hurdle, df):
 
     test_rate = run_model_test(model, hurdle)
 
-    notes2 = f'hurdle: {hurdle}\n' + \
+    notes2 = f'data shape: {normed_test_data.shape}\n' + \
+            f'hurdle: {hurdle}\n' + \
             f'learning rate: {learning_rate}\n' + \
             f'epochs: {EPOCHS}\n' + \
             f'projected rate of return: {test_rate} \n\n' + \
@@ -216,7 +217,7 @@ def run_loop():
     for i in x.unique():
         print(i, i.left, i.right)
         y.append(i.right)
-    hurdles = y[-6:-1]
+    hurdles = y[-6:-2]
     hurdles = list(reversed(hurdles))
     print(f'hurdles: {hurdles}')
     input('enter')
