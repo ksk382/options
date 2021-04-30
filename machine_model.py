@@ -204,7 +204,7 @@ def mlearn(hurdle, df, EPOCHS, learning_rate):
         with redirect_stdout(f):
             model.summary()
 
-def run_loop():
+def run_loop(EPOCHS, learning_rate):
     df_file = '../ML_content/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
 
@@ -260,17 +260,20 @@ if __name__ == '__main__':
                         required=False)
     args = vars(parser.parse_args())
 
+
+    if args['epochs'] != None:
+        EPOCHS = int(args['epochs'])
+    else:
+        EPOCHS = 200
+
+    if args['learning_rate'] != None:
+        learning_rate = float(args['learning_rate'])
+    else:
+        learning_rate = .000005
+
     if args['hurdle'] != None:
         h = args['hurdle']
-        if args['epochs'] != None:
-            EPOCHS = int(args['epochs'])
-        else:
-            EPOCHS = 200
-        if args['learning_rate'] != None:
-            learning_rate = float(args['learning_rate'])
-        else:
-            learning_rate = .000005
         run_one(h, EPOCHS, learning_rate)
     else:
-        run_loop()
+        run_loop(EPOCHS, learning_rate)
 
