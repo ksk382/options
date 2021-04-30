@@ -4,7 +4,7 @@ import pandas as pd
 import datetime as dt
 import sys
 from api_calls import get_stock_df, get_balance, sell_stock, buy_stock, acct_num, get_holdings
-
+from pick_plays import pick_plays
 
 
 def calc_num_buys(rec_df):
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         latest_file = max(flist, key=os.path.getctime)
         print(latest_file)
     except:
-        print('no rec file found for today...exiting')
-        sys.exit()
+        print ('no rec file found for today...running pick_plays')
+        latest_file = pick_plays()
 
     z = pd.read_csv(latest_file, compression='gzip')
 

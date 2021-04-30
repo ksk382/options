@@ -14,9 +14,7 @@ from run_model_test import run_model_test
 import argparse
 
 
-def mlearn(hurdle, df):
-    EPOCHS = 200
-    learning_rate = .000005
+def mlearn(hurdle, df, EPOCHS, learning_rate):
 
     # Make numpy values easier to read.
     np.set_printoptions(precision=3, suppress=True)
@@ -219,11 +217,13 @@ def run_loop():
     hurdles = y[-6:-2]
     hurdles = list(reversed(hurdles))
     print(f'hurdles: {hurdles}')
+    EPOCHS = 200
+    learning_rate = .000005
     input('enter')
     for hurdle in hurdles:
-        mlearn(hurdle, df)
+        mlearn(hurdle, df, EPOCHS, learning_rate)
 
-def run_one(h):
+def run_one(h, EPOCHS, learning_rate):
     '''df_file = '../nope_dataframes/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
 
@@ -239,10 +239,11 @@ def run_one(h):
     df_file = '../ML_content/combined_tensor_df.csv'
     df = pd.read_csv(df_file, compression='gzip')
     hurdle = float(h)
-    notes = f'trying with high hurdle: {hurdle}'
+    notes = f'trying with hurdle: {hurdle}, epochs: {EPOCHS}, learning_rate: {learning_rate}'
+
     print(notes)
 
-    mlearn(hurdle, df)
+    mlearn(hurdle, df, EPOCHS, learning_rate)
 
 
 if __name__ == '__main__':
@@ -251,10 +252,25 @@ if __name__ == '__main__':
     parser.add_argument('-j', '--hurdle',
                         help='Enter -j .015',
                         required=False)
+    parser.add_argument('-e', '--epochs',
+                        help='Enter -e 200',
+                        required=False)
+    parser.add_argument('-l', '--learning_rate',
+                        help='Enter -l .000005',
+                        required=False)
     args = vars(parser.parse_args())
 
     if args['hurdle'] != None:
         h = args['hurdle']
-        run_one(h)
+        if args['epochs'] != None:
+            EPOCHS = int(args['epochs'])
+        else:
+            EPOCHS = 200
+        if args['learning_rate'] != None:
+            learning_rate = float(args['learning_rate'])
+        else:
+            learning_rate = .000005
+        run_one(h, EPOCHS, learning_rate)
     else:
         run_loop()
+
