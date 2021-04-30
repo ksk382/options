@@ -2,7 +2,7 @@ from tensor_time import munge
 import os
 import pandas as pd
 import datetime as dt
-
+import sys
 from api_calls import get_stock_df, get_balance, sell_stock, buy_stock, acct_num, get_holdings
 
 
@@ -34,9 +34,19 @@ def calc_num_buys(rec_df):
 
 if __name__ == "__main__":
 
+    now = dt.datetime.now()
+    today_str = dt.datetime.strftime(now, "%Y-%m-%d")
+
     rec_path = '../recs/'
-    flist = [(rec_path + i) for i in os.listdir(rec_path) if i.endswith('.csv')]
-    latest_file = max(flist, key=os.path.getctime)
+    start_string = rec_path + f'recs_{today_str}'
+    flist = [(rec_path + i) for i in os.listdir(rec_path) if i.endswith('.csv') and i.startswith(start_string)]
+
+    try:
+        latest_file = max(flist, key=os.path.getctime)
+        print(latest_file)
+    except:
+        print('no rec file found for today...exiting')
+        sys.exit()
 
     z = pd.read_csv(latest_file, compression='gzip')
 
@@ -70,8 +80,7 @@ if __name__ == "__main__":
     print(buy_amnts)
 
     hurdle = buy_amnts.iloc[0]['hurdle']
-    now = dt.datetime.now()
-    today_str = dt.datetime.strftime(now, "%Y-%m-%d")
+
 
     out_name = rec_path + f'rec_{today_str}_hurdle--{hurdle}.csv'
     z.to_csv(out_name, compression='gzip', index=False)
