@@ -169,11 +169,27 @@ def pick_plays():
     rec = scrub_no_go(rec)
 
     z = rec[rec['buy'] == 1]
+    show_cols = ['symbol',
+                 'latestPrice',
+                 'df_date_y',
+                 'df_date_x',
+                 'sp_y',
+                 'etf_y',
+                 'ba_spread',
+                 'test_pred',
+                 'hurdle',
+                 'hurdle_price',
+                 'ba_hurdle',
+                 'confidence',
+                 'buy']
+    z = z[show_cols]
     print(z)
     print(len(z.index))
     print('\n\n\n\n')
 
     rec_dir = '../recs/'
+    #now = dt.datetime.now()
+    #now_str = dt.datetime.strftime(now, "%Y-%m-%d_%H.%M")
     if not os.path.exists(rec_dir):
         os.mkdir(rec_dir)
     out_name = rec_dir + f'rec_{today_str}_hurdle--{hurdle}.csv'
