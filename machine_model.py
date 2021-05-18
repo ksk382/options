@@ -219,7 +219,6 @@ def run_loop(EPOCHS, learning_rate):
     print(f'hurdles: {hurdles}')
     EPOCHS = 200
     learning_rate = .000005
-    input('enter')
     for hurdle in hurdles:
         mlearn(hurdle, df, EPOCHS, learning_rate)
 

@@ -5,6 +5,7 @@ import datetime as dt
 from tensor_time import munge
 from tensorflow.keras.models import load_model
 from api_calls import get_holdings
+import sys
 
 def import_model():
     model_path = '../ML_logs/'
@@ -37,7 +38,6 @@ def load_df(day_str):
     fname = df_path + day_str + '.csv'
     df = pd.read_csv(fname, compression = 'gzip')
     return df
-
 
 def prep_data(today_str, yest_str):
     # load quote dataframe
@@ -122,8 +122,6 @@ def scrub_no_go(rec):
     return rec
 
 
-
-
 def api_quote(symbol, headers):
 
     canonical_querystring = 'token=' + access_key
@@ -156,11 +154,10 @@ def pick_plays():
     yest_str = dt.datetime.strftime(yest, "%Y-%m-%d")
 
 
-    print (today_str, yest_str)
+    print (f'today_str: {today_str}, yest_str: {yest_str}')
     #input('check those dates')
 
     df3, tensor_df = prep_data(today_str, yest_str)
-
 
     # load model
     model, hurdle = import_model()
@@ -170,7 +167,6 @@ def pick_plays():
 
     # filter out nogos
     rec = scrub_no_go(rec)
-
 
     z = rec[rec['buy'] == 1]
     print(z)
